@@ -7,7 +7,7 @@ html, body
 {
     width: 100%;
     height: 10%;
-    background-color: firebrick
+    background-color: firebrick;
 }
 
 #game_title
@@ -23,9 +23,9 @@ html, body
     left:30%;
     bottom:90%;
     width: 68%;
-    height: 50%;
+    height: 70%;
     margin: 1% 1%;
-    background-color: black;
+    background-color: white;
 }
 
 #player_info
@@ -42,6 +42,22 @@ html, body
     height: 49%;
     background-color: forestgreen
 }
-
+/*
 #phase_lay_out
+{
 
+}*/
+
+.fieldRect
+{
+    stroke-width: 1%;
+    fill: none;
+    stroke: gray;
+}
+
+.fieldLines
+{
+    stroke-width: 0.5%;
+    fill: none;
+    stroke: gray;
+}
