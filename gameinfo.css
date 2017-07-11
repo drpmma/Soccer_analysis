@@ -1,48 +1,12 @@
-.STYLE1
-{
-	width: 15px;
-	height:15px;
-    border-radius: 7.5px;
-    /*            font-size: 10px;*/
-}
-
 #span1{
     position: absolute;/*绝对定位*/
-    width: 40%;
-    height: 60px;
-    bottom: 0px;/*离底下0像素*/
-    left: 0%;
+    width: 100%;
+    height: 70%;
+    bottom: 0;/*离底下0像素*/
+    left: 0;
     text-align: center;
-    line-height: 60px;
-    font-size: 25px;
-    color: gold;
-}
-#span2{
-    position: absolute;/*绝对定位*/
-    width: 40%;
-    height: 60px;
-    bottom: 0px;/*离底下0像素*/
-    left: 60%;
-    text-align: center;
-    line-height: 60px;
-    font-size: 25px;
-    color: gold;
-}
-#span3{
-    position: absolute;/*绝对定位*/
-    width: 20%;
-    bottom: 32%;
-    left: 0%;
-    text-align: center;
-    font-size: 90px;
-    color: gold;
-}
-#span4{
-    position: absolute;/*绝对定位*/
-    width: 20%;
-    bottom: 32%;
-    left: 80%;
-    text-align: center;
-    font-size: 90px;
+    line-height: 70%;
+    font-family: "Comic Sans MS";
+    font-size: 60px;
     color: gold;
 }

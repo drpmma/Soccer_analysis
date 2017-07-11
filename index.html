@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8"/>
         <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
         <link rel="stylesheet" href="index.css" type="text/css" />
         <link rel="stylesheet" href="gameinfo.css" type="text/css" />
-        <script src="readteaminfo.js"></script>
+
     </head>
     <body>
         <div id = "time_line">
             timeline
         </div>
         <div id = "player_info">
-            <svg id = "svg_field" width = "100%" height = "100%">
+            <svg id = "player_svg_field" width = "100%" height = "100%">
                 <g class = "g_field" width = "100%" height = "100%" >
                     <rect class = "fieldRect" y = "0" x = "0" width = "100%" height = "100%"></rect>
                     <circle class = "fieldLines" cy = "11%", cx = "50%", r = "12.5%"> </circle>
@@ -30,11 +31,15 @@
                 </g>
             </svg>
         </div>
-        <div id = "game_title">
-            gametitle
-        </div>
         <div id = "game_info">
-            gameinfo
+            <svg id="game_info_field" width = "100%" height="100%">
+
+            </svg>
+        </div>
+        <div id = "game_title">
+            <svg id="game_title_field" width = "100%" height = "100%">
+                <span id = "span1"> VS </span>
+            </svg>
         </div>
         <div id = "field">
             <svg id = "svg_field" width = "100%" height = "100%">
@@ -62,5 +67,6 @@
         <div id = "setting2">
             setting2
         </div>
+        <script src="readteaminfo.js"></script>
     </body>
 </html>
