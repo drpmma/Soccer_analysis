@@ -122,9 +122,9 @@ function repaint_player_svg(r) {
         p.remove();
     }
 
-    d3.csv("./playerinfo.csv", function(error,csvdata){
+    d3.json("./playerinfo.json", function(error,csvdata){
         if(error) console.log(error);
-
+        console.log(csvdata);
         svg_player_pos.data(csvdata)
             .enter()
             .append("circle")
@@ -167,45 +167,65 @@ function repaint_player_svg(r) {
 }
 
 //player info
-// var field2 = document.getElementById("game_info").getBoundingClientRect();
-// var field_w2 = field2.width, field_h2 = field2.height;
-// var svg = d3.select("#game_info")
-//     .append("svg")
-//     .attr("width",field_w2)
-//     .attr("height",field_h2);
-// var g1=svg.append("g")
-//     .attr("id", "value1");
-// var g2=svg.append("g")
-//     .attr("id", "value2");
-// var ttl = svg.append("text")//title1
-//     .text("进球")
-//     .append("text")//subtitle1
-//     .text("shoot")
-//     .append("text")//title2
-//     .text("防守")
-//     .append("text")//subtitle2
-//     .text("defend");
 
 function repaint_player_info(r)
 {
-//     if(r == 0)
-//     {
-//
-//
-//         var temp1 = g1.append("text")//name
-//             .attr("class","title")
-//             .append("text")//id
-//             .attr("class","subtitle")
-//             .append("rect")//value1
-//
-//             .append("rect")//value1_avg
-//             .append("rect")//value2
-//             .append("rect")//value2_avg
-//     }
-//     d3.csv("playerinfo.csv", function(error, csvdata) {
-//         if(error) console.log(error);
-//         console.log(csvdata);
-//
-//
-//     });
+    var field2 = document.getElementById("game_info").getBoundingClientRect();
+    var field_w2 = field2.width, field_h2 = field2.height;
+    var svg;
+    var g1, g2;
+    if(r == 0)
+    {
+        svg = d3.select("#game_info")
+            .append("svg")
+            .attr("width",field_w2)
+            .attr("height",field_h2);
+        d3.csv("./playerinfo.csv", function(error, csvdata){
+            if(error) console.log(error);
+            console.log(csvdata);
+            svg.append("g")
+                .attr("id","value_title")
+                .selectAll("g")
+                .data(csvdata)
+                .enter()
+                .append("text")
+                .attr("class", "title")
+                .attr("y", function(d,i){return field_h2*(0.35+0.15*i);})
+                .text(function(d){return d.title});
+            svg.append("g")
+                .attr("id","value_subtitle")
+                .selectAll("g")
+                .data(csvdata)
+                .enter()
+                .append("text")
+                .attr("class", "subtitle")
+                .attr("y", function(d,i){return field_h2*(0.4+0.15*i);})
+                .text(function(d){return d.subtitle});
+            svg.append("g")
+                .attr("id","value_rec")
+                .selectAll("g")
+                .data(csvdata)
+                .enter()
+                .append("rect")
+                .attr("x",field_w2*0.25)
+                .attr("y", function(d,i){return field_h2*(0.3+0.15*i);})
+                .attr("width",field_w2*0.7)
+                .attr("height",field_h2*0.05)
+                .attr("style", "fill:rgb(200,200,255)");
+            svg.append("g")
+                .attr("id","value_limit")
+                .selectAll("g")
+                .data(csvdata)
+                .enter()
+                .append("text")
+                .attr("class", "mark")
+                .attr("x", field_w2*0.95)
+                .attr("y", function(d,i){return field_h2*(0.4+0.15*i);})
+                .text(function(d){return d.limit});
+        });
+    }
+    else
+    {
+
+    }
 }

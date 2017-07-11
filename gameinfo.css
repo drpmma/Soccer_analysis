@@ -13,10 +13,30 @@
 
 .title
 {
-
+    x: 10px;
+    textLength: 20;
+    font-weight: bold;
+    text-anchor: left;
+    font-family: "宋体";
+    font-size: 15px;
+    color: black;
 }
 
 .subtitle
 {
+    x: 10px;
+    textLength: 20;
+    text-anchor: start;
+    font-family: "Consolas";
+    font-size: 3px;
+    color: black;
+}
 
+.mark
+{
+    textLength: 20;
+    text-anchor: start;
+    font-family: "Consolas";
+    font-size: 3px;
+    color: black;
 }
