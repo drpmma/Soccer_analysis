@@ -1,0 +1,75 @@
+#span1{
+    position: absolute;/*绝对定位*/
+    width: 100%;
+    height: 70%;
+    bottom: 0;/*离底下0像素*/
+    left: 0;
+    text-align: center;
+    line-height: 70%;
+    font-family: "Comic Sans MS";
+    font-size: 300%;
+    color: gold;
+}
+
+.player_circle
+{
+    stroke-width: 0.5%;
+    fill: white;
+}
+
+.title
+{
+    font-weight: bold;
+    text-anchor: left;
+    font-family: "宋体";
+    font-size: 100%;
+    color: black;
+}
+
+.subtitle
+{
+    text-anchor: start;
+    font-family: "Consolas";
+    font-size: 90%;
+    color: black;
+}
+
+.mark
+{
+    text-anchor: middle;
+    font-family: "Consolas";
+    font-size: 18%;
+    color: black;
+}
+
+.avg_line
+{
+    stroke:rgb(0,0,0);
+    stroke-width:1%;
+}
+
+.playerinfo_id
+{
+
+    font-family: "华文彩云";
+    font-size: 300%;
+    text-anchor: middle;
+    color: whitesmoke;
+    stroke-width: 0.5%;
+}
+
+.playerinfo_name
+{
+    font-family: "华文宋体";
+    font-size: 180%;
+    text-anchor: middle;
+    color: black;
+}
+
+playerinfo_pos
+{
+    font-family: "华文楷体";
+    font-size: 120%;
+    text-anchor: middle;
+    color: darkslategrey;
+}
