@@ -7,6 +7,7 @@ var time = 2700;
 var field = document.getElementById("game_title_field").getBoundingClientRect();
 var field_w = field.width, field_h = field.height;
 var teamchoose = 0;
+var duration = 500;
 repaint_player_svg(0);
 
 function setteam(t)
@@ -191,7 +192,7 @@ function repaint_player_info(r)
                 .enter()
                 .append("text")
                 .attr("class", "title")
-                .attr("y", function(d,i){return field_h2*(0.35+0.15*i);})
+                .attr("y", function(d,i){return field_h2*(0.30+0.15*i);})
                 .text(function(d){return d.title});
             svg.append("g")//subtitle
                 .attr("id","value_subtitle")
@@ -200,7 +201,7 @@ function repaint_player_info(r)
                 .enter()
                 .append("text")
                 .attr("class", "subtitle")
-                .attr("y", function(d,i){return field_h2*(0.4+0.15*i);})
+                .attr("y", function(d,i){return field_h2*(0.35+0.15*i);})
                 .text(function(d){return d.subtitle});
             svg.append("g")//back_rect
                 .attr("id","value_rec")
@@ -268,6 +269,28 @@ function repaint_player_info(r)
                 .attr("x", field_w2*0.25)
                 .attr("y", function(d,i){return field_h2*(0.4+0.15*i);})
                 .text(0);
+            temp = svg.append("g")
+                .attr("id","player_info");
+            temp.append("text")
+                .attr("id","current_id")
+                .attr("class","playerinfo_id")
+                .attr("x",0.15*field_w2)
+                .attr("y",0.20*field_h2)
+                .text("");
+            temp.append("text")
+                .attr("id","current_name")
+                .attr("class","playerinfo_name")
+                .attr("x",0.65*field_w2)
+                .attr("y",0.15*field_h2)
+                .attr("textLength",0.65*field_w2)
+                .text("");
+            temp.append("text")
+                .attr("id","current_pos")
+                .attr("class","playerinfo_pos")
+                .attr("x",0.55*field_w2)
+                .attr("y",0.25*field_h2)
+                .attr("textLength",0.45*field_w2)
+                .text("");
         });
     }
     else
@@ -275,17 +298,30 @@ function repaint_player_info(r)
         var currentvalue, avgvalue, currentid, currentname, currentpos;
         d3.json("./playerinfo.json", function(error, jsondata) {
             if (error) console.log(error);
-            for(var o in jsondata){
-                if(jsondata[o].id == player_choose && jsondata[o].team == teamchoose)
+            for(var o=0; o<jsondata.length; o++){
+                if(jsondata[o].team == teamchoose && jsondata[o].id == player_choose)
                 {
+                    currentid = jsondata[o].id;
+                    currentname = jsondata[o].name;
+                    currentpos = jsondata[o].position;
                     currentvalue = jsondata[o].value;
                     avgvalue = jsondata[o].avg_value;
-                    cunrrentid = jsondata[o].id;
-                    cunrrentname = jsondata[o].name;
-                    cunrrentpos = jsondata[o].position;
                 }
             }
+            temp = d3.select("#current_id");
+            temp.transition()
+                .duration(duration)
+                .text(currentid);
+            temp = d3.select("#current_name");
+            temp.transition()
+                .duration(duration)
+                .text(currentname);
+            temp = d3.select("#current_pos");
+            temp.transition()
+                .duration(duration)
+                .text(currentpos);
         });
+
         d3.json("./value_info.json", function(error, jsondata) {
             if (error) console.log(error);
 
@@ -293,21 +329,21 @@ function repaint_player_info(r)
             {
                 temp = d3.select("#current_rec"+o);
                 temp.transition()
-                     .duration(500)
+                     .duration(duration)
                      .style("width",(field_w2*0.7*currentvalue[o]/jsondata[o].limit).toString());
                 temp = d3.select("#current_value"+o);
                 temp.transition()
-                    .duration(500)
+                    .duration(duration)
                     .attr("x",(field_w2*(0.25+0.7*currentvalue[o]/jsondata[o].limit)).toString())
                     .text(currentvalue[o]);
                 temp = d3.select("#avg_line"+o);
                 temp.transition()
-                    .duration(500)
+                    .duration(duration)
                     .attr("x1",(field_w2*(0.25+0.7*avgvalue[o]/jsondata[o].limit)).toString())
                     .attr("x2",(field_w2*(0.25+0.7*avgvalue[o]/jsondata[o].limit)).toString());
                 temp = d3.select("#avg_value"+o);
                 temp.transition()
-                    .duration(500)
+                    .duration(duration)
                     .attr("x",(field_w2*(0.25+0.7*avgvalue[o]/jsondata[o].limit)).toString())
                     .text(avgvalue[o]);
             }

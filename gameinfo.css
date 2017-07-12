@@ -46,3 +46,30 @@
     stroke:rgb(0,0,0);
     stroke-width:2;
 }
+
+.playerinfo_id
+{
+
+    font-family: "华文彩云";
+    font-size: 50px;
+    text-anchor: middle;
+    color: whitesmoke;
+    stroke: gold;
+    stroke-width: 1px;
+}
+
+.playerinfo_name
+{
+    font-family: "华文宋体";
+    font-size: 30px;
+    text-anchor: middle;
+    color: black;
+}
+
+playerinfo_pos
+{
+    font-family: "华文楷体";
+    font-size: 20px;
+    text-anchor: middle;
+    color: darkslategrey;
+}
