@@ -4,8 +4,8 @@
 
 // team info
 var time = 2700;
-var field = document.getElementById("game_title_field").getBoundingClientRect();
-var field_w = field.width, field_h = field.height;
+var field0 = document.getElementById("game_title_field").getBoundingClientRect();
+var field_w0 = field0.width, field_h0 = field0.height;
 var teamchoose = 0;
 var duration = 500;
 repaint_player_svg(0);
@@ -41,9 +41,9 @@ d3.json("./gameinfo.json", function(error,jsondata){
         .append("text")
         .attr("class", "Team")
         .attr("id", function(d,i){return i})
-        .attr("x", function(d,i){return 0.2*field_w+i*field_w*0.6})
-        .attr("y", 0.3*field_h)
-        .attr("textLength", field_w*0.4)
+        .attr("x", function(d,i){return 0.2*field_w0+i*field_w0*0.6})
+        .attr("y", 0.3*field_h0)
+        .attr("textLength", field_w0*0.4)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("font-family", "华文行楷")
@@ -58,9 +58,9 @@ d3.json("./gameinfo.json", function(error,jsondata){
         .append("text")
         .attr("class", "Score")
         .attr("id", function(d,i){return i})
-        .attr("x", function(d,i){return 0.2*field_w+i*field_w*0.6})
-        .attr("y", 0.6*field_h)
-        .attr("textLength", field_w*0.35)
+        .attr("x", function(d,i){return 0.2*field_w0+i*field_w0*0.6})
+        .attr("y", 0.6*field_h0)
+        .attr("textLength", field_w0*0.35)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("font-family", "方正舒体")
@@ -74,9 +74,9 @@ d3.json("./gameinfo.json", function(error,jsondata){
         .append("text")
         .attr("class", "Date")
         .attr("id", "date")
-        .attr("x", 0.5*field_w)
-        .attr("y", 0.9*field_h)
-        .attr("textLength", field_w*0.6)
+        .attr("x", 0.5*field_w0)
+        .attr("y", 0.9*field_h0)
+        .attr("textLength", field_w0*0.6)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("font-family", "华文新魏")

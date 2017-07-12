@@ -29,7 +29,7 @@ html, body
     position: absolute;
     left: 30%;
     width: 58%;
-    height: 58%;
+    height: 71%;
     margin: 1% 1%;
     background-color: white;
 }
@@ -50,14 +50,14 @@ html, body
     background-color: whitesmoke;
 }
 
-#setting1
-{
-    position: absolute;
-    bottom: 0%;
-    left: 30%;
-    width: 60%;
-    height: 15%;
-}
+/*#setting1*/
+/*{*/
+    /*position: absolute;*/
+    /*bottom: 0%;*/
+    /*left: 30%;*/
+    /*width: 60%;*/
+    /*height: 15%;*/
+/*}*/
 
 #setting2
 {

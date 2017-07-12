@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <title>AntTrajectory</title>
+</head>
+<body>
+<script>
+    var body = d3.select("body");
+    body.append("div")
+        .classed("box", true)
+        .style("background-color", "#e9967a")
+        .transition()     //使用d3.selection.transition函数来定义一个过渡
+        .duration(2000)    //使用duration函数来设置过渡效果的持续时间
+        .style("background-color", "#add8e6")
+        .style("margin-left", "600px")
+        .style("width", "100px")
+        .style("height", "100px")
+        .transition()      //要实现单元素连续动画就直接加在后面
+        .duration(2000)
+        .style("background-color", "#19e549")
+        .style("margin-top", "100px")
+        .style("margin-left","100px")
+        .style("width", "500px")
+        .style("height", "50px");
+</script>
+</body>
+
