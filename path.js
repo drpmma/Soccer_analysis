@@ -1,6 +1,7 @@
 /**
  * Created by Zhouxiang on 2017/7/6.
  */
+
 var field = document.getElementById("svg_field").getBoundingClientRect();
 var field_w = field.width, field_h = field.height;
 var data = [{x:50, y:50}, {x:20, y:30}, {x:10, y:60}];
@@ -23,7 +24,8 @@ var path = d3.select("#svg_field")
 var node = d3.select("#svg_field")
                 .select("g")
                 .append("g")
-                .attr("id", "node_container");
+                .attr("id", "node_container")
+                .attr("fill", "steelblue");
 
 var svg_point = d3.select("#node_container")
                     .selectAll("g")
@@ -36,9 +38,9 @@ var svg_point = d3.select("#node_container")
                     })
                     .append("circle")
                     .transition()
-                    .duration(600)
+                    .duration(100)
                     .delay(function (d, i) {
-                        return (i) * 300;
+                        return (i) * 100;
                     })
                     .attr("cx", function (d) {
                         return d.x / 100 * field_w;
@@ -46,8 +48,7 @@ var svg_point = d3.select("#node_container")
                     .attr("cy", function (d) {
                         return d.y / 70 * field_h;
                     })
-                    .attr("r", 10)
-                    .attr("fill", "steelblue");
+                    .attr("r", 10);
 
 var svg_path = d3.select("#path_container")
                     .selectAll("g")
@@ -62,11 +63,12 @@ var svg_path = d3.select("#path_container")
                     .transition()
                     .duration(300)
                     .delay(function (d, i) {
-                        return 600 + (i * 300);
+                        return 100 + (i * 100);
                     })
                     .attr("d", function (d) {
                         return "M" + svg_scale(d.source.x, 0) + " " + svg_scale(d.source.y, 1)
                             + " L " + svg_scale(d.target.x, 0) + " " + svg_scale(d.target.y, 1);
                     })
                     .attr("stroke", "black")
-                    .attr("stroke-width", 2);
+                    .attr("stroke-width", 2)
+                    .attr("stroke-dasharray", 5);
