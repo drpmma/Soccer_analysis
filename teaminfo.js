@@ -116,10 +116,8 @@ svg_player_id = d3.select("#player_id")
 function repaint_player_svg(r) {
     if(r) {
         p = Player_pos.selectAll("circle");
-        console.log(p);
         p.remove();
         p = Player_id.selectAll("text");
-        console.log(p);
         p.remove();
     }
 
@@ -141,7 +139,8 @@ function repaint_player_svg(r) {
                 if(d.team == teamchoose && d.on_time <= time && d.off_time > time) return d.x*field_h1/100;
                 else return -7
             })
-            .attr("r", "42%");
+            .attr("r", "4%")
+            .on("click", function(d){return setplayer(d.id)});
         svg_player_id.data(jsondata)
             .enter()
             .append("text")
