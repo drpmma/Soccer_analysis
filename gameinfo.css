@@ -11,6 +11,12 @@
     color: gold;
 }
 
+.player_circle
+{
+    stroke-width: 0.5%;
+    fill: white;
+}
+
 .title
 {
     font-weight: bold;
@@ -49,7 +55,6 @@
     font-size: 300%;
     text-anchor: middle;
     color: whitesmoke;
-    stroke: gold;
     stroke-width: 0.5%;
 }
 
