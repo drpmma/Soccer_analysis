@@ -35,8 +35,14 @@
 .mark
 {
     textLength: 20;
-    text-anchor: start;
+    text-anchor: middle;
     font-family: "Consolas";
     font-size: 3px;
     color: black;
+}
+
+.avg_line
+{
+    stroke:rgb(0,0,0);
+    stroke-width:2;
 }

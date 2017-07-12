@@ -15,15 +15,15 @@ function setteam(t)
     repaint_player_svg(1);
 }
 
-d3.csv("./gameinfo.csv", function(error,csvdata){
+d3.json("./gameinfo.json", function(error,jsondata){
     if(error) console.log(error);
-    var team0 = csvdata[0].team;
-    var team1 = csvdata[1].team;
-    var score0 = csvdata[0].score;
-    var score1 = csvdata[1].score;
+    var team0 = jsondata[0].team;
+    var team1 = jsondata[1].team;
+    var score0 = jsondata[0].score;
+    var score1 = jsondata[1].score;
 
     var teamData = [{team:team0, score:score0},{team:team1, score:score1}];
-    var dateData = [{year:csvdata[0].year, month:csvdata[0].month, day:csvdata[0].day}];
+    var dateData = [{year:jsondata[0].year, month:jsondata[0].month, day:jsondata[0].day}];
     var Team = d3.select("#game_title_field")
         .append("g")
         .attr("id", "team_info");
@@ -122,10 +122,10 @@ function repaint_player_svg(r) {
         p.remove();
     }
 
-    d3.json("./playerinfo.json", function(error,csvdata){
+    d3.json("./playerinfo.json", function(error,jsondata){
         if(error) console.log(error);
-        console.log(csvdata);
-        svg_player_pos.data(csvdata)
+        console.log(jsondata);
+        svg_player_pos.data(jsondata)
             .enter()
             .append("circle")
             .attr("class", "Player_pos")
@@ -141,7 +141,7 @@ function repaint_player_svg(r) {
                 else return -7
             })
             .attr("r", 7);
-        svg_player_id.data(csvdata)
+        svg_player_id.data(jsondata)
             .enter()
             .append("text")
             .attr("class", "Player_id")
@@ -173,38 +173,39 @@ function repaint_player_info(r)
     var field2 = document.getElementById("game_info").getBoundingClientRect();
     var field_w2 = field2.width, field_h2 = field2.height;
     var svg;
-    var g1, g2;
+    var temp;
     if(r == 0)
     {
         svg = d3.select("#game_info")
             .append("svg")
             .attr("width",field_w2)
             .attr("height",field_h2);
-        d3.csv("./playerinfo.csv", function(error, csvdata){
+        d3.json("./value_info.json", function(error, jsondata){
             if(error) console.log(error);
-            console.log(csvdata);
-            svg.append("g")
+            console.log(jsondata);
+            //solid
+            svg.append("g")//title
                 .attr("id","value_title")
                 .selectAll("g")
-                .data(csvdata)
+                .data(jsondata)
                 .enter()
                 .append("text")
                 .attr("class", "title")
                 .attr("y", function(d,i){return field_h2*(0.35+0.15*i);})
                 .text(function(d){return d.title});
-            svg.append("g")
+            svg.append("g")//subtitle
                 .attr("id","value_subtitle")
                 .selectAll("g")
-                .data(csvdata)
+                .data(jsondata)
                 .enter()
                 .append("text")
                 .attr("class", "subtitle")
                 .attr("y", function(d,i){return field_h2*(0.4+0.15*i);})
                 .text(function(d){return d.subtitle});
-            svg.append("g")
+            svg.append("g")//back_rect
                 .attr("id","value_rec")
                 .selectAll("g")
-                .data(csvdata)
+                .data(jsondata)
                 .enter()
                 .append("rect")
                 .attr("x",field_w2*0.25)
@@ -212,20 +213,104 @@ function repaint_player_info(r)
                 .attr("width",field_w2*0.7)
                 .attr("height",field_h2*0.05)
                 .attr("style", "fill:rgb(200,200,255)");
-            svg.append("g")
+            svg.append("g")//limit_value
                 .attr("id","value_limit")
                 .selectAll("g")
-                .data(csvdata)
+                .data(jsondata)
                 .enter()
                 .append("text")
                 .attr("class", "mark")
                 .attr("x", field_w2*0.95)
                 .attr("y", function(d,i){return field_h2*(0.4+0.15*i);})
                 .text(function(d){return d.limit});
+            //changeable
+            svg.append("g")//current_rec
+                .attr("id","current_rec")
+                .selectAll("g")
+                .data(jsondata)
+                .enter()
+                .append("rect")
+                .attr("id",function(d,i){return "current_rec"+i;})
+                .attr("x",field_w2*0.25)
+                .attr("y", function(d,i){return field_h2*(0.31+0.15*i);})
+                .attr("width",0)
+                .attr("height",field_h2*0.03)
+                .attr("style","fill:rgb(0,0,255)");
+            svg.append("g")//current_value
+                .attr("id","current_value")
+                .selectAll("g")
+                .data(jsondata)
+                .enter()
+                .append("text")
+                .attr("id", function(d,i){return "current_value"+i;})
+                .attr("class", "mark")
+                .attr("x", field_w2*0.25)
+                .attr("y", function(d,i){return field_h2*(0.4+0.15*i);})
+                .text("0");
+            svg.append("g")//avg_line
+                .attr("id","avg_line")
+                .selectAll("g")
+                .data(jsondata)
+                .enter()
+                .append("line")
+                .attr("id", function(d,i){return "avg_line"+i;})
+                .attr("class", "avg_line")
+                .attr("x1",field_w2*0.25).attr("x2",field_w2*0.25)
+                .attr("y1", function(d,i){return field_h2*(0.3+0.15*i);}).attr("y2", function(d,i){return field_h2*(0.35+0.15*i);});
+            svg.append("g")//avg_value
+                .attr("id","avg_value")
+                .selectAll("g")
+                .data(jsondata)
+                .enter()
+                .append("text")
+                .attr("id", function(d,i){return "avg_value"+i;})
+                .attr("class", "mark")
+                .attr("x", field_w2*0.25)
+                .attr("y", function(d,i){return field_h2*(0.4+0.15*i);})
+                .text(0);
         });
     }
     else
     {
+        var currentvalue, avgvalue, currentid, currentname, currentpos;
+        d3.json("./playerinfo.json", function(error, jsondata) {
+            if (error) console.log(error);
+            for(var o in jsondata){
+                if(jsondata[o].id == player_choose && jsondata[o].team == teamchoose)
+                {
+                    currentvalue = jsondata[o].value;
+                    avgvalue = jsondata[o].avg_value;
+                    cunrrentid = jsondata[o].id;
+                    cunrrentname = jsondata[o].name;
+                    cunrrentpos = jsondata[o].position;
+                }
+            }
+        });
+        d3.json("./value_info.json", function(error, jsondata) {
+            if (error) console.log(error);
 
+            for(var o=0; o<jsondata.length; o++)
+            {
+                temp = d3.select("#current_rec"+o);
+                temp.transition()
+                     .duration(500)
+                     .style("width",(field_w2*0.7*currentvalue[o]/jsondata[o].limit).toString());
+                temp = d3.select("#current_value"+o);
+                temp.transition()
+                    .duration(500)
+                    .attr("x",(field_w2*(0.25+0.7*currentvalue[o]/jsondata[o].limit)).toString())
+                    .text(currentvalue[o]);
+                temp = d3.select("#avg_line"+o);
+                temp.transition()
+                    .duration(500)
+                    .attr("x1",(field_w2*(0.25+0.7*avgvalue[o]/jsondata[o].limit)).toString())
+                    .attr("x2",(field_w2*(0.25+0.7*avgvalue[o]/jsondata[o].limit)).toString());
+                temp = d3.select("#avg_value"+o);
+                temp.transition()
+                    .duration(500)
+                    .attr("x",(field_w2*(0.25+0.7*avgvalue[o]/jsondata[o].limit)).toString())
+                    .text(avgvalue[o]);
+            }
+        })
     }
 }
