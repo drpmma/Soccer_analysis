@@ -47,7 +47,7 @@ d3.json("./gameinfo.json", function(error,jsondata){
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("font-family", "华文行楷")
-        .attr("font-size", "30")
+        .attr("font-size", "180%")
         .attr("color","black")
         .on("click", function(d,i){return setteam(i)})
         .text(function(d){return d.team});
@@ -64,7 +64,7 @@ d3.json("./gameinfo.json", function(error,jsondata){
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("font-family", "方正舒体")
-        .attr("font-size", "40")
+        .attr("font-size", "240%")
         .attr("color","black")
         .text(function(d){return d.score});
     var date = d3.select("#date_info")
@@ -80,7 +80,7 @@ d3.json("./gameinfo.json", function(error,jsondata){
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("font-family", "华文新魏")
-        .attr("font-size", "20")
+        .attr("font-size", "120%")
         .attr("color","black")
         .text(function(d){return "date : " + d.year + "-" + d.month + "-" + d.day});
 });
@@ -141,7 +141,7 @@ function repaint_player_svg(r) {
                 if(d.team == teamchoose && d.on_time <= time && d.off_time > time) return d.x*field_h1/100;
                 else return -7
             })
-            .attr("r", 7);
+            .attr("r", "42%");
         svg_player_id.data(jsondata)
             .enter()
             .append("text")
@@ -160,7 +160,7 @@ function repaint_player_svg(r) {
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "middle")
             .attr("font-family", "Arial")
-            .attr("font-size", 5)
+            .attr("font-size", "30%")
             .attr("color","red")
             .on("click", function(d){return setplayer(d.id)})
             .text(function(d){return d.id});

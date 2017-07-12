@@ -7,61 +7,56 @@
     text-align: center;
     line-height: 70%;
     font-family: "Comic Sans MS";
-    font-size: 60px;
+    font-size: 300%;
     color: gold;
 }
 
 .title
 {
-    x: 10px;
-    textLength: 20;
     font-weight: bold;
     text-anchor: left;
     font-family: "宋体";
-    font-size: 15px;
+    font-size: 100%;
     color: black;
 }
 
 .subtitle
 {
-    x: 10px;
-    textLength: 20;
     text-anchor: start;
     font-family: "Consolas";
-    font-size: 3px;
+    font-size: 90%;
     color: black;
 }
 
 .mark
 {
-    textLength: 20;
     text-anchor: middle;
     font-family: "Consolas";
-    font-size: 3px;
+    font-size: 18%;
     color: black;
 }
 
 .avg_line
 {
     stroke:rgb(0,0,0);
-    stroke-width:2;
+    stroke-width:1%;
 }
 
 .playerinfo_id
 {
 
     font-family: "华文彩云";
-    font-size: 50px;
+    font-size: 300%;
     text-anchor: middle;
     color: whitesmoke;
     stroke: gold;
-    stroke-width: 1px;
+    stroke-width: 0.5%;
 }
 
 .playerinfo_name
 {
     font-family: "华文宋体";
-    font-size: 30px;
+    font-size: 180%;
     text-anchor: middle;
     color: black;
 }
@@ -69,7 +64,7 @@
 playerinfo_pos
 {
     font-family: "华文楷体";
-    font-size: 20px;
+    font-size: 120%;
     text-anchor: middle;
     color: darkslategrey;
 }
