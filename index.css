@@ -91,7 +91,7 @@ html, body
 .fieldRect
 {
     stroke-width: 1%;
-    fill: none;
+    fill: white;
     stroke: gray;
 }
 
@@ -105,14 +105,14 @@ html, body
 .Points
 {
     stroke-width: 0.5%;
-    fill: none;
+    fill: white;
     stroke: gray;
 }
 
 .Gate
 {
     stroke-width: 2%;
-    fill: none;
+    fill: white;
     stroke: gray;
 }
 
