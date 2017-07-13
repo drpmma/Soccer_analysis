@@ -103,16 +103,23 @@ function repaint_player_value(r)
         var currentvalue=new Array(), avgvalue=new Array();
         d3.json("./playerinfo.json", function(error, jsondata) {
             if (error) console.log(error);
-            for(var o=0; o<jsondata.length; o++){
-                if(jsondata[o].team == teamchoose && jsondata[o].id == player_choose)
+            if(player_choose == -1)
+            {
+                for(var o=0; o<jsondata[0].value.length; o++)
                 {
-                    currentid = jsondata[o].id;
-                    currentname = jsondata[o].name;
-                    currentpos = jsondata[o].position;
-                    currentvalue = jsondata[o].value;
-                    avgvalue = jsondata[o].avg_value;
+                    currentvalue.push(0);
+                    avgvalue.push(0);
                 }
             }
+            else
+                for(var o=0; o<jsondata.length; o++)
+                {
+                    if (jsondata[o].team == teamchoose && jsondata[o].id == player_choose) {
+                        currentvalue = jsondata[o].value;
+                        avgvalue = jsondata[o].avg_value;
+                    }
+                }
+
             // console.log("id: " + currentid);
             // console.log("name: " + currentname);
             // console.log("pos: " + currentpos);

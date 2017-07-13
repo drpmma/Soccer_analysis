@@ -39,6 +39,17 @@ d3.json("./gameinfo.json", function(error,jsondata){
     var Date = d3.select("#game_title_field")
         .append("g")
         .attr("id", "date_info");
+    var svg_team1 = d3.select("#team_info")
+        .selectAll("g")
+        .data(teamData)
+        .enter()
+        .append("rect")
+        .attr("x", function(d,i){return i*field_w0*0.6})
+        .attr("y", 0.05*field_h0)
+        .attr("width",field_w0*0.4)
+        .attr("height",field_h0*0.7)
+        .attr("fill","whitesmoke")
+        .on("click", function(d,i){return setteam(i);});
     var svg_team = d3.select("#team_info")
         .selectAll("g")
         .data(teamData)
@@ -52,10 +63,11 @@ d3.json("./gameinfo.json", function(error,jsondata){
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "middle")
         .attr("font-family", "华文行楷")
-        .attr("font-size", "180%")
+        .attr("font-size", 0.3*field_h0)
         .attr("color","black")
         .on("click", function(d,i){return setteam(i)})
         .text(function(d){return d.team});
+
     var svg_score = d3.select("#score_info")
         .selectAll("g")
         .data(teamData)
@@ -87,7 +99,7 @@ d3.json("./gameinfo.json", function(error,jsondata){
         .attr("font-family", "华文新魏")
         .attr("font-size", "120%")
         .attr("color","black")
-        .text(function(d){return "date : " + d.year + "-" + d.month + "-" + d.day});
+        .text(function(d){return "日期 : " + d.year + "-" + d.month + "-" + d.day});
 });
 
 

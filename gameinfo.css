@@ -1,9 +1,9 @@
 #span1{
     position: absolute;/*绝对定位*/
-    width: 100%;
+    width: 20%;
     height: 70%;
     bottom: 0;/*离底下0像素*/
-    left: 0;
+    left: 40%;
     text-align: center;
     line-height: 70%;
     font-family: "Comic Sans MS";
