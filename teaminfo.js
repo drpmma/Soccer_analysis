@@ -159,8 +159,8 @@ function repaint_player_svg(r) {
                 })
                 .attr("text-anchor", "middle")
                 .attr("dominant-baseline", "middle")
-                .attr("font-family", "Arial")
-                .attr("font-size", "30%")
+                .attr("font-family", "Verdana")
+                .attr("font-size", "90%")
                 .attr("color", "red")
                 .on("click", function (d) {
                     return setplayer(d.id)

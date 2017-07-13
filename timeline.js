@@ -132,7 +132,7 @@ var cirlce1=svg.append('circle')
     })
     .on('mouseout', function(){
 		d3.select(this)
-    	.attr("r","0.8%") 
+    	.attr("r","0.8%")
     	/* Act on the event */
     })
 var cirlce2=svg.append('circle')
@@ -146,7 +146,7 @@ var cirlce2=svg.append('circle')
     })
     .on('mouseout', function(){
 		d3.select(this)
-    	.attr("r","0.8%") 
+    	.attr("r","0.8%")
     	/* Act on the event */
     })
 var cirlce3=svg.append('circle')
@@ -160,7 +160,7 @@ var cirlce3=svg.append('circle')
     })
     .on('mouseout', function(){
 		d3.select(this)
-    	.attr("r","0.8%") 
+    	.attr("r","0.8%")
     	/* Act on the event */
     })
 var cirlce4=svg.append('circle')
@@ -174,7 +174,7 @@ var cirlce4=svg.append('circle')
     })
     .on('mouseout', function(){
 		d3.select(this)
-    	.attr("r","0.8%") 
+    	.attr("r","0.8%")
     	/* Act on the event */
     })
 var cirlce5=svg.append('circle')
@@ -188,7 +188,7 @@ var cirlce5=svg.append('circle')
     })
     .on('mouseout', function(){
 		d3.select(this)
-    	.attr("r","0.8%") 
+    	.attr("r","0.8%")
     	/* Act on the event */
     })
 var cirlce6=svg.append('circle')
@@ -218,7 +218,7 @@ function court(){
 			.on('mouseenter', function() {
 				d3.select(this)
 					.append('rect')
-					.attr('id',"a")
+					.attr('id',"selected")
 					.attr('x',"0%")
 					.attr('y',"0%" )
 					.attr('width',"100%")
@@ -228,7 +228,7 @@ function court(){
 				/* Act on the event */
 			})
 			.on('mouseleave', function() {
-				d3.select(this).select("#a").remove()
+				d3.select(this).select("#selected").remove()
 				/* Act on the event */
 			})
 		svg2.append('rect')
