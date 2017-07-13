@@ -83,6 +83,7 @@ d3.json("./gameinfo.json", function(error,jsondata){
         .attr("font-family", "方正舒体")
         .attr("font-size", "240%")
         .attr("color","black")
+        .on("click", function(d,i){return setteam(i)})
         .text(function(d){return d.score});
     var date = d3.select("#date_info")
         .selectAll("g")
