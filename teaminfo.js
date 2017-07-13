@@ -13,7 +13,9 @@ repaint_player_svg(0);
 function setteam(t)
 {
     teamchoose = t;
+    player_choose = -1;
     repaint_player_svg(1);
+    repaint_player_info(1);
 }
 
 d3.json("./gameinfo.json", function(error,jsondata){
@@ -212,13 +214,13 @@ function repaint_player_svg(r) {
 
 function repaint_player_info(r)
 {
-    var field2 = document.getElementById("game_info").getBoundingClientRect();
+    var field2 = document.getElementById("player_value").getBoundingClientRect();
     var field_w2 = field2.width, field_h2 = field2.height;
     var svg;
     var temp;
     if(r == 0)
     {
-        svg = d3.select("#game_info")
+        svg = d3.select("#player_value")
             .append("svg")
             .attr("width",field_w2)
             .attr("height",field_h2);
@@ -310,8 +312,7 @@ function repaint_player_info(r)
                 .attr("x", field_w2*0.25)
                 .attr("y", function(d,i){return field_h2*(0.4+0.15*i);})
                 .text(0);
-            temp = svg.append("g")
-                .attr("id","player_info");
+            temp = svg.append("g");
             temp.append("text")
                 .attr("id","current_id")
                 .attr("class","playerinfo_id")

@@ -24,16 +24,25 @@ html, body
     background-color: none;
 }
 
-#game_info
+#player_value
 {
     position: absolute;
     left:15%;
-    bottom: 32.5%;
+    bottom: 0.5%;
     width: 15%;
-    height: 40%;
+    height: 57%;
     background-color: whitesmoke;
-
 }
+
+/*#player_info*/
+/*{*/
+    /*position: absolute;*/
+    /*left:0.5%;*/
+    /*bottom: 0.5%;*/
+    /*width: 15%;*/
+    /*height: 57%;*/
+    /*background-color: whitesmoke;*/
+/*}*/
 
 #field
 {
@@ -45,19 +54,19 @@ html, body
     background-color: white;
 }
 
-#player_info
+#player_pos
 {
     position:absolute;
-    bottom: 32.5%;
+    bottom: 17.5%;
     width: 15%;
     height: 40%;
 }
 
 #game_title {
     position: absolute;
-    bottom: 2.5%;
+    bottom: 58%;
     width: 30%;
-    height: 30%;
+    height: 15%;
     background-color: whitesmoke;
 }
 
