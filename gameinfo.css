@@ -26,14 +26,6 @@
     color: black;
 }
 
-.subtitle
-{
-    text-anchor: start;
-    font-family: "Consolas";
-    font-size: 90%;
-    color: black;
-}
-
 .mark
 {
     text-anchor: middle;
@@ -50,7 +42,6 @@
 
 .playerinfo_id
 {
-
     font-family: "华文彩云";
     font-size: 300%;
     text-anchor: middle;
@@ -60,16 +51,16 @@
 
 .playerinfo_name
 {
-    font-family: "华文宋体";
-    font-size: 180%;
+    font-family: "华文行楷";
+    font-size: 300%;
     text-anchor: middle;
     color: black;
 }
 
-playerinfo_pos
+.playerinfo_pos
 {
     font-family: "华文楷体";
-    font-size: 120%;
+    font-size: 200%;
     text-anchor: middle;
     color: darkslategrey;
 }
