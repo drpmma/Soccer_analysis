@@ -14,7 +14,6 @@ function svg_scale(data, id) {
         return -1;
 }
 
-
 function path() {
     var data = phase_0[0].node;
     var path_d = phase_0[0].path;
@@ -45,22 +44,8 @@ function path() {
                             return "translate" + "(" + d.coor.x / 100 * field_w
                                     + "," + d.coor.y / 70 * field_h + ")";
                         })
-                        .on("click", function(d, i) {
+                        .on("click", function(d) {
                             setplayer(d.player);
-                            d3.selectAll(".node")
-                            .select("circle")
-                            .attr("stroke", function(d) {
-                                if(d.player == player_choose)
-                                    return "red";
-                                else
-                                    return "black";
-                            })
-                            .attr("stroke-width", function(d) {
-                                if(d.player == player_choose)
-                                    return 3;
-                                else
-                                    return 1;
-                            })
                         });
     gnode.append("circle")
         .transition()
