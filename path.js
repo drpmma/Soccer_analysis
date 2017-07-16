@@ -1,7 +1,7 @@
 /**
  * Created by Zhouxiang on 2017/7/6.
  */
-
+var player_select;
 var field = document.getElementById("svg_field").getBoundingClientRect();
 var field_w = field.width, field_h = field.height;
 function svg_scale(data, id) {
@@ -43,7 +43,9 @@ function path(num) {
                             return "translate" + "(" + d.coor.x / 100 * field_w
                                     + "," + d.coor.y / 70 * field_h + ")";
                         })
-                        ;
+                        .on("click", function(d) {
+                            setplayer(d.player);
+                        });
     gnode.append("circle")
         .transition()
         .duration(100)
