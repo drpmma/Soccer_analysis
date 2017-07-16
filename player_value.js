@@ -38,6 +38,8 @@ function repaint_player_value(r)
                 .append("rect")
                 .attr("x",field_w*0.2)
                 .attr("y", function(d,i){return field_h*(0.01+0.08*i);})
+                .attr("rx",field_h*0.01)
+                .attr("ry",field_h*0.01)
                 .attr("width",field_w*0.7)
                 .attr("height",field_h*0.05)
                 .attr("style", "fill:rgb(200,200,255)");

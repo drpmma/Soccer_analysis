@@ -30,14 +30,14 @@
 {
     text-anchor: middle;
     font-family: "Consolas";
-    font-size: 18%;
+    font-size: 90%;
     color: black;
 }
 
 .avg_line
 {
     stroke:rgb(0,0,0);
-    stroke-width:1%;
+    stroke-width:0.7%;
 }
 
 .playerinfo_id

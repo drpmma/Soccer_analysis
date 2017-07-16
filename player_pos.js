@@ -71,8 +71,8 @@ function repaint_player_svg(r) {
                 })
                 .attr("r", "4%")
                 .attr("style", function (d) {
-                    if (d.id == player_choose) return "stroke: red;";
-                    else return "stroke: grey";
+                    if (d.id == player_choose) return "stroke: red;stroke-width: 3;";
+                    else return "stroke: grey;stroke-width: 1;";
                 })
                 .on("click", function (d) {
                     return setplayer(d.id)
@@ -124,8 +124,8 @@ function repaint_player_svg(r) {
                         else return -7
                     })
                     .attr("style", function (d) {
-                        if (d.id == player_choose) return "stroke: red;";
-                        else return "stroke: grey";
+                        if (d.id == player_choose) return "stroke: red;stroke-width: 3;";
+                        else return "stroke: grey;stroke-width: 1;";
                     });
                 temp=d3.select("#Player_pos"+i);
                 temp.transition()

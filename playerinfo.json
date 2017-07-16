@@ -8,7 +8,7 @@
   {"team":"0","id":"77","number":"7","name":"小王","position":"后卫","on_time":"0","off_time":"5700","x":"25","y":"15","value":[4,1,3],"avg_value":[1,2,1]},
   {"team":"0","id":"88","number":"8","name":"小冯","position":"后卫","on_time":"0","off_time":"3000","x":"25","y":"35","value":[2,4,2],"avg_value":[2,1,0]},
   {"team":"0","id":"99","number":"9","name":"小陈","position":"后卫","on_time":"0","off_time":"5700","x":"25","y":"55","value":[4,2,0],"avg_value":[3,0,3]},
-  {"team":"0","id":"1","number":"10","name":"小诸","position":"门将","on_time":"0","off_time":"5700","x":"10","y":"35","value":[3,4,3],"avg_value":[4,0,2]},
+  {"team":"0","id":"18","number":"10","name":"小诸","position":"门将","on_time":"0","off_time":"5700","x":"10","y":"35","value":[3,4,3],"avg_value":[4,0,2]},
   {"team":"0","id":"12","number":"11","name":"小卫","position":"前锋","on_time":"3000","off_time":"5700","x":"75","y":"55","value":[4,3,1],"avg_value":[3,1,0]},
   {"team":"0","id":"13","number":"12","name":"小蒋","position":"后卫","on_time":"3000","off_time":"5700","x":"25","y":"35","value":[1,1,2],"avg_value":[2,2,0]},
   {"team":"1","id":"0","number":"0","name":"小沈","position":"前锋","on_time":"0","off_time":"5700","x":"25","y":"15","value":[2,2,1],"avg_value":[1,3,3]},
