@@ -4,7 +4,6 @@
 var player_select;
 var field = document.getElementById("svg_field").getBoundingClientRect();
 var field_w = field.width, field_h = field.height;
-
 function svg_scale(data, id) {
     if(id == 0)     // width
         return data / 100 * field_w;
@@ -14,9 +13,9 @@ function svg_scale(data, id) {
         return -1;
 }
 
-function path() {
-    var data = phase_0[0].node;
-    var path_d = phase_0[0].path;
+function path(num) {
+    var data = phase_0[num].node;
+    var path_d = phase_0[num].path;
 
     //var data = [{x:50, y:50}, {x:20, y:30}, {x:10, y:60}];
     //var path_d = [{target:data[0], source:data[1]}, {target:data[1], source:data[2]}];
@@ -104,4 +103,10 @@ function path() {
                             else if(d.type == "k" || d.type == "b")
                                 return 0;
                         });
+}
+
+function remove_path()
+{
+    d3.select("#path_container").remove();
+    d3.select("#node_container").remove();
 }
