@@ -14,6 +14,12 @@ repaint_player_svg(0);
 
 function setteam(t)
 {
+    if(teamchoose!=t)
+    {
+        teamchoose=t;
+        remove_court();
+        drawcourt();
+    }
     teamchoose = t;
     player_choose = -1;
     repaint_player_svg(1);

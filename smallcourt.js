@@ -1,6 +1,10 @@
 function remove_node(num){
 	var name="#g_point"+num.toString();
-	d3.select(name).transition().duration(10).remove()
+	d3.select(name).transition().duration().remove()
+}
+function remove_court(){
+	d3.select("#time_line").select("#timeline_svg").selectAll("#g_smallcourt").transition().duration(0).remove();
+	remove_path();
 }
 function add_node(data,num)
 {
@@ -24,14 +28,16 @@ function add_node(data,num)
 			.attr('fill',"black" )
 }
 function court(){
-	var total=phase_0.length
-	console.log(total)
+	var total=teamchoose?phase_1.length:phase_0.length
 	var svg=d3.select("#time_line").select("#timeline_svg")
 	var g=svg.selectAll("g")
-			.data(phase_0)
+			.data(function(){
+				if(teamchoose) return phase_1;
+				else return phase_0
+			})
 			.enter().append('g')
 			.attr("id",function(d,i){
-				return "g"
+				return "g_smallcourt"
 			})
 			.on('mouseenter', function(d,i) {
 				d3.select(this).select(".abc")
