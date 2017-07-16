@@ -14,6 +14,7 @@ function setplayer(t)
 {
     console.log(t);
     player_choose = t;
+    player_in_field();
     repaint_player_svg(1);
     repaint_player_value(1);
     repaint_player_info(1);
@@ -29,6 +30,25 @@ svg_player_pos = d3.select("#playerpos")
     .selectAll("g");
 svg_player_id = d3.select("#player_id")
     .selectAll("g");
+
+function player_in_field()
+{
+    d3.selectAll(".node")
+        .select("circle")
+        .attr("stroke", function(d) {
+            if(d.player == player_choose)
+                return "red";
+            else
+                return "black";
+        })
+        .attr("stroke-width", function(d) {
+            if(d.player == player_choose)
+                return 3;
+            else
+                return 1;
+        })
+}
+
 
 function repaint_player_svg(r) {
     if(r == 0) {
