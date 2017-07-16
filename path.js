@@ -14,8 +14,19 @@ function svg_scale(data, id) {
 }
 
 function path(num) {
-    var data = phase_0[num].node;
-    var path_d = phase_0[num].path;
+    var data;
+    var path_d;
+    if(teamchoose == 0)
+    {
+        data = phase_0[num].node;
+        path_d = phase_0[num].path;
+    }
+    else if(teamchoose == 1)
+    {
+        data = phase_1[num].node;
+        path_d = phase_1[num].path;
+    }
+
 
     //var data = [{x:50, y:50}, {x:20, y:30}, {x:10, y:60}];
     //var path_d = [{target:data[0], source:data[1]}, {target:data[1], source:data[2]}];
