@@ -3,7 +3,7 @@ function remove_node(num){
 	d3.select(name).transition().duration().remove()
 }
 function remove_court(){
-	d3.select("#time_line").select("#timeline_svg").selectAll("#g_smallcourt").transition().duration(0).remove();
+	d3.select("#time_line").select("#timeline_svg").selectAll("#g_smallcourt").remove();
 	remove_path();
 }
 function add_node(data,num)

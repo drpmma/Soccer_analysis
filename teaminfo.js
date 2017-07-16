@@ -18,7 +18,7 @@ function setteam(t)
     {
         teamchoose=t;
         remove_court();
-        drawcourt();
+        court();
     }
     teamchoose = t;
     player_choose = -1;
