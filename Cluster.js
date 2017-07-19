@@ -7,6 +7,7 @@ var current_phase;
 var cluster_chain = new Array();
 var cluster_type = 0;
 var prex, prey;
+
 function remove_cluster()
 {
     d3.select("#cluster").remove();
@@ -77,25 +78,69 @@ function normal_cluster(phase, start, end, num) {
     minx = minx / 100 * field_w; maxx = maxx / 100 * field_w;
     miny = miny / 70 * field_h; maxy = maxy / 70 * field_h;
 
+    // function ParseTransform(str) {
+    //     var array = str.split(/[,()]/, 3);
+    //     x = parseFloat(array[1]);
+    //     y = parseFloat(array[2]);
+    //     return new Coor(x, y);
+    // }
+
+    // function MoveTo(num, i) {
+    //     var Coor_rect = ParseTransform(d3.select("#cluster" + num).select("rect").attr("transform"));
+    //     var Coor_node = ParseTransform(d3.select("#Node" + cluster_chain[num][i]).attr("transform"));
+    //     var dx = Coor_node.x - Coor_rect.x;
+    //     var dy = Coor_node.y - Coor_rect.y;
+    //     return new Coor(dx, dy);
+    // }
+
+    var drag = d3.drag()
+        .on("drag", dragmove);
+    function dragmove(d)
+    {
+        d3.select(this)
+            .attr("transform", function(d) {
+                d.x = d3.event.x;
+                d.y = d3.event.y;
+                return "translate" + "(" + d3.event.x
+                    + "," + d3.event.y + ")";
+            });
+        d3.select("#Node" + cluster_chain[num][0])
+            .attr("transform", function() {
+                return "translate" + "(" + (d3.event.x)
+                    + "," + (d3.event.y) + ")";
+            })
+    }
+
+    var times = 0.3;
     var svg = d3.select("#cluster")
         .append("g")
         .attr("id", "cluster" + num)
+        .selectAll("rect")
+        .data([{x:(maxx+minx-(maxx-minx)*times)/2-15, y:(maxy+miny-(maxy-miny)*times)/2-15}])
+        .enter()
         .append("rect")
-        .attr("x",(minx+maxx)/2)
-        .attr("y",(miny+maxy)/2)
+        .attr("transform", function(d) {
+            return "translate" + "(" + d.x
+                + "," + d.y + ")";
+        })
+        // .attr("x",(minx+maxx)/2)
+        // .attr("y",(miny+maxy)/2)
         .attr("width","0")
         .attr("height","0")
         .attr("fill","white")
-        .attr("style","stroke:black; stroke-width:0.5%");
-
+        .attr("style","stroke:black; stroke-width:0.5%")
+        .call(drag);
     switch (cluster_type){
         case 0://Node-link
         {
-            var times = 0.3;
             svg.transition()
                 .duration(cluster_duration)
-                .attr("x",function(){return (maxx+minx-(maxx-minx)*times)/2-15;})
-                .attr("y",function(){return (maxy+miny-(maxy-miny)*times)/2-15;})
+                // .attr("x",function(){return (maxx+minx-(maxx-minx)*times)/2-15;})
+                // .attr("y",function(){return (maxy+miny-(maxy-miny)*times)/2-15;})
+                // .attr("transform", function() {
+                //     return "translate" + "(" + ((maxx+minx-(maxx-minx)*times)/2-15).toString() +
+                //         "," + ((maxy+miny-(maxy-miny)*times)/2-15).toString() + ")";
+                // })
                 .attr("width",function(){return (maxx-minx)*times+30;})
                 .attr("height",function(){return (maxy-miny)*times+30;});
             break;
