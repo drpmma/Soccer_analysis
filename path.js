@@ -20,11 +20,13 @@ function path(num) {
     {
         data = phase_0[num].node;
         path_d = phase_0[num].path;
+        current_phase = phase_0[num];
     }
     else if(teamchoose == 1)
     {
         data = phase_1[num].node;
         path_d = phase_1[num].path;
+        current_phase = phase_1[num];
     }
 
 
@@ -48,7 +50,7 @@ function path(num) {
                         .append("g")
                         .attr("class", "node")
                         .attr("id", function (d, i) {
-                            return i;
+                            return "Node"+i;
                         })
                         .attr("transform", function(d){
                             return "translate" + "(" + d.coor.x / 100 * field_w
@@ -89,7 +91,7 @@ function path(num) {
                         .append("g")
                         .attr("class", "path")
                         .attr("id", function (d, i) {
-                            return i;
+                            return "Path"+i;
                         })
                         .append("path")
                         .transition()
@@ -97,9 +99,9 @@ function path(num) {
                         .delay(function (d, i) {
                             return 100 + (i * 100);
                         })
-                        .attr("d", function (d) {
-                            return "M" + svg_scale(d.source.x, 0) + " " + svg_scale(d.source.y, 1)
-                                + " L " + svg_scale(d.target.x, 0) + " " + svg_scale(d.target.y, 1);
+                        .attr("d", function (d,i) {
+                            return "M "+svg_scale(d.source.x, 0)+" "+svg_scale(d.source.y, 1)+
+                                " L "+svg_scale(d.target.x, 0)+" "+svg_scale(d.target.y, 1);
                         })
                         .attr("stroke", function(d){
                             if(d.type == "s")

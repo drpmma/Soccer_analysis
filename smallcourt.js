@@ -65,6 +65,7 @@ function court(){
 			})
 			.on('click',function(d,i)
 			{
+                remove_cluster();
 				remove_path();
 				path(i);
 				//remove_node(i)

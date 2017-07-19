@@ -22,6 +22,7 @@ function setteam(t)
     }
     teamchoose = t;
     player_choose = -1;
+    remove_cluster();
     repaint_player_svg(1);
     repaint_player_value(1);
     repaint_player_info(1);
