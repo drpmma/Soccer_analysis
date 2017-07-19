@@ -4,6 +4,7 @@
 var cluster_minLimit = 2;
 var cluster_duration = 200;
 var current_phase;
+var cluster_chain = new Array();
 var cluster_type = 0;
 var prex, prey;
 function remove_cluster()
@@ -43,6 +44,7 @@ function clusterize(phase)
                 else prex = prey = -1;
             }
         }
+    console.log(cluster_chain);
 }
 
 function shoot_cluster(phase, start, end)
@@ -52,6 +54,10 @@ function shoot_cluster(phase, start, end)
 }
 
 function normal_cluster(phase, start, end, num) {
+    var data = new Array();
+    data.push(start);data.push(end);
+    cluster_chain.push(data);
+
     var minx, maxx, miny, maxy;
     for (var i = start; i <= end; i++) {
         if (i == start) {
