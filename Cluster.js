@@ -14,8 +14,12 @@ function remove_cluster()
     prex = -1; prey = -1;
 }
 
-function clusterize(phase)
+function clusterize(phase,type,du)
 {
+    console.log(type, du);
+    cluster_type = (+type);
+    cluster_duration = (+du);
+
     var state = 0;
     var start, end;
     var num=0;

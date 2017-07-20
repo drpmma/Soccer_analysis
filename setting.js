@@ -17,6 +17,7 @@ set1.append("text")
     .text("聚团方式");
 set1.append("br");
 var sel1 = set1.append("select")
+    .attr("id","select1")
     .attr("style","width:90%");
 sel1.append("option")
     .attr("value","0")
@@ -40,6 +41,7 @@ set1.append("text")
     .text("聚团速度");
 set1.append("br");
 var sel2 = set1.append("select")
+    .attr("id","select2")
     .attr("style","width:90%");
 for(var i=0; i<=19; i++)
     sel2.append("option")
@@ -50,5 +52,9 @@ set1.append("br");
 set1.append("button")
     .attr("type","button")
     .text("聚团")
-    .on("click",function(){return clusterize(current_phase)});
+    .on("click",function(){
+        var select1 = document.getElementById("select1");
+        var select2 = document.getElementById("select2");
+        return clusterize(current_phase, select1.options[select1.selectedIndex].value, select2.options[select2.selectedIndex].value)
+    });
 
