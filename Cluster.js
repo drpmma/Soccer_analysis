@@ -110,13 +110,33 @@ function normal_cluster(phase, start, end, num) {
                 return "translate" + "(" + d3.event.x
                     + "," + d3.event.y + ")";
             });
-        for(var i = 0; i <= cluster_chain[num].length; ++i) {
+        for(var i = 0; i < cluster_chain[num].length; ++i) {
             var id = cluster_chain[num][i].id;
             d3.select("#Node" + id.toString())
                 .attr("transform", function () {
                     return "translate" + "(" + (d3.event.x + cluster_chain[num][i].x)
                         + "," + (d3.event.y + cluster_chain[num][i].y) + ")";
                 });
+            if(id != 0)
+            {
+                path = d3.select("#Path" + (id - 1).toString())
+                    .select("path");
+                var d_array = path.attr("d").split(" ");
+                path.attr("d", function () {
+                    return d_array[0] + " " + d_array[1] + " " + d_array[2] + " "
+                        + d_array[3] + " " + (d3.event.x + cluster_chain[num][i].x) + " " + (d3.event.y + cluster_chain[num][i].y);
+                })
+            }
+            if(id != phase.node.length - 1)
+            {
+                path = d3.select("#Path" + (id).toString())
+                    .select("path");
+                var d_array = path.attr("d").split(" ");
+                path.attr("d", function () {
+                    return d_array[0] + " " + (d3.event.x + cluster_chain[num][i].x) + " " + (d3.event.y + cluster_chain[num][i].y)
+                            + " " +  d_array[3] + " " + d_array[4] + " " + d_array[5];
+                })
+            }
         }
     }
 
