@@ -25,7 +25,8 @@ Player_pos = d3.select("#player_svg_field")
     .attr("class", "player_circle");
 Player_id = d3.select("#player_svg_field")
     .append("g")
-    .attr("id", "player_id");
+    .attr("id", "player_id")
+    .on("mouseover", function(){d3.select(this).style("cursor", "pointer")});
 svg_player_pos = d3.select("#playerpos")
     .selectAll("g");
 svg_player_id = d3.select("#player_id")

@@ -58,7 +58,8 @@ function path(num) {
                         })
                         .on("click", function(d) {
                             setplayer(d.player);
-                        });
+                        })
+                        .on("mouseover", function(){d3.select(this).style("cursor", "pointer")});
     gnode.append("circle")
         .transition()
         .duration(100)

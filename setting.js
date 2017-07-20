@@ -10,3 +10,4 @@ set1.append("button")
     .attr("type","button")
     .text("聚团")
     .on("click",function(){return clusterize(current_phase)});
+

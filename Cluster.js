@@ -45,7 +45,8 @@ function clusterize(phase)
                 else prex = prey = -1;
             }
         }
-    console.log(cluster_chain);
+
+    //console.log(cluster_chain);
 }
 
 function shoot_cluster(phase, start, end)
@@ -55,11 +56,16 @@ function shoot_cluster(phase, start, end)
 }
 
 function normal_cluster(phase, start, end, num) {
-    var data = new Array();
-    data.push(start);data.push(end);
-    cluster_chain.push(data);
+    // var data = new Array();
+    // data.push(start);data.push(end);
+    // cluster_chain.push(data);
 
     var minx, maxx, miny, maxy;
+    // minx = d3.min(phase.node, function (d) {return d.coor.x});
+    // maxx = d3.max(phase.node, function (d) {return d.coor.x});
+    // miny = d3.min(phase.node, function (d) {return d.coor.y});
+    // maxy = d3.max(phase.node, function (d) {return d.coor.y});
+
     for (var i = start; i <= end; i++) {
         if (i == start) {
             minx = phase.node[i].coor.x;
@@ -84,10 +90,11 @@ function normal_cluster(phase, start, end, num) {
     //     y = parseFloat(array[2]);
     //     return new Coor(x, y);
     // }
-
+    //
     // function MoveTo(num, i) {
     //     var Coor_rect = ParseTransform(d3.select("#cluster" + num).select("rect").attr("transform"));
-    //     var Coor_node = ParseTransform(d3.select("#Node" + cluster_chain[num][i]).attr("transform"));
+    //     var Coor_node = ParseTransform(d3.select("#Node" + i).attr("transform"));
+    //     console.log(Coor_rect, Coor_node)
     //     var dx = Coor_node.x - Coor_rect.x;
     //     var dy = Coor_node.y - Coor_rect.y;
     //     return new Coor(dx, dy);
@@ -104,11 +111,11 @@ function normal_cluster(phase, start, end, num) {
                 return "translate" + "(" + d3.event.x
                     + "," + d3.event.y + ")";
             });
-        d3.select("#Node" + cluster_chain[num][0])
-            .attr("transform", function() {
-                return "translate" + "(" + (d3.event.x)
-                    + "," + (d3.event.y) + ")";
-            })
+        // d3.select("#Node" + cluster_chain[num][0])
+        //     .attr("transform", function() {
+        //         return "translate" + "(" + (d3.event.x)
+        //             + "," + (d3.event.y) + ")";
+        //     });
     }
 
     var times = 0.3;
@@ -129,7 +136,9 @@ function normal_cluster(phase, start, end, num) {
         .attr("height","0")
         .attr("fill","white")
         .attr("style","stroke:black; stroke-width:0.5%")
+        .on("mouseover", function(){d3.select(this).style("cursor", "move")})
         .call(drag);
+
     switch (cluster_type){
         case 0://Node-link
         {
@@ -156,6 +165,16 @@ function normal_cluster(phase, start, end, num) {
     }
 
     for(i = start; i <= end; i++) transform(i);
+
+    for(var i = start; i <= end; ++i)
+    {
+        console.log(i);
+        var coor_temp = MoveTo(num, i);
+        console.log(coor_temp);
+        cluster_chain.push({i:i, dx:coor_temp.x, dy:coor_temp.y});
+        console.log(cluster_chain);
+    }
+
 
     function transform(now) {
         var x = phase.node[now].coor.x / 100 * field_w, y = phase.node[now].coor.y / 70 * field_h;
