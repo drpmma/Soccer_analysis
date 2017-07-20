@@ -57,7 +57,6 @@ function shoot_cluster(phase, start, end)
 
 function normal_cluster(phase, start, end, num) {
     var data = new Array();
-    data.push(start);data.push(end);
 
     var rectx, recty;
     var minx, maxx, miny, maxy;
@@ -111,11 +110,14 @@ function normal_cluster(phase, start, end, num) {
                 return "translate" + "(" + d3.event.x
                     + "," + d3.event.y + ")";
             });
-        // d3.select("#Node" + cluster_chain[num][0])
-        //     .attr("transform", function() {
-        //         return "translate" + "(" + (d3.event.x)
-        //             + "," + (d3.event.y) + ")";
-        //     });
+        for(var i = 0; i <= cluster_chain[num].length; ++i) {
+            var id = cluster_chain[num][i].id;
+            d3.select("#Node" + id.toString())
+                .attr("transform", function () {
+                    return "translate" + "(" + (d3.event.x + cluster_chain[num][i].x)
+                        + "," + (d3.event.y + cluster_chain[num][i].y) + ")";
+                });
+        }
     }
 
     var times = 0.3;
@@ -167,14 +169,14 @@ function normal_cluster(phase, start, end, num) {
 
     for(i = start; i <= end; i++) transform(i);
 
-    for(var i = start; i <= end; ++i)
-    {
-        console.log(i);
-        var coor_temp = MoveTo(num, i);
-        console.log(coor_temp);
-        cluster_chain.push({i:i, dx:coor_temp.x, dy:coor_temp.y});
-        console.log(cluster_chain);
-    }
+    // for(var i = start; i <= end; ++i)
+    // {
+    //     console.log(i);
+    //     var coor_temp = MoveTo(num, i);
+    //     console.log(coor_temp);
+    //     cluster_chain.push({i:i, dx:coor_temp.x, dy:coor_temp.y});
+    //     console.log(cluster_chain);
+    // }
 
 
     function transform(now) {
@@ -186,9 +188,9 @@ function normal_cluster(phase, start, end, num) {
                 var Node = d3.select("#Node" + now);
                 var changex = ((x - (maxx+minx)/2)*times + (maxx+minx)/2).toString(),
                     changey = ((y - (maxy+miny)/2)*times + (maxy+miny)/2).toString();
-                var coor = new Array();
-                coor.push(changex - rectx);coor.push(changey - recty);
-                data.push(coor);
+                var node_info = {id:now, x:changex - rectx, y:changey - recty};
+                data.push(node_info);
+                console.log(data);
 
                 Node.transition()
                     .duration(cluster_duration)
