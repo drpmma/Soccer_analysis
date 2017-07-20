@@ -56,10 +56,10 @@ function shoot_cluster(phase, start, end)
 }
 
 function normal_cluster(phase, start, end, num) {
-    // var data = new Array();
-    // data.push(start);data.push(end);
-    // cluster_chain.push(data);
+    var data = new Array();
+    data.push(start);data.push(end);
 
+    var rectx, recty;
     var minx, maxx, miny, maxy;
     // minx = d3.min(phase.node, function (d) {return d.coor.x});
     // maxx = d3.max(phase.node, function (d) {return d.coor.x});
@@ -152,6 +152,7 @@ function normal_cluster(phase, start, end, num) {
                 // })
                 .attr("width",function(){return (maxx-minx)*times+30;})
                 .attr("height",function(){return (maxy-miny)*times+30;});
+            rectx = (maxx+minx-(maxx-minx)*times)/2-15; recty = (maxy+miny-(maxy-miny)*times)/2-15;
             break;
         }
         case 1://Node-link-all
@@ -185,6 +186,9 @@ function normal_cluster(phase, start, end, num) {
                 var Node = d3.select("#Node" + now);
                 var changex = ((x - (maxx+minx)/2)*times + (maxx+minx)/2).toString(),
                     changey = ((y - (maxy+miny)/2)*times + (maxy+miny)/2).toString();
+                var coor = new Array();
+                coor.push(changex - rectx);coor.push(changey - recty);
+                data.push(coor);
 
                 Node.transition()
                     .duration(cluster_duration)
@@ -252,4 +256,5 @@ function normal_cluster(phase, start, end, num) {
                 break;
         }
     }
+    cluster_chain.push(data);
 }
