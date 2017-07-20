@@ -11,6 +11,7 @@ var prex, prey;
 function remove_cluster()
 {
     d3.select("#cluster").remove();
+    cluster_chain.splice(0,cluster_chain.length);
     prex = -1; prey = -1;
 }
 
@@ -60,6 +61,8 @@ function shoot_cluster(phase, start, end)
 }
 
 function normal_cluster(phase, start, end, num) {
+    console.log("normal_cluster:",start,end,num);
+
     var data = new Array();
 
     var rectx, recty;
@@ -214,7 +217,7 @@ function normal_cluster(phase, start, end, num) {
                     changey = ((y - (maxy+miny)/2)*times + (maxy+miny)/2).toString();
                 var node_info = {id:now, x:changex - rectx, y:changey - recty};
                 data.push(node_info);
-                console.log(data);
+                console.log("data:",data);
 
                 Node.transition()
                     .duration(cluster_duration)
@@ -259,7 +262,6 @@ function normal_cluster(phase, start, end, num) {
                         })
                         .attr("stroke",function(){if(now>start&&now<=end) return "rgb(200,200,200)"; else return "black";});
                 }
-                console.log(now);
                 Path = d3.select("#Path"+now);
                 Path.select("path")
                     .transition()
