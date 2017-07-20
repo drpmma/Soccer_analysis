@@ -13,7 +13,7 @@ function svg_scale(data, id) {
         return -1;
 }
 
-function path(num) {
+function path_field(num) {
     var data;
     var path_d;
     if(teamchoose == 0)

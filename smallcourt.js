@@ -67,7 +67,7 @@ function court(){
 			{
                 remove_cluster();
 				remove_path();
-				path(i);
+				path_field(i);
 				//remove_node(i)
 			})
 

@@ -120,7 +120,7 @@ function normal_cluster(phase, start, end, num) {
             if(id != 0)
             {
                 path = d3.select("#Path" + (id - 1).toString())
-                    .select("path");
+                .select("path");
                 var d_array = path.attr("d").split(" ");
                 path.attr("d", function () {
                     return d_array[0] + " " + d_array[1] + " " + d_array[2] + " "
