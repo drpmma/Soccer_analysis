@@ -340,7 +340,7 @@ function court(){
 					.style('fill-opacity', '0.5')
 				d3.select(this).select("#circletimeline")
 					.attr("r","1.2%")
-				add_node()
+				//add_node()
 				/* Act on the event */
 			})
 			.on('mouseleave', function(d,i) {
@@ -464,5 +464,22 @@ function court(){
 	// add_path_gray();
     // X_proj();
     // Y_proj();
-    donut();
+    //donut();
+}
+function timeline_transform(value) {
+	if(value==1) add_node();
+	else if(value==2) {
+		add_node();
+		add_path();
+	}
+	else if(value==3){
+		add_node();
+		add_path_gray();
+	}
+	else if(value==4){
+		add_path_gray();
+	}
+	else if(value==5){X_proj()}
+	else if(value==6) Y_proj()
+	else if(value==7) donut();
 }
