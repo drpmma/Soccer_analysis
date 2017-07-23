@@ -1,23 +1,7 @@
-function Coor(x, y){
-    this.x = x;
-    this.y = y;
-};
-
-function Nodedata(coor, player, team){
-    this.coor = coor;
-    this.player = player;
-    this.team = team;
-}
-
-function Pathdata(source, target, type) {
-    this.source = source;
-    this.target = target;
-    this.type = type;
-}
-
-function Phase(start, end, node, path) {
-    this.start = start;
-    this.end = end;
-    this.node = node;
-    this.path = path;
+Data = function (_data) {
+    this.formation = _data.formation;
+    this.matchInfos = _data.matchInfos;
+    this.matrixPass = _data.matrixPass;
+    this.players = _data.players;
+    this.sequences = _data.sequences;
 }
