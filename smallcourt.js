@@ -8,7 +8,7 @@ function remove_court(){
 }
 function add_node()
 {
-    var total=teamchoose?phase_1.length:phase_0.length
+	var total=teamchoose?phase_1.length:phase_0.length
 	for(var num=0;num<total;num++)
 	{
         var name="#smallcourt"+num.toString()
@@ -292,6 +292,7 @@ function donut() {
             .endAngle(angele_data[num].endAngle)
         g=g_court.append("g")
 			.attr("transform","translate(400,170)")
+			.attr("class","abc")
 			.attr("id",function () {
 				return "g_arc"+num
             })
@@ -313,6 +314,108 @@ function donut() {
 
     }
 
+}
+function draw_court() {
+    var total=teamchoose?phase_1.length:phase_0.length;
+    var svg=d3.select("#time_line").select("#timeline_svg")
+    for(var i=0;i<total;i++)
+	{
+		var name = "#g_smallcourt"+i;
+		var g=svg.select(name);
+        var g1=g.append('svg')
+            .attr('class', "abc")
+            .attr('x',function(){
+                return (i*100/total).toString()+"%"
+            })
+            .attr('y',"35%" )
+            .attr('width', "6%")
+            .attr('height',"60%")
+        var svg2=g1.append('g')
+            .attr('id',function(){
+                return "smallcourt"+i.toString()
+            } )
+        svg2.append('rect')
+            .attr('class',"fieldRect" )
+            .attr('x',"0%")
+            .attr('y',"0%" )
+            .attr('width',"100%")
+            .attr('height',"100%")
+        svg2.append("circle")
+            .attr('class',"fieldLines")
+            .attr('cy',"11%" )
+            .attr('cx',"50%" )
+            .attr('r',"12.5%" )
+        svg2.append('circle')
+            .attr('class',"fieldLines" )
+            .attr('cx', "50%")
+            .attr('cy', "89%")
+            .attr('r', "12.5%")
+        svg2.append('rect')
+            .attr('class',"fieldLines" )
+            .attr('x',"20%" )
+            .attr('y', "0")
+            .attr('width', "60%")
+            .attr('height',"15%" )
+        svg2.append('rect')
+            .attr('class',"fieldLines" )
+            .attr('x',"20%" )
+            .attr('y', "85%")
+            .attr('width', "60%")
+            .attr('height',"15%" )
+        svg2.append('rect')
+            .attr('class',"fieldLines" )
+            .attr('x',"37%" )
+            .attr('y', "0")
+            .attr('width', "26%")
+            .attr('height',"5%" )
+        svg2.append('rect')
+            .attr('class',"fieldLines" )
+            .attr('x',"37%" )
+            .attr('y', "95%")
+            .attr('width', "26%")
+            .attr('height',"5%" )
+        svg2.append('line')
+            .attr('class',"Gate" )
+            .attr('x1',"45%" )
+            .attr('y1', "0")
+            .attr('x2', "55%")
+            .attr('y2', "0%")
+        svg2.append('line')
+            .attr('class',"Gate" )
+            .attr('x1',"45%" )
+            .attr('y1', "100%")
+            .attr('x2', "55%")
+            .attr('y2', "100%")
+        svg2.append("circle")
+            .attr('class',"Points")
+            .attr('cy',"11%" )
+            .attr('cx',"50%" )
+            .attr('r',"0.5%" )
+        svg2.append("circle")
+            .attr('class',"Points")
+            .attr('cy',"89%" )
+            .attr('cx',"50%" )
+            .attr('r',"0.5%" )
+        svg2.append("circle")
+            .attr('class',"fieldLines")
+            .attr('cy',"50%" )
+            .attr('cx',"50%" )
+            .attr('r',"12.5%" )
+        svg2.append("circle")
+            .attr('class',"Points")
+            .attr('cy',"50%" )
+            .attr('cx',"50%" )
+            .attr('r',"0.5%" )
+        svg2.append('line')
+            .attr('class',"fieldLines" )
+            .attr('x1',"0%" )
+            .attr('y1', "50%")
+            .attr('x2', "100%")
+            .attr('y2', "50%")
+	}
+}
+function remove_small_court() {
+    d3.select("#time_line").select("#timeline_svg").selectAll(".abc").remove()
 }
 function court(){
 	var num=0;
@@ -367,98 +470,100 @@ function court(){
 	    .attr('cy', "19.5%")
 	    .attr('r', "0.8%")
 	    .style('fill', "red")
-	var g1=g.append('svg')
-			.attr('class', "abc")
-			.attr('x',function(d,i){
-
-				return (i*100/total).toString()+"%"
-			})
-			.attr('y',"35%" )
-			.attr('width', "6%")
-			.attr('height',"60%")
-	var svg2=g1.append('g')
-			.attr('id',function(d,i){
-				num=i;
-				return "smallcourt"+i.toString()
-			} )
-	svg2.append('rect')
-		.attr('class',"fieldRect" )
-		.attr('x',"0%")
-		.attr('y',"0%" )
-		.attr('width',"100%")
-		.attr('height',"100%")
-	svg2.append("circle")
-		.attr('class',"fieldLines")
-		.attr('cy',"11%" )
-		.attr('cx',"50%" )
-		.attr('r',"12.5%" )
-	svg2.append('circle')
-		.attr('class',"fieldLines" )
-	    .attr('cx', "50%")
-	    .attr('cy', "89%")
-	    .attr('r', "12.5%")
-	svg2.append('rect')
-		.attr('class',"fieldLines" )
-	    .attr('x',"20%" )
-	    .attr('y', "0")
-	    .attr('width', "60%")
-	    .attr('height',"15%" )
-	svg2.append('rect')
-		.attr('class',"fieldLines" )
-	    .attr('x',"20%" )
-	    .attr('y', "85%")
-	    .attr('width', "60%")
-	    .attr('height',"15%" )
-	svg2.append('rect')
-		.attr('class',"fieldLines" )
-	    .attr('x',"37%" )
-	    .attr('y', "0")
-	    .attr('width', "26%")
-	    .attr('height',"5%" )
-	svg2.append('rect')
-		.attr('class',"fieldLines" )
-	    .attr('x',"37%" )
-	    .attr('y', "95%")
-	    .attr('width', "26%")
-	    .attr('height',"5%" )	
-	svg2.append('line')
-		.attr('class',"Gate" )
-	    .attr('x1',"45%" )
-	    .attr('y1', "0")
-	    .attr('x2', "55%")
-	    .attr('y2', "0%")
-	svg2.append('line')
-		.attr('class',"Gate" )
-	    .attr('x1',"45%" )
-	    .attr('y1', "100%")
-	    .attr('x2', "55%")
-	    .attr('y2', "100%")
-	svg2.append("circle")
-		.attr('class',"Points")
-		.attr('cy',"11%" )
-		.attr('cx',"50%" )
-		.attr('r',"0.5%" )		
-	svg2.append("circle")
-		.attr('class',"Points")
-		.attr('cy',"89%" )
-		.attr('cx',"50%" )
-		.attr('r',"0.5%" )
- 	svg2.append("circle")
-		.attr('class',"fieldLines")
-		.attr('cy',"50%" )
-		.attr('cx',"50%" )
-		.attr('r',"12.5%" )		
-	svg2.append("circle")
-		.attr('class',"Points")
-		.attr('cy',"50%" )
-		.attr('cx',"50%" )
-		.attr('r',"0.5%" )	
-	svg2.append('line')
-		.attr('class',"fieldLines" )
-	    .attr('x1',"0%" )
-	    .attr('y1', "50%")
-	    .attr('x2', "100%")
-	    .attr('y2', "50%")
+	draw_court();
+	add_node();
+	// var g1=g.append('svg')
+	// 		.attr('class', "abc")
+	// 		.attr('x',function(d,i){
+    //
+	// 			return (i*100/total).toString()+"%"
+	// 		})
+	// 		.attr('y',"35%" )
+	// 		.attr('width', "6%")
+	// 		.attr('height',"60%")
+	// var svg2=g1.append('g')
+	// 		.attr('id',function(d,i){
+	// 			num=i;
+	// 			return "smallcourt"+i.toString()
+	// 		} )
+	// svg2.append('rect')
+	// 	.attr('class',"fieldRect" )
+	// 	.attr('x',"0%")
+	// 	.attr('y',"0%" )
+	// 	.attr('width',"100%")
+	// 	.attr('height',"100%")
+	// svg2.append("circle")
+	// 	.attr('class',"fieldLines")
+	// 	.attr('cy',"11%" )
+	// 	.attr('cx',"50%" )
+	// 	.attr('r',"12.5%" )
+	// svg2.append('circle')
+	// 	.attr('class',"fieldLines" )
+	//     .attr('cx', "50%")
+	//     .attr('cy', "89%")
+	//     .attr('r', "12.5%")
+	// svg2.append('rect')
+	// 	.attr('class',"fieldLines" )
+	//     .attr('x',"20%" )
+	//     .attr('y', "0")
+	//     .attr('width', "60%")
+	//     .attr('height',"15%" )
+	// svg2.append('rect')
+	// 	.attr('class',"fieldLines" )
+	//     .attr('x',"20%" )
+	//     .attr('y', "85%")
+	//     .attr('width', "60%")
+	//     .attr('height',"15%" )
+	// svg2.append('rect')
+	// 	.attr('class',"fieldLines" )
+	//     .attr('x',"37%" )
+	//     .attr('y', "0")
+	//     .attr('width', "26%")
+	//     .attr('height',"5%" )
+	// svg2.append('rect')
+	// 	.attr('class',"fieldLines" )
+	//     .attr('x',"37%" )
+	//     .attr('y', "95%")
+	//     .attr('width', "26%")
+	//     .attr('height',"5%" )
+	// svg2.append('line')
+	// 	.attr('class',"Gate" )
+	//     .attr('x1',"45%" )
+	//     .attr('y1', "0")
+	//     .attr('x2', "55%")
+	//     .attr('y2', "0%")
+	// svg2.append('line')
+	// 	.attr('class',"Gate" )
+	//     .attr('x1',"45%" )
+	//     .attr('y1', "100%")
+	//     .attr('x2', "55%")
+	//     .attr('y2', "100%")
+	// svg2.append("circle")
+	// 	.attr('class',"Points")
+	// 	.attr('cy',"11%" )
+	// 	.attr('cx',"50%" )
+	// 	.attr('r',"0.5%" )
+	// svg2.append("circle")
+	// 	.attr('class',"Points")
+	// 	.attr('cy',"89%" )
+	// 	.attr('cx',"50%" )
+	// 	.attr('r',"0.5%" )
+ 	// svg2.append("circle")
+	// 	.attr('class',"fieldLines")
+	// 	.attr('cy',"50%" )
+	// 	.attr('cx',"50%" )
+	// 	.attr('r',"12.5%" )
+	// svg2.append("circle")
+	// 	.attr('class',"Points")
+	// 	.attr('cy',"50%" )
+	// 	.attr('cx',"50%" )
+	// 	.attr('r',"0.5%" )
+	// svg2.append('line')
+	// 	.attr('class',"fieldLines" )
+	//     .attr('x1',"0%" )
+	//     .attr('y1', "50%")
+	//     .attr('x2', "100%")
+	//     .attr('y2', "50%")
 	// add_node();
 	// add_path();
 	// add_path_gray();
@@ -467,19 +572,47 @@ function court(){
     //donut();
 }
 function timeline_transform(value) {
-	if(value==1) add_node();
-	else if(value==2) {
+	if(value==0)
+	{
+		remove_small_court();
+		draw_court();
+		add_node();
+	}
+	else if(value==1) {
+        remove_small_court();
+        draw_court();
 		add_node();
 		add_path();
 	}
-	else if(value==3){
+	else if(value==2){
+        remove_small_court();
+        draw_court();
 		add_node();
 		add_path_gray();
 	}
-	else if(value==4){
+	else if(value==3){
+        remove_small_court();
+        draw_court();
 		add_path_gray();
 	}
-	else if(value==5){X_proj()}
-	else if(value==6) Y_proj()
+	else if(value==4)
+	{
+        remove_small_court();
+        draw_court();
+		X_proj()
+	}
+	else if(value==5)
+	{
+        remove_small_court();
+        draw_court();
+        Y_proj();
+	}
+
+	else if(value==6)
+	{
+		remove_small_court();
+		distance_align();
+	}
+
 	else if(value==7) donut();
 }
