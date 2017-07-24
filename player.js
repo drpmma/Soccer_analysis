@@ -24,6 +24,7 @@ Player = function (field, x, y, size, pid) {
         .attr("transform", "translate("+(this.x_scale(x)-size/2)+","+(this.y_scale(y)-size/2)+")")
         .attr("width", size)
         .attr("height", size)
+        .attr("style", "cursor: pointer;")
         .on("click", function() {return that.click();});
 
     this.drawCircle();
@@ -82,9 +83,9 @@ Player.prototype.resetSize = function(size, changeDuration)
     this.playerGroup.select("text")
         .transition()
         .duration(changeDuration)
-        .attr("x", -this.size/4)
+        .attr("x", -this.size/3)
         .attr("y", this.size)
-        .attr("style", "font-size: "+(this.size*1.5));
+        .attr("style", "font-size: "+(this.size*1.4));
 };
 
 Player.prototype.drawCircle = function()
@@ -98,7 +99,7 @@ Player.prototype.drawCircle = function()
         .transition()
         .duration(200)
         .attr("r", this.size)
-        .attr("style", "stroke: black; stroke-width: 0.5%; fill: whitesmoke;");
+        .attr("style", "stroke: black; fill: whitesmoke; stroke-width: "+this.r_scale(0.5));
 };
 
 Player.prototype.drawJersey = function()
@@ -117,7 +118,7 @@ Player.prototype.drawJersey = function()
                   " L "+(1.4*this.size)+" "+(0.4*this.size)+
                   " L "+(0.9*this.size)+" "+(-0.4*this.size)+
                   " Z")
-        .attr("style", "stroke: black; stroke-width: 0.5%; fill: whitesmoke;")
+        .attr("style", "stroke: black; fill: whitesmoke; stroke-width: "+this.r_scale(0.5))
         .attr("opacity", 0)
         .transition()
         .duration(200)
@@ -128,9 +129,9 @@ Player.prototype.writeID = function()
 {
     this.showIDorNot = 1;
     this.playerGroup.append("text")
-        .attr("x", -this.size/4)
+        .attr("x", -this.size/3)
         .attr("y", this.size)
-        .attr("style", "font-size: "+(this.size*1.5))
+        .attr("style", "font-size: "+(this.size*1.4))
         .attr("opacity", "1")
         .text("99");
 };
@@ -143,9 +144,9 @@ Player.prototype.hideID = function()
             .transition()
             .duration(200)
             .attr("opacity", "0")
-            .attr("x", -this.size/4)
+            .attr("x", -this.size/3)
             .attr("y", this.size)
-            .attr("style", "font-size: "+(this.size*1.5));
+            .attr("style", "font-size: "+(this.size*1.4));
         this.showIDorNot = 0;
     }
 };
@@ -157,9 +158,9 @@ Player.prototype.showID = function()
             .transition()
             .duration(200)
             .attr("opacity", "1")
-            .attr("x", -this.size/4)
+            .attr("x", -this.size/3)
             .attr("y", this.size)
-            .attr("style", "font-size: "+(this.size*1.5));
+            .attr("style", "font-size: "+(this.size*1.4));
         this.showIDorNot = 1;
     }
 };
