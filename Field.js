@@ -60,8 +60,7 @@ Field.prototype.draw_field = function (direction) {
     }
 }
 
-Field.prototype.draw_rect = function(x, y, width, height)
-{
+Field.prototype.draw_rect = function(x, y, width, height) {
     this.fieldGroup.append("rect")
         .attr("class", "fieldRect")
         .attr("x", this.x_scale(x))
@@ -72,8 +71,7 @@ Field.prototype.draw_rect = function(x, y, width, height)
         .attr("stroke", "black");
 }
 
-Field.prototype.draw_circle = function(x, y, r)
-{
+Field.prototype.draw_circle = function(x, y, r) {
     this.fieldGroup.append("circle")
         .attr("class", "fieldLines")
         .attr("cx", this.x_scale(x))
