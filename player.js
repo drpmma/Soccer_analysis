@@ -19,7 +19,7 @@ Player = function (field, x, y, size, pid) {
     };
 
     var that = this;
-    this.playerGroup = field.svg.append("g")
+    this.playerGroup = field.append("g")
         .attr("class", "player")
         .attr("transform", "translate("+(this.x_scale(x)-size/2)+","+(this.y_scale(y)-size/2)+")")
         .attr("width", size)
