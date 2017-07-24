@@ -5,9 +5,9 @@ Sequence = function (svg, data) {
     this.height = svg.select(".field").attr("height");
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
-    this.computeNodeLinks(2);
-    this.draw_path(2);
-    this.draw_node(2);
+    this.computeNodeLinks(10);
+    this.draw_path(10);
+    this.draw_node(10);
     console.log(this.nodes, this.links)
 }
 
@@ -226,10 +226,10 @@ Sequence.prototype.draw_path = function () {
                 d3.select(this).attr("class","plain");
 
                 //draw a squiggly line
-                var x_source = that.x_scale(nodes[d.source].x),
-                    y_source = that.y_scale(nodes[d.source].y),
-                    x_target = that.x_scale(nodes[d.target].x),
-                    y_target = that.y_scale(nodes[d.target].y);
+                var x_source = that.x_scale(that.nodes[d.source].x),
+                    y_source = that.y_scale(that.nodes[d.source].y),
+                    x_target = that.x_scale(that.nodes[d.target].x),
+                    y_target = that.y_scale(that.nodes[d.target].y);
                 return line([
                     {x:x_source, y:y_source}, {x:x_source, y:y_source},
                     {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
