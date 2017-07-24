@@ -3,27 +3,36 @@
 <head>
     <title>D3</title>
     <script src = "http://d3js.org/d3.v4.min.js"></script>
+    <script type = "text/javascript" src = "Data.js"></script>
     <script type = "text/javascript" src = "Field.js"></script>
+    <script type = "text/javascript" src = "Sequence.js"></script>
+    <style>
+        .dashed {
+            stroke-dasharray: 5,5;
+            fill: none;
+            stroke: black;
+            stroke-width: 2;
+    }</style>
 </head>
 <body>
     <script>
         var width = 960, height = 640;
-//        function scaleToSvg(x, y) {
-//            return [x/100*width, y/100*height];
-//        }
 
         d3.queue().defer(d3.json, "./data/dumpData_t1_m483676_agg0.json").await(main);
 
         function main(error, data) {
             if (error) throw error;
             console.log(data);
+            var jsondata = new Data(data);
             svg = d3.select("body").append("svg");
             svg.attr("width", width).attr("height", height);
-            f = new Field(svg, 0.2*width, 0.2*height, 0.8*width, 0.8*height, 0);
+            f = new Field(svg, 0.1*width, 0.1*height, 0.8*width, 0.8*height, 0);
 
             var svg_player_pos = d3.select("body").append("svg");
             svg_player_pos.attr("width", height).attr("height", width);
             f = new Field(svg_player_pos, 0.2*height, 0.2*width, 0.4*height, 0.4*width, 1);
+
+            s = new Sequence(svg, jsondata);
 //            var svg = d3.select("body").append("svg");
 //            svg.attr("width", width).attr("height", height);
 //            svg.append("rect").attr("width", "100%").attr("height", "100%")
