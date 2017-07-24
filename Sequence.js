@@ -1,8 +1,8 @@
-Sequence = function (svg, data) {
-    this.svg = svg;
+Sequence = function (field, data) {
+    this.field = field;
     this.data = data;
-    this.width = svg.select(".field").attr("width");
-    this.height = svg.select(".field").attr("height");
+    this.width = field.attr("width");
+    this.height = field.attr("height");
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
     this.computeNodeLinks(10);
@@ -180,7 +180,7 @@ Sequence.prototype.computeNodeLinks = function(action_id){
 Sequence.prototype.draw_node = function ()
 {
     var that = this;
-    this.node_container = svg.select(".field").append("g")
+    this.node_container = this.field.append("g")
         .attr("id", "node_container");
     this.node_container.selectAll("g").data(this.nodes).enter()
         .append("g").attr("class", "node")
@@ -195,7 +195,7 @@ Sequence.prototype.draw_node = function ()
 
 Sequence.prototype.draw_path = function () {
     var that = this;
-    this.path_container = svg.select(".field").append("g")
+    this.path_container = this.field.append("g")
         .attr("id", "path_container");
     this.path_container.selectAll("g").data(this.links).enter()
         .append("g")
