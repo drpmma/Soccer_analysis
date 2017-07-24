@@ -9,8 +9,8 @@ Player = function (field, x, y, size, pid) {
     this.size = size;
     this.pid = pid;
 
-    this.x_scale = d3.scaleLinear().domain([0,100]).range([0, field.width]).clamp(true);
-    this.y_scale = d3.scaleLinear().domain([0,100]).range([0, field.height]).clamp(true);
+    this.x_scale = d3.scaleLinear().domain([0,100]).range([0, field.attr("width")]).clamp(true);
+    this.y_scale = d3.scaleLinear().domain([0,100]).range([0, field.attr("height")]).clamp(true);
     this.r_scale = function(r){
         var x, y;
         x = this.x_scale(r); y = this.y_scale(r);
