@@ -1,4 +1,5 @@
 Field = function (svg, x, y, width, height, direction) {
+    this.svg = svg;
     this.x = x;
     this.y = y;
     this.width = width;

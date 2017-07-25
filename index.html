@@ -2,10 +2,12 @@
 <html>
 <head>
     <title>D3</title>
+    <link rel="stylesheet" href="index.css" type="text/css" />
     <script src = "http://d3js.org/d3.v4.min.js"></script>
     <script type = "text/javascript" src = "Data.js"></script>
     <script type = "text/javascript" src = "Field.js"></script>
     <script type = "text/javascript" src = "Sequence.js"></script>
+    <script type = "text/javascript" src = "player.js"></script>
     <style>
         .dashed {
             stroke-dasharray: 5,5;
@@ -15,37 +17,26 @@
     }</style>
 </head>
 <body>
+    <div id = "svg_div"></div>
     <script>
-        var width = 960, height = 640;
-
         d3.queue().defer(d3.json, "./data/dumpData_t1_m483676_agg0.json").await(main);
 
         function main(error, data) {
             if (error) throw error;
             console.log(data);
+
+            var width, height;
             var jsondata = new Data(data);
-            svg = d3.select("body").append("svg");
-            svg.attr("width", width).attr("height", height);
-            f = new Field(svg, 0.1*width, 0.1*height, 0.8*width, 0.8*height, 0);
-
-//            var svg_player_pos = d3.select("body").append("svg");
-//            svg_player_pos.attr("width", height).attr("height", width);
-//            f = new Field(svg_player_pos, 0.2*height, 0.2*width, 0.4*height, 0.4*width, 1);
-
-            s = new Sequence(f.fieldGroup, jsondata);
-//            var svg = d3.select("body").append("svg");
-//            svg.attr("width", width).attr("height", height);
-//            svg.append("rect").attr("width", "100%").attr("height", "100%")
-//                .style("fill", "white").style("stroke", "black");
-//            var node_container = svg.append("g").attr("id", "node_container");
-//            var path_container = svg.append("g").attr("id", "path_container");
-//            node_container.selectAll("g").data(data.sequences[0].actions).enter()
-//            .append("g")
-//            .attr("transform", function(d){
-//                return "translate("+scaleToSvg(d.x, d.y)+")";
-//            })
-//            .append("circle")
-//            .attr("r", 10);
+            width = document.getElementById("svg_div").getBoundingClientRect().width;
+            height = document.getElementById("svg_div").getBoundingClientRect().height;
+            var svg_field = d3.select("#svg_div").append("svg");
+            svg_field.attr("width", width).attr("height", height);
+            var f1 = new Field(svg_field, 0.3*width, 0.25*height, 0.5*width, 0.6*height, 0);
+            s = new Sequence(f1.fieldGroup, jsondata);
+            var f2 = new Field(svg_field, 0, 0.55*height, 0.15*width, 0.45*height, 1);
+            var p = new Array();
+            for (var i = 1; i < 10; i++)
+                p[i] = new Player(f2.fieldGroup, i*10, i*10, i, i);
         }
     </script>
 </body>
