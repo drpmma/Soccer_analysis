@@ -21,19 +21,19 @@
     <script>
         d3.queue().defer(d3.json, "./data/dumpData_t1_m483676_agg0.json").await(main);
 
-        function main(error, data) {
+        function main(error, jsondata) {
             if (error) throw error;
-            console.log(data);
+            console.log(jsondata);
 
             var width, height;
-            var jsondata = new Data(data);
+            var data = new Data(jsondata);
             width = document.getElementById("svg_div").getBoundingClientRect().width;
             height = document.getElementById("svg_div").getBoundingClientRect().height;
             var svg_field = d3.select("#svg_div").append("svg");
             svg_field.attr("width", width).attr("height", height);
-            var f1 = new Field(svg_field, 0.3*width, 0.25*height, 0.5*width, 0.6*height, 0);
-            s = new Sequence(f1.fieldGroup, jsondata);
-            var f2 = new Field(svg_field, 0, 0.55*height, 0.15*width, 0.45*height, 1);
+            var f1 = new Field(svg_field, 0.3*width, 0.25*height, 0.5*width, 0.6*height, "mainfield", 0);
+            s = new Sequence(f1.fieldGroup, data.sequences[0]);
+            var f2 = new Field(svg_field, 0, 0.55*height, 0.15*width, 0.45*height, "playerfield", 1);
             var p = new Array();
             for (var i = 1; i < 10; i++)
                 p[i] = new Player(f2.fieldGroup, i*10, i*10, i, i);

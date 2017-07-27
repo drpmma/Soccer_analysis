@@ -1,14 +1,13 @@
-Sequence = function (field, data) {
+Sequence = function (field, sequence) {
     this.field = field;
-    this.data = data;
+    this.sequence = sequence;
     this.width = field.attr("width");
     this.height = field.attr("height");
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
-    this.computeNodeLinks(10);
-    this.draw_path(10);
-    this.draw_node(10);
-    console.log(this.nodes, this.links)
+    this.computeNodeLinks();
+    this.draw_path("link");
+    this.draw_node("node", 10);
 }
 
 Sequence.prototype.computeNodeLinks = function(action_id){
@@ -18,11 +17,11 @@ Sequence.prototype.computeNodeLinks = function(action_id){
     //console.log(this.actions);
 
     var nodeIndex = 0;
-    for(var a = 0; a<this.data.sequences[action_id].actions.length; a++,nodeIndex++){
-        var action = this.data.sequences[action_id].actions[a];
+    for(var a = 0; a<this.sequence.actions.length; a++,nodeIndex++){
+        var action = this.sequence.actions[a];
 
         //if a pass
-        var previous_action = this.data.sequences[action_id].actions[a-1];
+        var previous_action = this.sequence.actions[a-1];
         if(action.eid == E_PASS && previous_action != undefined && previous_action.eid == E_PASS){
             //get the pass destination of the previous pass, i.e. the run start
             var passDest = getPassDestPosition(previous_action);
@@ -105,7 +104,7 @@ Sequence.prototype.computeNodeLinks = function(action_id){
         }
 
         //if not the last event and not a pass
-        else if(a<this.data.sequences[action_id].actions.length-1){
+        else if(a<this.sequence.actions.length-1){
             this.nodes[nodeIndex] = {
                 index: nodeIndex,
                 unique_id: action.id,
@@ -177,23 +176,28 @@ Sequence.prototype.computeNodeLinks = function(action_id){
     }
 };
 
-Sequence.prototype.draw_node = function ()
+Sequence.prototype.draw_node = function (group, r)
 {
     var that = this;
     this.node_container = this.field.append("g")
         .attr("id", "node_container");
     this.node_container.selectAll("g").data(this.nodes).enter()
         .append("g").attr("class", "node")
+        .attr("id", function (d, i) {
+            return group + i;
+        })
         .attr("transform", function (d) {
             return "translate(" + that.scale(d.x, d.y) + ")";
         })
         .append("circle")
-        .attr("r", 10)
+        .attr("r", r)
         .attr("stroke", "black")
-        .attr("fill", "white");
+        .attr("fill", "white")
+        .on("mouseover", function(){d3.select(this).style("cursor", "pointer")});
+    return this.node_container;
 }
 
-Sequence.prototype.draw_path = function () {
+Sequence.prototype.draw_path = function (group) {
     var that = this;
     this.path_container = this.field.append("g")
         .attr("id", "path_container");
@@ -203,6 +207,9 @@ Sequence.prototype.draw_path = function () {
             return "link " + getEventName(d.eid);
         })
         .append("path")
+        .attr("id", function (d, i) {
+            return group + i;
+        })
         .attr("stroke", function (d) {
             return getEventColor(d.eid);
         })
@@ -261,6 +268,7 @@ Sequence.prototype.draw_path = function () {
                     {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
             }
         });
+    return this.path_container;
 }
 
 Sequence.prototype.scale = function (x, y)

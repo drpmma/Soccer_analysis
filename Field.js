@@ -1,9 +1,10 @@
-Field = function (svg, x, y, width, height, direction) {
+Field = function (svg, x, y, width, height, id,  direction) {
     this.svg = svg;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.id = id;
 
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
@@ -16,6 +17,7 @@ Field = function (svg, x, y, width, height, direction) {
 
     this.fieldGroup = svg.append("g")
         .attr("class", "field")
+        .attr("id", id)
         .attr("transform", "translate("+x+","+y+")")
         .attr("width", width)
         .attr("height", height);
