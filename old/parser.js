@@ -1,3 +1,14 @@
+d3.queue().defer(d3.json, "./data/dumpData_t1_m483676_agg0.json", function (data) {
+        console.log(data);
+    });
+
+Data.prototype.parseSequence()
+{
+
+}
+
+
+
 // var node_array;
 // var path_array;
 // var path_type = new Array();
