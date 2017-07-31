@@ -2,12 +2,30 @@
  * Created by WuJiang on 2017/7/23.
  */
 
-Player = function (field, x, y, size, pid) {
+Players = function(field, data, infos) {
+    //console.log(data);
+    this.player = new Array();
+    this.infos = infos;
+
+    for (var i = 0; i < data.length; i++)
+    {
+        var x, y;
+        this.player[i] = new Player(field, this, i%9*10, i/9*30, 11, data[i].pid, data[i]);
+    }
+};
+
+Players.prototype.reChoose = function(pid) {
+
+};
+
+Player = function (field, teammate, x, y, size, pid, data) {
     this.field = field;
+    this.teammate = teammate;
     this.x = x;
     this.y = y;
     this.size = size;
     this.pid = pid;
+    this.data = data;
 
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, field.attr("width")]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, field.attr("height")]).clamp(true);
@@ -20,25 +38,26 @@ Player = function (field, x, y, size, pid) {
 
     var that = this;
     this.playerGroup = field.append("g")
+        .attr("id", "player" + pid)
         .attr("class", "player")
         .attr("transform", "translate("+(this.x_scale(x)-size/2)+","+(this.y_scale(y)-size/2)+")")
         .attr("width", size)
         .attr("height", size)
         .attr("style", "cursor: pointer;")
         .on("click", function() {return that.click();});
+    this.playerGroup.append("title")
+        .text(this.data.first_name + "-" + this.data.position);
 
     this.drawCircle();
+    //this.drawJersey();
     this.writeID();
 };
 
 Player.prototype.click = function()
 {
-    this.resetPos(Math.random()*300%100,Math.random()*300%100, 500);
-    this.resetSize(Math.random()*300%5+5, 500);
-    if(this.showIDorNot == 0) this.showID();
-    else this.hideID();
-    if(this.type == 1) this.drawJersey();
-    else this.drawCircle();
+    this.teammate.reChoose(this.pid);
+    console.log(this.data);
+    this.teammate.infos.changeValues(this.data.stats);
 };
 
 Player.prototype.resetPos = function(x, y, changeDuration)
@@ -83,9 +102,9 @@ Player.prototype.resetSize = function(size, changeDuration)
     this.playerGroup.select("text")
         .transition()
         .duration(changeDuration)
-        .attr("x", -this.size/3)
-        .attr("y", this.size)
-        .attr("style", "font-size: "+(this.size*1.4));
+        .attr("x", -this.size/9)
+        .attr("y", this.size/1.2)
+        .attr("style", "font-size: "+(this.size));
 };
 
 Player.prototype.drawCircle = function()
@@ -129,11 +148,11 @@ Player.prototype.writeID = function()
 {
     this.showIDorNot = 1;
     this.playerGroup.append("text")
-        .attr("x", -this.size/3)
-        .attr("y", this.size)
-        .attr("style", "font-size: "+(this.size*1.4))
+        .attr("x", this.size*0.5)
+        .attr("y", this.size*0.5)
+        .attr("style", "text-anchor: middle; dominant-baseline: middle; font-size: "+(this.size)+"px")
         .attr("opacity", "1")
-        .text("99");
+        .text(this.data.jersey);
 };
 
 Player.prototype.hideID = function()
@@ -144,9 +163,9 @@ Player.prototype.hideID = function()
             .transition()
             .duration(200)
             .attr("opacity", "0")
-            .attr("x", -this.size/3)
-            .attr("y", this.size)
-            .attr("style", "font-size: "+(this.size*1.4));
+            .attr("x", this.size*0.5)
+            .attr("y", this.size*0.5)
+            .attr("style", "font-size: "+(this.size)+"px");
         this.showIDorNot = 0;
     }
 };
@@ -158,9 +177,9 @@ Player.prototype.showID = function()
             .transition()
             .duration(200)
             .attr("opacity", "1")
-            .attr("x", -this.size/3)
-            .attr("y", this.size)
-            .attr("style", "font-size: "+(this.size*1.4));
+            .attr("x", this.size*0.5)
+            .attr("y", this.size*0.5)
+            .attr("style", "font-size: "+(this.size));
         this.showIDorNot = 1;
     }
 };
