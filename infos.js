@@ -20,8 +20,9 @@ Infos = function(svg, x, y, width, height, data) {
     this.dwn = this.height * 0.03;
     this.lft = this.width * 0.05;
     this.rt = this.width * 0.05;
+    this.nameHeight = this.width * 0.1;
     this.hjj = this.height * 0.01;
-    this.hg = (this.height - this.up - this.dwn - this.hjj * (this.infoNum-1)) / this.infoNum;
+    this.hg = (this.height - this.up - this.nameHeight - this.dwn - this.hjj * (this.infoNum-1)) / this.infoNum;
     this.changeDuration = 200;
 
     this.infosGroup = svg.append("g")
@@ -35,6 +36,17 @@ Infos = function(svg, x, y, width, height, data) {
         .attr("width", this.width-2)
         .attr("height", this.height-2)
         .attr("style", "fill:none; stroke:black; stroke-width: 0.1%");
+    this.infosGroup.append("g")
+        .attr("id", "name")
+        .attr("transform", "translate(" + (+this.lft) + "," + (+this.up)  + ")")
+        .attr("width", this.width - this.lft - this.rt)
+        .attr("height", this.nameHeight)
+        .append("text")
+        .attr("x", 0)
+        .attr("y", this.hg-this.hjj)
+        .attr("style", "font-size:"+((this.hg)*1)+"px")
+        .text("");
+
 
     this.info = new Array(this.infoNum);
     for(i = 0; i < this.infoNum; i++)
@@ -111,13 +123,22 @@ Infos = function(svg, x, y, width, height, data) {
 };
 
 Infos.prototype.changeValues = function(data) {
-    for(var i = 0; i < data.length; i++)
+    this.infosGroup.select("#name").select("text")
+        .transition()
+        .duration(this.changeDuration)
+        .text(data.first_name + " " + data.last_name + " - " + data.jersey + " " + data.position);
+
+    for(var i = 0; i < data.stats.length; i++)
     {
-        this.info[i].changeValue(data[i].nb);
+        this.info[i].changeValue(data.stats[i].nb);
     }
 };
 
 Infos.prototype.clearAll = function() {
+    this.infosGroup.select("#name").select("text")
+        .transition()
+        .duration(this.changeDuration)
+        .text("");
     for(var i = 0; i < this.infoNum; i++) this.info[i].changeValue(0);
 };
 
@@ -136,11 +157,11 @@ Info = function(g, num, max, title) {
     this.rect_width = (g.width - g.lft - g.rt)*0.5;
     this.rect_height = g.hg;
     this.rect_rx = this.rect_width*0.07;
-    this.rect_ry = this.rect_height*0.25;
+    this.rect_ry = this.rect_height*0.5;
 
     this.infoGroup = g.infosGroup.append("g")
         .attr("id", "info"+num)
-        .attr("transform", "translate(" + (+g.lft) + "," + ((+g.up) + (+num*g.hg) + (+num*g.hjj))  + ")")
+        .attr("transform", "translate(" + (+g.lft) + "," + ((+g.up) + (g.nameHeight) + (+num*g.hg) + (+num*g.hjj))  + ")")
         .attr("width", g.width - g.lft - g.rt)
         .attr("height", g.hg);
 
@@ -161,17 +182,17 @@ Info = function(g, num, max, title) {
 
     this.infoGroup.append("rect") //value
         .attr("id","value")
-        .attr("x",this.rect_x)
-        .attr("y",this.rect_y)
-        .attr("width",this.currentValue * this.rect_width / this.maxValue)
-        .attr("height",this.rect_height)
-        .attr("rx",this.rect_rx)
-        .attr("ry",this.rect_ry)
+        .attr("x",this.rect_x+0.5)
+        .attr("y",this.rect_y+0.5)
+        .attr("width",this.currentValue * (this.rect_width-1) / this.maxValue)
+        .attr("height",this.rect_height-1)
+        .attr("rx",this.rect_rx-0.5)
+        .attr("ry",this.rect_ry-0.5)
         .attr("style","fill:steelblue; stroke:none;");
 
     this.infoGroup.append("text") //num
         .attr("id","num")
-        .attr("x", this.rect_x)
+        .attr("x", this.rect_x+5)
         .attr("y", g.hg*0.85)
         .attr("style", "font-size:"+(g.hg*0.9)+"px")
         .text(this.currentValue);
@@ -182,7 +203,7 @@ Info.prototype.changeValue = function(value) {
     this.infoGroup.select("#value")
         .transition()
         .duration(this.g.changeDuration)
-        .attr("width",this.currentValue * this.rect_width / this.maxValue);
+        .attr("width",this.currentValue * (this.rect_width-1) / this.maxValue);
 
     this.infoGroup.select("#num")
         .transition()

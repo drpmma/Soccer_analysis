@@ -4,6 +4,7 @@ Field = function (svg, x, y, width, height, direction) {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.direct = direction;
 
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
@@ -20,12 +21,12 @@ Field = function (svg, x, y, width, height, direction) {
         .attr("width", width)
         .attr("height", height);
 
-    this.draw_field(direction);
+    this.draw_field();
 }
 
 
-Field.prototype.draw_field = function (direction) {
-    if(direction == 0)
+Field.prototype.draw_field = function () {
+    if(this.direct == 0)
     {
         this.draw_rect(0, 0, 100, 100)
         this.draw_circle(11, 50, 12.5)
