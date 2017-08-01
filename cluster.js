@@ -1,4 +1,4 @@
-ClusterManager = function(field)
+ClusterManager = function(field, Sequence)
 {
     this.field = field;
     this.clusterNum = 0;
@@ -22,14 +22,18 @@ Cluster = function(start, end, type)
     this.end = end;
     this.type = type;
 
+    //origin information
+
+    //rect
+
     switch (type)
     {
-        case CT_Node_Link:
-        case CT_Node_Link_All:
-        case CT_Hive_Plot:
-        case CT_Tag_Cloud:
-        case CT_Matrix:
-        case CT_Shoot:
+        case CT_Node_Link: this.nodeLink(); break;
+        case CT_Node_Link_All: this.nodeLinkAll(); break;
+        case CT_Hive_Plot: this.hivePlot(); break;
+        case CT_Tag_Cloud: this.tagCloud(); break;
+        case CT_Matrix: this.matrixVis(); break;
+        case CT_Shoot: this.shoot(); break;
     }
 };
 
@@ -59,6 +63,11 @@ Cluster.prototype.tagCloud = function()
 };
 
 Cluster.prototype.matrixVis = function()
+{
+
+};
+
+Cluster.prototype.shoot = function()
 {
 
 };

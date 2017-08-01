@@ -28,10 +28,10 @@ Players = function(field, data, infos) {
             case "Defender": num[6]++; x = num[6] * 100 / (num[1]+1); y = 70; break;
             case "Midfielder": num[7]++; x = num[7] * 100 / (num[2]+1); y = 50; break;
             case "Striker": num[8]++; x = num[8] * 100 / (num[3]+1); y = 30; break;
-            case "Substitute": num[9]++; x = 0; y = 105 - num[9]*8; break;
+            case "Substitute": num[9]++; x = -6; y = 105 - num[9]*8; break;
         }
-        if(field.direct == 1) this.player[i] = new Player(field, this, y, x, 11, data[i].pid, data[i]);
-        else this.player[i] = new Player(field, this, x, y, 11, data[i].pid, data[i]);
+        if(field.direct == 0) this.player[i] = new Player(field, this, y, x, 10, data[i].pid, data[i]);
+        else this.player[i] = new Player(field, this, x, y, 10, data[i].pid, data[i]);
     }
 };
 
@@ -44,7 +44,7 @@ Players.prototype.reChoose = function(pid) {
 };
 
 Player = function (field, teammate, x, y, size, pid, data) {
-    this.field = field;
+    this.field = field.fieldGroup;
     this.teammate = teammate;
     this.x = x;
     this.y = y;
@@ -54,17 +54,19 @@ Player = function (field, teammate, x, y, size, pid, data) {
     this.chosen = 0;
     this.changeDuration = 200;
 
-    this.x_scale = d3.scaleLinear().domain([0,100]).range([0, field.attr("width")]).clamp(true);
-    this.y_scale = d3.scaleLinear().domain([0,100]).range([0, field.attr("height")]).clamp(true);
+    this.x_scale = field.x_scale;
+    this.y_scale = field.y_scale;
+    this.wid_scale = field.wid_scale;
+    this.hei_scale = field.hei_scale;
     this.r_scale = function(r){
         var x, y;
-        x = this.x_scale(r); y = this.y_scale(r);
+        x = this.wid_scale(r); y = this.hei_scale(r);
         if(x < y) return x;
         else return y;
     };
 
     var that = this;
-    this.playerGroup = field.append("g")
+    this.playerGroup = this.field.append("g")
         .attr("id", "player" + pid)
         .attr("class", "player")
         .attr("transform", "translate("+(this.x_scale(x)-size/2)+","+(this.y_scale(y)-size/2)+")")

@@ -10,6 +10,7 @@
     <script type = "text/javascript" src = "Sequence.js"></script>
     <script type = "text/javascript" src = "player.js"></script>
     <script type = "text/javascript" src = "infos.js"></script>
+    <script type = "text/javascript" src = "cluster.js"></script>
     <style>
         .dashed {
             stroke-dasharray: 5,5;
@@ -33,12 +34,12 @@
             height = document.getElementById("svg_div").getBoundingClientRect().height;
             var svg = d3.select("#svg_div").append("svg");
             svg.attr("width", width).attr("height", height);
-            var f1 = new Field(svg, 0.3*width, 0.25*height, 0.5*width, 0.6*height, "mainfield", 0);
+            var f1 = new Field(svg, 0.3*width, 0.25*height, 0.5*width, 0.6*height, "mainfield", 0, 0);
             s = new Sequence(f1.fieldGroup, data.sequences[0]);
-            var f2 = new Field(svg, 0.007*width, 0.01*height, 0.15*width, 0.45*height, 1);
+            var f2 = new Field(svg, 0.007*width, 0.01*height, 0.15*width, 0.45*height, "playerfield", 1, 1);
             var infos = new Infos(svg, 0.007*width, 0.47*height, 0.15*width, 0.5*height, data.players);
-            var players = new Players(f2.fieldGroup, data.players, infos);
-            var cm = new ClusterManager(f1);
+            var players = new Players(f2, data.players, infos);
+            var cm = new ClusterManager(f1, s);
         }
     </script>
 </body>

@@ -1,16 +1,31 @@
-Field = function (svg, x, y, width, height, id,  direction) {
+Field = function (svg, x, y, width, height, id, direction, subfield) {
     this.svg = svg;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.id = id;
+    this.direct = direction;
+    this.subfield = subfield
 
-    this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
-    this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
+    if(this.subfield == 1)
+    {
+        this.x_scale = d3.scaleLinear().domain([(0-direction*10),100]).range([0, this.width]).clamp(true);
+        this.y_scale = d3.scaleLinear().domain([(-10+direction*10),100]).range([0, this.height]).clamp(true);
+        this.wid_scale = d3.scaleLinear().domain([0,(100+direction*10)]).range([0, this.width]).clamp(true);
+        this.hei_scale = d3.scaleLinear().domain([0,(110-direction*10)]).range([0, this.height]).clamp(true);
+    }
+    else
+    {
+        this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
+        this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
+        this.wid_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
+        this.hei_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
+    }
+
     this.r_scale = function(r){
         var x, y;
-        x = this.x_scale(r); y = this.y_scale(r);
+        x = this.wid_scale(r); y = this.hei_scale(r);
         if(x < y) return x;
         else return y;
     };
@@ -68,8 +83,8 @@ Field.prototype.draw_rect = function(x, y, width, height) {
         .attr("class", "fieldRect")
         .attr("x", this.x_scale(x))
         .attr("y", this.y_scale(y))
-        .attr("width", this.x_scale(width))
-        .attr("height", this.y_scale(height))
+        .attr("width", this.wid_scale(width))
+        .attr("height", this.hei_scale(height))
         .attr("fill", "white")
         .attr("stroke", "black");
 }
