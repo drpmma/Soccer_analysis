@@ -3,6 +3,7 @@ Data = function (_data) {
     this.matchInfos = _data.matchInfos;
     this.matrixPass = _data.matrixPass;
     this.players = _data.players;
+    this.computePlayersStats();
     this.sequences = _data.sequences;
     _data.sequences.forEach(function(seq){
         seq.actions.forEach(function(action){
@@ -27,6 +28,148 @@ Data = function (_data) {
     });
 
 }
+
+Data.prototype.computePlayersStats = function(){
+    for(var i = 0; i < this.players.length; i++)
+    //this.players.forEach(function(player)
+    {
+        this.players[i].stats = computePlayerStat(this.players[i]);
+    };
+
+
+    function computePlayerStat(player){
+
+        var stats = [
+            {event: "shots:goal", nb: 0},//1
+            {event: "shots:saved", nb: 0},//2
+            {event: "shots:missed", nb: 0},//3
+            {event: "shots:chance missed", nb: 0},//4
+            {event: "shots:post", nb: 0},//5
+            {event: "corners:given", nb: 0},//6
+            {event: "corners:obtained", nb: 0},//7
+            {event: "passes:success", nb: 0},//8
+            {event: "passes:failed", nb: 0},//9
+            {event: "fouls:commited", nb: 0},//10
+            {event: "fould:suffered", nb: 0},//11
+            {event: "interceptions", nb: 0},//12
+            {event: "tackles:success", nb: 0},//13
+            {event: "tackles:failed", nb: 0},//14
+            {event: "aerial duel:lost", nb: 0},//15
+            {event: "aerial duel:won", nb: 0},//16
+            {event: "lost ball", nb: 0},//17
+            {event: "dribble:success", nb: 0},//18
+            {event: "dribble:failed", nb: 0},//19
+            {event: "cards:yellow", nb: 0},//20
+            {event: "cards:red", nb: 0}//21
+        ];
+
+        function getStatFromName(name){
+            for(var s in stats){
+                if(stats[s].event == name) return stats[s];
+            }
+            throw "can't find stat with name "+name;
+        }
+
+        if(player.events){
+            player.events.forEach(function(event){
+                switch(event.eid){
+                    case E_PASS:
+                        if(event.outcome == 1) getStatFromName("passes:success").nb ++;
+                        else getStatFromName("passes:failed").nb ++;
+                        break;
+                    case E_PASS_OFFSIDE:
+                        getStatFromName("passes:failed").nb ++;
+                        break;
+                    case E_SHOT_GOAL:
+                        getStatFromName("shots:goal").nb ++;
+                        break;
+                    case E_SHOT_MISS:
+                        getStatFromName("shots:missed").nb ++;
+                        break;
+                    case E_SHOT_CHANCE_MISSED:
+                        getStatFromName("shots:chance missed").nb ++;
+                        break;
+                    case E_SHOT_SAVED:
+                        getStatFromName("shots:saved").nb ++;
+                        break;
+                    case E_SHOT_POST:
+                        getStatFromName("shots:post").nb ++;
+                        break;
+                    case E_CORNER:
+                        if(event.outcome == 1) getStatFromName("corners:given").nb ++;
+                        else getStatFromName("corners:obtained").nb ++;
+                        break;
+                    case E_DEF_TACKLE:
+                        getStatFromName("tackles:success").nb ++;
+                        break;
+                    case E_ERROR_CHALLENGE:
+                        getStatFromName("tackles:failed").nb ++;
+                        break;
+                    case E_FOUL:
+                        if(event.outcome == 1) getStatFromName("fould:suffered").nb ++;
+                        else getStatFromName("fouls:commited").nb ++;
+                        break;
+                    case E_DEF_INTERCEPTION:
+                        getStatFromName("interceptions").nb ++;
+                        break;
+                    case E_AERIAL_DUEL:
+                        if(event.outcome == 1) getStatFromName("aerial duel:won").nb ++;
+                        else getStatFromName("aerial duel:lost").nb ++;
+                        break;
+                    case E_ERROR_DISPOSSESSED:
+                        getStatFromName("lost ball").nb ++;
+                        break;
+                    case E_SPECIAL_TAKE_ON:
+                        if(event.outcome == 1) getStatFromName("dribble:success").nb ++;
+                        else getStatFromName("dribble:failed").nb ++;
+                        break;
+                    case E_FOUL_CARD:
+                        for(var q in event.qualifiers){
+                            var qual = event.qualifiers[q];
+                            if(qual.qid == Q_FOUL_YELLOW_CARD || qual.qid == Q_FOUL_YELLOW_CARD_SECOND){
+                                getStatFromName("cards:yellow").nb ++;
+                                break;
+                            }
+                            else if(qual.qid == Q_FOUL_RED_CARD){
+                                getStatFromName("cards:red").nb ++;
+                                break;
+                            }
+                        }
+
+                        break;
+
+
+                    //events to ignore
+                    case E_BALL_OUT:
+                    case 49://Ball recovery
+                    case 61://ball touch
+                    case 43://deleted event
+                    case E_FORMATION_PLAYER_OFF:
+                    case E_FORMATION_PLAYER_ON:
+                    case E_GK_CLAIM:
+                    case E_GK_PICK_UP:
+                    case E_GK_SAVE:
+                    case E_GK_PUNCH:
+                    case E_GK_SWEEPER:
+                    case E_GK_SMOTHER:
+                    case E_DEF_CLEARANCE:
+                    case E_SPECIAL_GOOD_SKILL:
+                    case E_DEF_OFFSIDE_PROVOKED:
+                    case E_ERROR_ERROR:
+                    case 58://penalty faced
+                        break;
+
+
+                    default: console.log("warning, unknown eid "+event.eid+" when parsing stats for "+JSON.stringify(event));
+
+                }
+            });
+        }
+
+        return stats;
+    }
+
+};
 
 function distance(o1, o2){
     return Math.sqrt((o1.x-o2.x)*((o1.x-o2.x))+(o1.y-o2.y)*((o1.y-o2.y)));
@@ -522,3 +665,11 @@ var C_DEF = [E_DEF_TACKLE, E_DEF_INTERCEPTION, E_DEF_CLEARANCE];
 var C_ERROR = [E_ERROR_TURNOVER, E_ERROR_CHALLENGE, E_ERROR_DISPOSSESSED, E_ERROR_ERROR];
 var C_SPECIAL = [E_SPECIAL_TAKE_ON, E_SPECIAL_GOOD_SKILL];
 var C_AERIAL = [E_AERIAL_DUEL];
+
+//------ --Cluster Type------------//
+var CT_Node_Link = 3140;
+var CT_Node_Link_All = 3141;
+var CT_Hive_Plot = 3142;
+var CT_Tag_Cloud = 3143;
+var CT_Matrix = 3144;
+var CT_Shoot = 3145;
