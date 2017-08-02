@@ -40,6 +40,9 @@
             var infos = new Infos(svg, 0.007*width, 0.47*height, 0.15*width, 0.5*height, data.players);
             var players = new Players(f2, data.players, infos);
             var cm = new ClusterManager(f1, s);
+            cm.addCluster(0, 0, CT_Node_Link);
+            cm.addCluster(1, 2, CT_Node_Link);
+            cm.addCluster(3, 3, CT_Node_Link);
         }
     </script>
 </body>
