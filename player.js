@@ -1,11 +1,28 @@
 /**
  * Created by WuJiang on 2017/7/23.
  */
-
-Players = function(field, data, infos) {
-    //console.log(data);
-    this.player = new Array();
+PlayersManager = function() {
     this.infos = infos;
+    this.player = new Array();
+    this.playerNum = 0;
+};
+
+PlayersManager.prototype.addPlayer = function(field, x, y, size, pid, data) {
+    this.player[this.playerNum] = new Player(field, x, y, size, pid, data);
+    this.playerNum++;
+};
+
+PlayersManager.prototype.reChoose = function(pid) {
+    for (var i = 0; i < this.player.length; i++)
+    {
+        if(this.player[i].pid == pid && this.player[i].chosen == 0) this.player[i].choose();
+        else if(this.player[i].pid != pid && this.player[i].chosen == 1) this.player[i].dechoose();
+    }
+};
+
+Players = function(field, data) {
+    //console.log(data);
+    this.size = field.r_scale(5);
 
     var num = new Array(10);
     num[0] = num[1] = num[2] = num[3] = num[4] = num[5] = num[6] = num[7] = num[8] = num[9] = 0;
@@ -30,22 +47,13 @@ Players = function(field, data, infos) {
             case "Striker": num[8]++; x = num[8] * 100 / (num[3]+1); y = 30; break;
             case "Substitute": num[9]++; x = -6; y = 105 - num[9]*8; break;
         }
-        if(field.direct == 0) this.player[i] = new Player(field, this, y, x, 10, data[i].pid, data[i]);
-        else this.player[i] = new Player(field, this, x, y, 10, data[i].pid, data[i]);
+        if(field.direct == 0) pm.addPlayer(field, 100-y, x, this.size, data[i].pid, data[i]);
+        else pm.addPlayer(field, x, y, this.size, data[i].pid, data[i]);
     }
 };
 
-Players.prototype.reChoose = function(pid) {
-    for (var i = 0; i < this.player.length; i++)
-    {
-        if(this.player[i].pid == pid && this.player[i].chosen == 0) this.player[i].choose();
-        else if(this.player[i].pid != pid && this.player[i].chosen == 1) this.player[i].dechoose();
-    }
-};
-
-Player = function (field, teammate, x, y, size, pid, data) {
+Player = function (field, x, y, size, pid, data) {
     this.field = field.fieldGroup;
-    this.teammate = teammate;
     this.x = x;
     this.y = y;
     this.size = size;
@@ -83,9 +91,9 @@ Player = function (field, teammate, x, y, size, pid, data) {
 };
 
 Player.prototype.click = function() {
-    this.teammate.reChoose(this.pid);
+    pm.reChoose(this.pid);
     console.log(this.data);
-    this.teammate.infos.changeValues(this.data);
+    pm.infos.changeValues(this.data);
 };
 
 Player.prototype.resetPos = function(x, y) {

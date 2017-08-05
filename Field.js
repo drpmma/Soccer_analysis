@@ -10,8 +10,8 @@ Field = function (svg, x, y, width, height, id, direction, subfield) {
 
     if(this.subfield == 1)
     {
-        this.x_scale = d3.scaleLinear().domain([(0-direction*10),100]).range([0, this.width]).clamp(true);
-        this.y_scale = d3.scaleLinear().domain([(-10+direction*10),100]).range([0, this.height]).clamp(true);
+        this.x_scale = d3.scaleLinear().domain([-10*direction,100]).range([0, this.width]).clamp(true);
+        this.y_scale = d3.scaleLinear().domain([-10+10*direction,100]).range([0, this.height]).clamp(true);
         this.wid_scale = d3.scaleLinear().domain([0,(100+direction*10)]).range([0, this.width]).clamp(true);
         this.hei_scale = d3.scaleLinear().domain([0,(110-direction*10)]).range([0, this.height]).clamp(true);
     }
@@ -37,12 +37,11 @@ Field = function (svg, x, y, width, height, id, direction, subfield) {
         .attr("width", width)
         .attr("height", height);
 
-    this.draw_field(direction);
+    this.draw_field();
 }
 
-
-Field.prototype.draw_field = function (direction) {
-    if(direction == 0)
+Field.prototype.draw_field = function () {
+    if(this.direct == 0)
     {
         this.draw_rect(0, 0, 100, 100)
         this.draw_circle(11, 50, 12.5)
