@@ -59,6 +59,7 @@ Cluster = function(start, end, type, num) {
     //calculate data
     this.playerNum = 0;
     this.player = new Array();
+    this.playerIndex = new Array();
     this.minx = this.sequence.nodes[end].x;
     this.miny = this.sequence.nodes[end].y;
     this.maxx = this.sequence.nodes[end].x;
@@ -84,6 +85,7 @@ Cluster = function(start, end, type, num) {
             this.player[j].avgy += this.sequence.nodes[i].y;
             this.player[j].coor.push({x: this.sequence.nodes[i].x, y: this.sequence.nodes[i].y, id: i});
         }
+        this.playerIndex[i-start] = j;
     }
     for(i = 0; i < this.playerNum; i++)
     {
@@ -239,9 +241,64 @@ Cluster.prototype.nodeLinkAll = function() {
 
 Cluster.prototype.hivePlot = function() {
     var num = this.playerNum;
-    var rstep = 5;
-    var sr = 2;
-    var br = 10;
+    var r_step = 6;
+    var r_point = 2;
+    var r_node = 10;
+    var r_center = 5;
+    var currentwid = 2*(r_center+num*r_step+2*r_node);
+    var currenthei = 2*(r_center+num*r_step+2*r_node);
+    var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
+    var currenty=(+this.cg.select("#cluster"+this.num).attr("y"))+this.cg.select("#cluster"+this.num).attr("height")/2-currenthei/2;
+
+    this.cg.select("#cluster"+this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
+        .attr("width",currentwid)
+        .attr("height",currenthei);
+    this.cg.select("#clusterrect"+this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("width",currentwid)
+        .attr("height",currenthei)
+        .attr("opacity", 1);
+    for(var i = 0; i < num; i++)
+    {
+        var coor1 = coor_change(2*i*Math.PI/num, r_center),
+            coor2 = coor_change(2*i*Math.PI/num, r_center+num*r_step),
+            coor3 = coor_change(2*i*Math.PI/num, r_center+num*r_step+r_node);
+        this.cg.select("#cluster"+this.num)
+            .append("line")
+            .attr("x1",coor1.x+currentwid/2).attr("y1",coor1.y+currenthei/2)
+            .attr("x2",coor2.x+currentwid/2).attr("y2",coor2.y+currenthei/2)
+            .attr("style","stroke:black;stroke-width:1;");
+        this.cg.select("#cluster"+this.num)
+            .append("circle")
+            .attr("cx",coor3.x+currentwid/2).attr("cy",coor3.y+currenthei/2)
+            .attr("r",r_node)
+            .attr("style","fill:none;stroke:black;stroke-width:1;");
+        this.cg.select("#cluster"+this.num)
+            .append("text")
+            .attr("x",coor3.x+currentwid/2).attr("y",coor3.y+currenthei/2)
+            .attr("style","text-anchor: middle; dominant-baseline: middle; font-size:"+r_node)
+            .text(pm.findJerseyByPid(this.player[i].pid));
+    }
+
+    for(i = this.start; i <= this.end; i++)
+    {
+        var coor = coor_change(2*this.playerIndex[i-this.start]*Math.PI/num, r_center+(i-this.start)*r_step);
+        console.log(coor);
+        this.cg.select("#cluster"+this.num)
+            .append("circle")
+            .attr("cx",coor.x+currentwid/2).attr("cy",coor.y+currenthei/2)
+            .attr("r",r_point)
+            .attr("style","fill:black;stroke:black;stroke-width:1;");
+    }
+
+    function coor_change(radian, radius) {
+        coor = {x: radius * Math.cos(radian), y: radius * Math.sin(radian)};
+        return coor;
+    }
 };
 
 Cluster.prototype.tagCloud = function() {
@@ -250,7 +307,7 @@ Cluster.prototype.tagCloud = function() {
 
 Cluster.prototype.matrixVis = function() {
     var num = this.playerNum;
-
+    var that = this;
     var size = 5, pad = 0;
     var currentwid = num*size+2*pad;
     var currenthei = num*size+2*pad;
@@ -276,9 +333,24 @@ Cluster.prototype.matrixVis = function() {
                 .append("rect")
                 .attr("id","clustersubrect"+this.num)
                 .attr("style", function() {
-                    var r, g, b;
-                    r = g = b = (i+j)*20;
-                    return "fill:rgb("+r+","+g+","+b+");"
+                    var color;
+                    var times;
+                    if(i==j) {
+                        if( that.player[i].pid == that.sequence.nodes[that.start].pid ||
+                            that.player[i].pid == that.sequence.nodes[that.end].pid)
+                            color = chooseColorByTimes(-1);
+                        else color = chooseColorByTimes(-2);
+                        return "stroke:black;stroke-width:1;"+"fill:"+color+";";
+                    }
+                    else {
+                        times = 0;
+                        for(var k = that.start; k < that.end; k++)
+                            if(that.sequence.nodes[k].pid == that.player[j].pid&&that.sequence.nodes[k+1].pid == that.player[i].pid)
+                                times++;
+                        color = chooseColorByTimes(times);
+                        return "fill:"+color+";";
+                    }
+
                 })
                 .attr("x",0)
                 .attr("y",0)
@@ -290,6 +362,22 @@ Cluster.prototype.matrixVis = function() {
                 .attr("width",size)
                 .attr("height",size);
         }
+
+    function chooseColorByTimes(times) {
+        if(times>=3) level = 2;
+        else if(times>=1) level = 1;
+        else level = times;
+
+        switch (level)
+        {
+            case -1:r =   0; g = 255; b =   0; break;
+            case -2:r = 255; g = 255; b = 255; break;
+            case 0: r = 127; g = 127; b = 127; break;
+            case 1: r =   0; g =   0; b = 255; break;
+            case 2: r = 255; g =   0; b =   0; break;
+        }
+        return "rgb("+r+","+g+","+b+")";
+    }
 };
 
 Cluster.prototype.shoot = function() {
