@@ -2,12 +2,14 @@
 <html>
 <head>
     <title>D3</title>
+    <meta charset="utf-8"/>
     <link rel="stylesheet" href="index.css" type="text/css" />
     <script src = "http://d3js.org/d3.v4.min.js"></script>
     <script type = "text/javascript" src = "Data.js"></script>
     <script type = "text/javascript" src = "Field.js"></script>
     <script type = "text/javascript" src = "Sequence.js"></script>
     <script type = "text/javascript" src = "player.js"></script>
+    <script type = "text/javascript" src = "infos.js"></script>
     <style>
         .dashed {
             stroke-dasharray: 5,5;
@@ -20,24 +22,32 @@
     <div id = "svg_div"></div>
     <script>
         d3.queue().defer(d3.json, "./data/dumpData_t1_m483676_agg0.json").await(main);
-
+        var data;
+        var infos;
+        var pm;
+        var cm;
         function main(error, jsondata) {
             if (error) throw error;
             console.log(jsondata);
 
             var width, height;
-            var data = new Data(jsondata);
+            data = new Data(jsondata);
             width = document.getElementById("svg_div").getBoundingClientRect().width;
             height = document.getElementById("svg_div").getBoundingClientRect().height;
-            var svg_field = d3.select("#svg_div").append("svg");
-            svg_field.attr("width", width).attr("height", height);
-            var f1 = new Field(svg_field, 0.3*width, 0.25*height, 0.5*width, 0.6*height, "mainfield", 0);
+            var svg = d3.select("#svg_div").append("svg");
+            svg.attr("width", width).attr("height", height);
+            var f1 = new Field(svg, 0.2*width, 0.12*height, 0.7*width, 0.84*height, "mainfield", 0, 0);
             s = new Sequence(f1.fieldGroup, data.sequences[0]);
-            var f2 = new Field(svg_field, 0, 0.55*height, 0.15*width, 0.45*height, "playerfield", 1);
-            var p = new Array();
-            for (var i = 1; i < 10; i++)
-                p[i] = new Player(f2.fieldGroup, i*10, i*10, i, i);
+            var f2 = new Field(svg, 0.007*width, 0.01*height, 0.15*width, 0.45*height, "playerfield", 1, 1);
+            infos = new Infos(svg, 0.007*width, 0.47*height, 0.15*width, 0.5*height, data.players);
+            pm = new PlayersManager();
+            var players = new Players(f2, data.players);
+            cm = new ClusterManager(f1, s);
+            cm.addCluster(0, 0, CT_Node_Link);
+            cm.addCluster(1, 2, CT_Matrix);
+            cm.addCluster(3, 3, CT_Node_Link);
         }
     </script>
+    <script type = "text/javascript" src = "cluster.js"></script>
 </body>
 </html>    
