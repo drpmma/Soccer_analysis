@@ -1,4 +1,4 @@
-Field = function (svg, x, y, width, height, id, direction, subfield) {
+Field = function (svg, x, y, width, height, id, direction, subfield,f) {
     this.svg = svg;
     this.x = x;
     this.y = y;
@@ -6,7 +6,8 @@ Field = function (svg, x, y, width, height, id, direction, subfield) {
     this.height = height;
     this.id = id;
     this.direct = direction;
-    this.subfield = subfield
+    this.subfield = subfield;
+    this.f=f;
 
     if(this.subfield == 1)
     {
@@ -36,8 +37,7 @@ Field = function (svg, x, y, width, height, id, direction, subfield) {
         .attr("transform", "translate("+x+","+y+")")
         .attr("width", width)
         .attr("height", height);
-
-    this.draw_field();
+    if(this.f==1) this.draw_field();
 }
 
 Field.prototype.draw_field = function () {
@@ -85,7 +85,8 @@ Field.prototype.draw_rect = function(x, y, width, height) {
         .attr("width", this.wid_scale(width))
         .attr("height", this.hei_scale(height))
         .attr("fill", "white")
-        .attr("stroke", "black");
+        .attr("stroke", "black")
+        .style("stroke-width","1px");
 }
 
 Field.prototype.draw_circle = function(x, y, r) {
@@ -95,7 +96,8 @@ Field.prototype.draw_circle = function(x, y, r) {
         .attr("cy", this.y_scale(y))
         .attr("r", this.r_scale(r))
         .attr("fill", "white")
-        .attr("stroke", "black");
+        .attr("stroke", "black")
+        .style("stroke-width","1px");
 }
 
 Field.prototype.draw_line = function (x1, y1, x2, y2) {
@@ -105,5 +107,6 @@ Field.prototype.draw_line = function (x1, y1, x2, y2) {
         .attr("y1", this.y_scale(y1))
         .attr("x2", this.x_scale(x2))
         .attr("y2", this.y_scale(y2))
-        .attr("stroke", "black");
+        .attr("stroke", "black")
+        .style("stroke-width","1px");
 }

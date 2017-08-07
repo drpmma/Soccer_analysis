@@ -235,7 +235,7 @@ Cluster.prototype.nodeLinkAll = function() {
         .attr("height",currenthei)
         .attr("opacity", 1);
 
-    var tempf = new Field(this.cg.select("#cluster"+this.num), pad, pad, wid, hei, "clusterfield"+this.num, 0, 1);
+    var tempf = new Field(this.cg.select("#cluster"+this.num), pad, pad, wid, hei, "clusterfield"+this.num, 0, 1,1);
     var tempp = new Players(tempf, data.players);
 };
 

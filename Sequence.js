@@ -1,4 +1,4 @@
-Sequence = function (field, sequence,r,color) {
+Sequence = function (field, sequence,r,color,f) {
     this.field = field;
     this.sequence = sequence;
     this.width = field.attr("width");
@@ -8,8 +8,11 @@ Sequence = function (field, sequence,r,color) {
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
     this.computeNodeLinks();
-    this.draw_path("link");
-    this.draw_node("node", r ,color);
+    if(f==1)
+    {
+        this.draw_path("link",0);
+        this.draw_node("node", r ,color);
+    }
 }
 
 Sequence.prototype.computeNodeLinks = function(action_id){
@@ -199,7 +202,7 @@ Sequence.prototype.draw_node = function (group, r,color)
     return this.node_container;
 }
 
-Sequence.prototype.draw_path = function (group) {
+Sequence.prototype.draw_path = function (group,gray) {
     var that = this;
     this.path_container = this.field.append("g")
         .attr("id", "path_container");
@@ -213,10 +216,20 @@ Sequence.prototype.draw_path = function (group) {
             return group + i;
         })
         .attr("stroke", function (d) {
+            if(gray==0)
             return getEventColor(d.eid);
+            else
+                return "lightgray"
+        })
+        .attr("stroke-width",function () {
+            if(gray==1)
+                return "10px";
+            else
+                return "1px"
         })
         .attr("class", function(d){
             var line_style = "";
+            if(gray==1) return "plain"
             if(C_SHOT.indexOf(d.eid)!=-1) line_style = "plain";
             else if(that.nodes[d.source].pid == that.nodes[d.target].pid) {
                 if(that.nodes[d.source].unique_id == that.nodes[d.target].unique_id) {
