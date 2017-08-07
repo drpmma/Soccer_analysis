@@ -20,6 +20,13 @@ PlayersManager.prototype.reChoose = function(pid) {
     }
 };
 
+PlayersManager.prototype.findJerseyByPid = function(pid) {
+    for (var i = 0; i < data.players.length; i++)
+        if(data.players[i].pid == pid) break;
+    if(i == data.players.length) return undefined;
+    else return data.players[i].jersey;
+};
+
 Players = function(field, data) {
     //console.log(data);
     this.size = field.r_scale(5);
