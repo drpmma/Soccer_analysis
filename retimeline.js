@@ -72,9 +72,29 @@ matchinfo = function (svg,data,width,height) {
             })
             .on("mouseenter",function () {
                 d3.select(this).select("circle")
-                    .
+                    .attr("r",0.012*height);
+                d3.select(this).select("rect")
+                    .attr("fill-opacity","0.1")
+                x=d3.select(this).select("circle")
+                    .attr("cx");
+                id=d3.select(this).select("circle").attr("id")
+                g_mouse_field=d3.select(this).append("g")
+                    .attr("id","mouse_field")
+                var click_field= new Field(g_mouse_field,x-0.04*width,0.14*height,0.08*width,0.08*height,0,0)
+                var phase_small=new Sequence(click_field.fieldGroup,data[parseInt(id[15])],4);
+            })
+            .on("mouseleave",function () {
+                d3.select(this).select("circle")
+                    .attr("r",0.008*height);
+                d3.select(this).select("rect")
+                    .attr("fill-opacity","1")
+                d3.select(this).select("#mouse_field").remove();
             })
         g.append("circle")
+            .attr("id",function()
+            {
+                return "circle_timeline"+i
+            })
             .attr("cx",function () {
                 return (0.2+(data[i].endTime.min*1.0/90)*0.6)*width;
             })
@@ -85,7 +105,18 @@ matchinfo = function (svg,data,width,height) {
                 var color=getEventColor(data[i].actions[len].eid);
                 return color;
             })
-        var smallqurt= new Field(g,0.84*width,(i*0.08+0.01)*height,0.1*width,0.07*height,0,0)
+        var smallqurt= new Field(g,0.84*width,(i*0.08+0.01)*height,0.075*width,0.07*height,0,0)
+        var phase_small=new Sequence(smallqurt.fieldGroup,data[i],3);
+        g.append("rect")
+            .attr("id","rect_g")
+            .attr("x",0.84*width)
+            .attr("y",(i*0.08+0.01)*height)
+            .attr("width",0.1*width)
+            .attr("height",0.07*height)
+            .attr("fill","gray")
+            .attr("fill-opacity","0")
+
+
     }
 }
 

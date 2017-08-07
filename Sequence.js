@@ -1,13 +1,15 @@
-Sequence = function (field, sequence) {
+Sequence = function (field, sequence,r,color) {
     this.field = field;
     this.sequence = sequence;
     this.width = field.attr("width");
     this.height = field.attr("height");
+    this.r=r;
+    this.color=color;
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
     this.computeNodeLinks();
     this.draw_path("link");
-    this.draw_node("node", 10);
+    this.draw_node("node", r ,color);
 }
 
 Sequence.prototype.computeNodeLinks = function(action_id){
@@ -176,7 +178,7 @@ Sequence.prototype.computeNodeLinks = function(action_id){
     }
 };
 
-Sequence.prototype.draw_node = function (group, r)
+Sequence.prototype.draw_node = function (group, r,color)
 {
     var that = this;
     this.node_container = this.field.append("g")
