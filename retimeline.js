@@ -81,7 +81,7 @@ matchinfo = function (svg,data,width,height) {
                 g_mouse_field=d3.select(this).append("g")
                     .attr("id","mouse_field")
                 var click_field= new Field(g_mouse_field,x-0.04*width,0.14*height,0.08*width,0.08*height,0,0)
-                var phase_small=new Sequence(click_field.fieldGroup,data[parseInt(id[15])],4);
+                var phase_small=new Sequence(click_field.fieldGroup,data[parseInt(id[15])],3,"black");
             })
             .on("mouseleave",function () {
                 d3.select(this).select("circle")
@@ -106,7 +106,7 @@ matchinfo = function (svg,data,width,height) {
                 return color;
             })
         var smallqurt= new Field(g,0.84*width,(i*0.08+0.01)*height,0.075*width,0.07*height,0,0)
-        var phase_small=new Sequence(smallqurt.fieldGroup,data[i],3);
+        var phase_small=new Sequence(smallqurt.fieldGroup,data[i],3,"black");
         g.append("rect")
             .attr("id","rect_g")
             .attr("x",0.84*width)

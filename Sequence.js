@@ -194,7 +194,7 @@ Sequence.prototype.draw_node = function (group, r,color)
         .append("circle")
         .attr("r", r)
         .attr("stroke", "black")
-        .attr("fill", "white")
+        .attr("fill", color)
         .on("mouseover", function(){d3.select(this).style("cursor", "pointer")});
     return this.node_container;
 }
