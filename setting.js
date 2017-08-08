@@ -86,6 +86,7 @@ Setting.prototype.func5 = function() {
         sel2 = document.getElementById("sequenceSettingSelect1");
     var val1 = sel1.options[sel1.selectedIndex].value,
         val2 = sel2.options[sel2.selectedIndex].value;
+    f3.viewtransform(val2,val1);
 };
 
 Setting.prototype.addSelect = function(options, setting) {
@@ -246,3 +247,4 @@ SequenceSetting = function(g, x, y, width, height){
     this.buttonNum = 0;
     this.ID = "sequenceSetting";
 };
+
