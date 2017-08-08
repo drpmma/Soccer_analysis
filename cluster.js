@@ -40,6 +40,24 @@ ClusterManager.prototype.clearAll = function() {
     for(var i = 0; i < this.clusterNum; i++) this.clusters[i].delete();
 };
 
+ClusterManager.prototype.delete = function() {
+    if(this.chosen != -1) this.clusters[this.chosen].delete();
+    else console.log("Error: There is nothing chosen to be deleted");
+};
+
+ClusterManager.prototype.change = function(style) {
+    if(this.chosen != -1)
+        switch(style)
+        {
+            case CT_Node_Link: this.clusters[this.chosen].nodeLink();break;
+            case CT_Node_Link_All: this.clusters[this.chosen].nodeLinkAll();break;
+            case CT_Matrix: this.clusters[this.chosen].matrixVis();break;
+            case CT_Tag_Cloud: this.clusters[this.chosen].tagCloud();break;
+            case CT_Hive_Plot: this.clusters[this.chosen].hivePlot();break;
+        }
+    else console.log("Error: There is nothing chosen to be changed");
+};
+
 ClusterManager.prototype.chooseCluster = function(num) {
     if(this.chosen != -1) this.clusters[this.chosen].dechosen();
     this.chosen = num;

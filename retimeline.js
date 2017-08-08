@@ -103,7 +103,7 @@ matchinfo = function (svg,field,data,width,height) {
                 d3.select("#mainfield").select("#node_container").remove();
                 id=d3.select(this).select("circle").attr("id")
                 seq = new Sequence(field.fieldGroup, data[parseInt(id.substring(15))],10,"white",1);
-                cm.clearAll();
+                if(cm != undefined) cm.clearAll();
             })
         g.append("circle")
             .attr("id",function()
