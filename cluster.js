@@ -21,6 +21,10 @@ ClusterManager = function(field, sequence) {
     this.clusters = new Array();
 };
 
+ClusterManager.prototype.clusterize = function(style) {
+    this.addCluster(0,this.sequence.nodes.length-1,style);
+};
+
 ClusterManager.prototype.addCluster = function(start, end, type) {
     this.clusters[this.clusterNum] = new Cluster(start, end, type, this.clusterNum,
                                                  this.sequence, this.originData, this.changeDuration);
@@ -190,7 +194,7 @@ Cluster = function(start, end, type, num) {
 };
 
 Cluster.prototype.delete = function() {
-
+    this.cg.select("#cluster"+this.num).remove();
 };
 
 Cluster.prototype.nodeLink = function() {
@@ -287,7 +291,7 @@ Cluster.prototype.hivePlot = function() {
     for(i = this.start; i <= this.end; i++)
     {
         var coor = coor_change(2*this.playerIndex[i-this.start]*Math.PI/num, r_center+(i-this.start)*r_step);
-        console.log(coor);
+        //console.log(coor);
         this.cg.select("#cluster"+this.num)
             .append("circle")
             .attr("cx",coor.x+currentwid/2).attr("cy",coor.y+currenthei/2)

@@ -54,7 +54,7 @@ timeline= function (svg,width,height) {
             .attr('text-align',"center" )
             .html(i*15);
     }
-}
+};
 
 matchinfo = function (svg,field,data,width,height) {
     this.svg=svg;
@@ -102,7 +102,8 @@ matchinfo = function (svg,field,data,width,height) {
                 d3.select("#mainfield").select("#path_container").remove();
                 d3.select("#mainfield").select("#node_container").remove();
                 id=d3.select(this).select("circle").attr("id")
-                s = new Sequence(field.fieldGroup, data[parseInt(id.substring(15))],10,"white",1);
+                seq = new Sequence(field.fieldGroup, data[parseInt(id.substring(15))],10,"white",1);
+                cm.clearAll();
             })
         g.append("circle")
             .attr("id",function()

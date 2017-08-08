@@ -19,7 +19,22 @@ Setting = function(x, y, width, height)
 };
 
 Setting.prototype.func1 = function() {
-    console.log("this.funct1");
+    var sel1 = document.getElementById("clusterSettingSelect0"),
+        sel2 = document.getElementById("clusterSettingSelect1");
+    var val1 = sel1.options[sel1.selectedIndex].value,
+        val2 = sel2.options[sel2.selectedIndex].value;
+    cm = new ClusterManager(mainfield, seq);
+    cm.setDuration(val1);
+    var type;
+    switch(+val2)
+    {
+        case 0:type = CT_Node_Link;break;
+        case 1:type = CT_Node_Link_All;break;
+        case 2:type = CT_Hive_Plot;break;
+        case 3:type = CT_Matrix;break;
+        case 4:type = CT_Tag_Cloud;break;
+    }
+    cm.clusterize(type);
 };
 
 Setting.prototype.func2 = function() {
@@ -74,7 +89,6 @@ Setting.prototype.addClusterSetting = function() {
         width = this.width*0.32,
         height = this.height;
     this.clusterSetting = new ClusterSetting(this.settingGroup,x,y,width,height);
-    this.ID = "clusterSetting";
 };
 
 Setting.prototype.addFieldSetting = function() {
@@ -83,7 +97,6 @@ Setting.prototype.addFieldSetting = function() {
         width = this.width*0.32,
         height = this.height;
     this.fieldSetting = new FieldSetting(this.settingGroup,x,y,width,height);
-    this.ID = "fieldSetting";
 };
 
 Setting.prototype.addSequenceSetting = function() {
@@ -92,7 +105,6 @@ Setting.prototype.addSequenceSetting = function() {
         width = this.width*0.32,
         height = this.height;
     this.sequenceSetting = new SequenceSetting(this.settingGroup,x,y,width,height);
-    this.ID = "sequenceSetting";
 };
 
 ClusterSetting = function(g, x, y, width, height){
@@ -108,6 +120,7 @@ ClusterSetting = function(g, x, y, width, height){
     this.textNum = 0;
     this.buttonList = new Array();
     this.buttonNum = 0;
+    this.ID = "clusterSetting";
 };
 
 FieldSetting = function(g, x, y, width, height){
@@ -123,6 +136,7 @@ FieldSetting = function(g, x, y, width, height){
     this.textNum = 0;
     this.buttonList = new Array();
     this.buttonNum = 0;
+    this.ID = "fieldSetting";
 };
 
 SequenceSetting = function(g, x, y, width, height){
@@ -138,6 +152,7 @@ SequenceSetting = function(g, x, y, width, height){
     this.textNum = 0;
     this.buttonList = new Array();
     this.buttonNum = 0;
+    this.ID = "sequenceSetting";
 };
 
 Setting.prototype.addElement = function()
