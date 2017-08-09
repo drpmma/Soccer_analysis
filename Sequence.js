@@ -196,12 +196,23 @@ Sequence.prototype.draw_node = function (group, r,color)
         })
         .attr("x",function(d){return that.x_scale(d.x);})
         .attr("y",function(d){return that.y_scale(d.y);})
+        .on("mouseover", function(){d3.select(this).style("cursor", "pointer")})
+        .on("click", function(d) {pm.reChoose(d.pid);})
         .append("circle")
         .attr("r", r)
         .attr("stroke", "black")
-        .attr("fill", color)
-        .on("mouseover", function(){d3.select(this).style("cursor", "pointer")})
-        .on("click", function(d) {pm.reChoose(d.pid);});
+        .attr("stroke-width", "1px;")
+        .attr("fill", color);
+
+    for(var i = 0; i < this.nodes.length; i++)
+    {
+        this.node_container
+            .select("#"+group + i)
+            .append("text")
+            .attr("x",0).attr("y",0)
+            .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
+            .text(pm.findJerseyByPid(this.nodes[i].pid));
+    }
     return this.node_container;
 }
 

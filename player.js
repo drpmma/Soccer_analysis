@@ -19,6 +19,21 @@ PlayersManager.prototype.reChoose = function(pid) {
         else if(this.player[i].pid != pid && this.player[i].chosen == 1) this.player[i].dechoose();
     }
     this.infos.changeValues(pid);
+    for( i = 0; i < seq.nodes.length; i++)
+        if(seq.nodes[i].pid == pid)
+        {
+            d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
+                .transition().duration(200)
+                .attr("stroke","red")
+                .attr("style","stroke-width: 2px;");
+        }
+        else
+        {
+            d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
+                .transition().duration(200)
+                .attr("stroke","black")
+                .attr("style","stroke-width: 1px;");
+        }
 };
 
 PlayersManager.prototype.findJerseyByPid = function(pid) {

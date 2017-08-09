@@ -22,8 +22,8 @@ ClusterManager = function(field, sequence) {
 };
 
 ClusterManager.prototype.clusterize = function(style) {
-    this.addCluster(0,this.sequence.nodes.length-2,style)
-    this.addCluster(this.sequence.nodes.length-1,this.sequence.nodes.length-1,CT_Node_Link);
+    this.addCluster(0,this.sequence.nodes.length-3,style)
+    this.addCluster(this.sequence.nodes.length-2,this.sequence.nodes.length-1,CT_Shoot);
 };
 
 ClusterManager.prototype.addCluster = function(start, end, type) {
@@ -41,15 +41,15 @@ ClusterManager.prototype.clearAll = function() {
     for(var i = 0; i < this.clusterNum; i++) this.clusters[i].Clear();
 };
 
-ClusterManager.prototype.delete = function() {
-    if(this.chosen != -1) this.clusters[this.chosen].delete();
-    else console.log("Error: There is nothing chosen to be deleted");
+ClusterManager.prototype.deleteOne = function() {
+    if(this.chosen != -1) this.clusters[this.chosen].Clear();
+    else this.clearAll();
 };
 
 ClusterManager.prototype.change = function(style) {
     if(this.chosen != -1)
     {
-        this.clusters[this.chosen].delete();
+        this.clusters[this.chosen].Clear();
         switch(style)
         {
             case CT_Node_Link: this.clusters[this.chosen].nodeLink();break;
@@ -116,10 +116,8 @@ Cluster = function(start, end, type, num) {
     var currentx = this.x_scale((this.minx+this.maxx)/2), currenty = this.y_scale((this.miny+this.maxy)/2);
     for(i = 0; i < this.playerNum; i++)
     {
-        console.log("before:",this.player[i].avgdx,this.player[i].avgdy);
         this.player[i].avgdx = this.player[i].avgdx / this.player[i].coor.length - currentx;
         this.player[i].avgdy = this.player[i].avgdy / this.player[i].coor.length - currenty;
-        console.log("after:",this.player[i].avgdx,this.player[i].avgdy);
     }
 
     //drag
@@ -233,7 +231,7 @@ Cluster.prototype.Clear = function() {
 };
 
 Cluster.prototype.nodeLink = function() {
-    var times = 0.5;
+    var times = 0.3;
     var currentwid = this.x_scale(this.maxx - this.minx)*times;
     var currenthei = this.y_scale(this.maxy - this.miny)*times;
     if(currentwid < 6) currentwid = 26;else currentwid += 20;
@@ -257,7 +255,6 @@ Cluster.prototype.nodeLink = function() {
     for(var i = this.start; i <= this.end; i++)
     {
         for(var j = 0; j < this.playerNum; j++) if(this.player[j].pid == this.sequence.nodes[i].pid) break;
-        console.log(this.player[j].pid,this.player[j].avgdx,this.player[j].avgdy);
         resetNodePos(i, this.player[j].avgdx*times+currentx+currentwid/2,
             this.player[j].avgdy*times+currenty+currenthei/2, this.changeDuration);
     }
@@ -365,7 +362,6 @@ Cluster.prototype.hivePlot = function() {
     for(i = this.start; i <= this.end; i++)
     {
         var coor = coor_change(2*this.playerIndex[i-this.start]*Math.PI/num, r_center+(i-this.start)*r_step);
-        //console.log(coor);
         resetNodePos(i, coor.x+currentwid/2+currentx, coor.y+currenthei/2+currenty, this.changeDuration);
         resetNodeSize(i, r_point, this.changeDuration);
         this.cg.select("#cluster"+this.num)
@@ -511,7 +507,6 @@ Cluster.prototype.dechosen = function() {
 };
 
 function resetNodePos(id, x, y, duration) {
-    console.log(id, x, y, duration);
     d3.select("#mainfield").select("#node_container").select("#node"+id)
         .attr("x",x).attr("y",y)
         .transition()
@@ -546,11 +541,11 @@ function repaintPath(id, duration, style) {
             }
             else if(style == -1)
             {
-                x_source = parseFloat(seq.x_scale(seq.nodes[id].x));
-                y_source = parseFloat(seq.y_scale(seq.nodes[id].y));
-                x_target = parseFloat(seq.x_scale(seq.nodes[id+1].x));
-                y_target = parseFloat(seq.y_scale(seq.nodes[id+1].y));
-                if(isLongPass(seq.links,seq.nodes[id])){
+                x_source = parseFloat(seq.x_scale(seq.nodes[seq.links[id].source].x));
+                y_source = parseFloat(seq.y_scale(seq.nodes[seq.links[id].source].y));
+                x_target = parseFloat(seq.x_scale(seq.nodes[seq.links[id].target].x));
+                y_target = parseFloat(seq.y_scale(seq.nodes[seq.links[id].target].y));
+                if(isLongPass(seq.links[id],seq.nodes[seq.links[id].source])){
                     return line(getArc(
                         x_source,
                         y_source,
