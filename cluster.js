@@ -38,7 +38,7 @@ ClusterManager.prototype.setDuration = function(duration) {
 }
 
 ClusterManager.prototype.clearAll = function() {
-    for(var i = 0; i < this.clusterNum; i++) this.clusters[i].delete();
+    for(var i = 0; i < this.clusterNum; i++) this.clusters[i].Clear();
 };
 
 ClusterManager.prototype.delete = function() {
@@ -107,8 +107,8 @@ Cluster = function(start, end, type, num) {
         }
         else
         {
-            this.player[j].avgdx += this.x_scale(this.sequence.nodes[i].x);
-            this.player[j].avgdy += this.y_scale(this.sequence.nodes[i].y);
+            this.player[j].avgdx = (+this.player[j].avgdx)+(+this.x_scale(this.sequence.nodes[i].x));
+            this.player[j].avgdy = (+this.player[j].avgdy)+(+this.y_scale(this.sequence.nodes[i].y));
             this.player[j].coor.push({x: this.sequence.nodes[i].x, y: this.sequence.nodes[i].y, id: i});
         }
         this.playerIndex[i-start] = j;
@@ -116,8 +116,10 @@ Cluster = function(start, end, type, num) {
     var currentx = this.x_scale((this.minx+this.maxx)/2), currenty = this.y_scale((this.miny+this.maxy)/2);
     for(i = 0; i < this.playerNum; i++)
     {
+        console.log("before:",this.player[i].avgdx,this.player[i].avgdy);
         this.player[i].avgdx = this.player[i].avgdx / this.player[i].coor.length - currentx;
         this.player[i].avgdy = this.player[i].avgdy / this.player[i].coor.length - currenty;
+        console.log("after:",this.player[i].avgdx,this.player[i].avgdy);
     }
 
     //drag
@@ -207,7 +209,7 @@ Cluster = function(start, end, type, num) {
     }
 };
 
-Cluster.prototype.delete = function() {
+Cluster.prototype.Clear = function() {
     currentx = this.x_scale((this.minx+this.maxx)/2);
     currenty = this.y_scale((this.miny+this.maxy)/2);
     this.cg.select("#cluster"+this.num)
@@ -222,12 +224,12 @@ Cluster.prototype.delete = function() {
     this.cg.select("g").append("g").attr("id","subClusterGroup"+this.num);
     for(var i = this.start; i <= this.end; i++)
     {
-        resetNodePos(i, this.x_scale(seq.nodes[i].x), this.y_scale(seq.nodes[i].y), this.changeDuration);
+        resetNodePos(i, +this.x_scale(seq.nodes[i].x), +this.y_scale(seq.nodes[i].y), this.changeDuration);
         resetNodeSize(i, seq.r, this.changeDuration)
     }
     if(this.start >= 1) repaintPath(this.start-1,this.changeDuration, -1);
     for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, -1)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration, -1);
+    if(this.end != seq.nodes.length-1) repaintPath(this.end, this.changeDuration, -1);
 };
 
 Cluster.prototype.nodeLink = function() {
@@ -255,6 +257,7 @@ Cluster.prototype.nodeLink = function() {
     for(var i = this.start; i <= this.end; i++)
     {
         for(var j = 0; j < this.playerNum; j++) if(this.player[j].pid == this.sequence.nodes[i].pid) break;
+        console.log(this.player[j].pid,this.player[j].avgdx,this.player[j].avgdy);
         resetNodePos(i, this.player[j].avgdx*times+currentx+currentwid/2,
             this.player[j].avgdy*times+currenty+currenthei/2, this.changeDuration);
     }
@@ -508,6 +511,7 @@ Cluster.prototype.dechosen = function() {
 };
 
 function resetNodePos(id, x, y, duration) {
+    console.log(id, x, y, duration);
     d3.select("#mainfield").select("#node_container").select("#node"+id)
         .attr("x",x).attr("y",y)
         .transition()
