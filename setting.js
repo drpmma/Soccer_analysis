@@ -45,7 +45,7 @@ Setting.prototype.func2 = function() {
     if(cm != undefined)
     {
         cm.setDuration(val1);
-        cm.delete();
+        cm.deleteOne();
     }
     else console.log("Error: There is nothing to be deleted.");
 };

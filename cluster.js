@@ -22,8 +22,8 @@ ClusterManager = function(field, sequence) {
 };
 
 ClusterManager.prototype.clusterize = function(style) {
-    this.addCluster(0,this.sequence.nodes.length-2,style)
-    this.addCluster(this.sequence.nodes.length-1,this.sequence.nodes.length-1,CT_Node_Link);
+    this.addCluster(0,this.sequence.nodes.length-3,style)
+    this.addCluster(this.sequence.nodes.length-2,this.sequence.nodes.length-1,CT_Shoot);
 };
 
 ClusterManager.prototype.addCluster = function(start, end, type) {
@@ -41,8 +41,8 @@ ClusterManager.prototype.clearAll = function() {
     for(var i = 0; i < this.clusterNum; i++) this.clusters[i].Clear();
 };
 
-ClusterManager.prototype.delete = function() {
-    if(this.chosen != -1) this.clusters[this.chosen].delete();
+ClusterManager.prototype.deleteOne = function() {
+    if(this.chosen != -1) this.clusters[this.chosen].Clear();
     else console.log("Error: There is nothing chosen to be deleted");
 };
 
