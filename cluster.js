@@ -49,7 +49,7 @@ ClusterManager.prototype.deleteOne = function() {
 ClusterManager.prototype.change = function(style) {
     if(this.chosen != -1)
     {
-        this.clusters[this.chosen].delete();
+        this.clusters[this.chosen].Clear();
         switch(style)
         {
             case CT_Node_Link: this.clusters[this.chosen].nodeLink();break;

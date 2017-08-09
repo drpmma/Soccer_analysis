@@ -1,4 +1,4 @@
-Field = function (svg, x, y, width, height, id, direction, subfield,f) {
+Field = function (svg, x, y, width, height, id, direction, subfield, f) {
     this.svg = svg;
     this.x = x;
     this.y = y;
