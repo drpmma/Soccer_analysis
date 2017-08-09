@@ -205,7 +205,7 @@ Cluster = function(start, end, type, num) {
         case CT_Hive_Plot: this.hivePlot(); break;
         case CT_Tag_Cloud: this.tagCloud(); break;
         case CT_Matrix: this.matrixVis(); break;
-        case CT_Shoot: this.shoot(); break;
+        case CT_Shoot: this.shoot(start, end); break;
     }
 };
 
@@ -486,8 +486,33 @@ Cluster.prototype.matrixVis = function() {
     }
 };
 
-Cluster.prototype.shoot = function() {
+Cluster.prototype.shoot = function(start, end) {
+    var wid = 200, hei = 200, pad = 2;
+    var currentwid = wid+2*pad;
+    var currenthei = hei+2*pad;
+    var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
+    var currenty=(+this.cg.select("#cluster"+this.num).attr("y"))+this.cg.select("#cluster"+this.num).attr("height")/2-currenthei/2;
 
+    this.cg.select("#cluster"+this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
+        .attr("width",currentwid)
+        .attr("height",currenthei);
+    this.cg.select("#clusterrect"+this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("width",currentwid)
+        .attr("height",currenthei)
+        .attr("opacity", 1);
+    var clusterGroup = this.cg.select("#subClusterGroup"+this.num);
+
+    clusterGroup.transition()
+        .duration(this.changeDuration)
+        .attr("width",currentwid)
+        .attr("height",currenthei);
+
+    this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, start, end, currentx, currenty);
 };
 
 Cluster.prototype.setDuration = function(duration) {
