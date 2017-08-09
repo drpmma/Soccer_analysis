@@ -126,23 +126,45 @@ Cluster = function(start, end, type, num) {
     var maxx = this.cg.attr("width"), maxy = this.cg.attr("height");
     function dragmove() {
         var width = d3.select(this).attr("width")/2, height = d3.select(this).attr("height")/2;
-        var xflag = 0, yflag = 0;
+        var dx, dy;
         currentx = (+currentx) + (+d3.event.dx); currenty = (+currenty) + (+d3.event.dy);
         d3.select(this)
             .attr("transform", function() {
-                if(currentx < 0-width) rex = 0-width;
-                else if(currentx > maxx-width ) rex = maxx-width;
+                if(currentx < 0-width) {
+                    rex = 0 - width;
+                    if (currentx - d3.event.dx > rex) dx = rex - currentx + d3.event.dx;
+                    else dx = 0;
+                }
+                else if(currentx > maxx-width ) {
+                    rex = maxx - width;
+                    if(currentx - d3.event.dx < rex) dx = rex - currentx + d3.event.dx;
+                    else dx = 0;
+                }
                 else
                 {
                     rex = currentx;
-                    xflag = 1;
+                    if(currentx-d3.event.dx < 0-width) dx = currentx-(0-width);
+                    else if(currentx-d3.event.dx > maxx-width) dx = currentx-(maxx-width);
+                    else dx = d3.event.dx;
                 }
-                if(currenty < 0-height) rey = 0-height;
-                else if(currenty > maxy-height ) rey = maxy-height;
+                if(currenty < 0-height)
+                {
+                    rey = 0-height;
+                    if (currenty - d3.event.dy > rey) dy = rey - currenty + d3.event.dy;
+                    else dy = 0;
+                }
+                else if(currenty > maxy-height )
+                {
+                    rey = maxy-height;
+                    if (currenty - d3.event.dy < rey) dy = rey - currenty + d3.event.dy;
+                    else dy = 0;
+                }
                 else
                 {
                     rey = currenty;
-                    yflag = 1;
+                    if(currenty-d3.event.dy < 0-height) dy = currenty-(0-height);
+                    else if(currenty-d3.event.dy > maxy-height) dy = currenty-(maxy-height);
+                    else dy = d3.event.dy;
                 }
                 return "translate(" + rex + "," + rey + ")";
             })
@@ -161,10 +183,11 @@ Cluster = function(start, end, type, num) {
 
         for(var i = start; i <= end; i++)
         {
+            //console.log(xflag,yflag);
             var x = d3.select("#node_container").select("#node"+i).attr("x"),
                 y = d3.select("#node_container").select("#node"+i).attr("y");
-            if(xflag == 1) x = (+x)+(+d3.event.dx);
-            if(yflag == 1) y = (+y)+(+d3.event.dy);
+            x = (+x)+(+dx);
+            y = (+y)+(+dy);
             resetNodePos(i, x, y, 0);
         }
         if(start>=1) repaintPath(start-1, 0, 1);
