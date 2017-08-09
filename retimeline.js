@@ -123,7 +123,7 @@ matchinfo = function (svg,field,data,width,height) {
                 return color;
             })
     }
-    this.viewtransform(0,0);
+    this.viewtransform(6,0);
 }
 matchinfo.prototype.donut =function () {
     width=this.width;
@@ -273,13 +273,18 @@ matchinfo.prototype.distancealign =function () {
         var g_sequence = d3.select("#Sequence").select(name)
         var smallqurt= new Field(g_sequence,0.84*width,(num*0.08+0.01)*height,0.075*width,0.07*height,"smallfield"+num,0,0,0);
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        min=phase_small.nodes[0].x;
+        for(var j=0;j<phase_small.nodes.length;j++)
+        {
+            if(phase_small.nodes[j].x<min) min=phase_small.nodes[j].x;
+        }
         this.g_align=g_sequence.append("g")
             .attr("id","align_g")
         this.g_align.append("rect")
             .attr("id","align_g")
-            .attr("x",0.83*width)
+            .attr("x",(0.83+min/100*0.16)*width)
             .attr("y",(num*0.05+0.01)*height)
-            .attr("width",0.16*width)
+            .attr("width",(100-min)/100*0.16*width)
             .attr("height",0.025*height)
             .attr("fill","white")
             .attr("stroke","black")
@@ -290,6 +295,47 @@ matchinfo.prototype.distancealign =function () {
             .enter().append("circle")
             .attr("cx",function (d) {
                 return ((phase_small.nodes[d.source].x/100)*0.16+0.83)*width
+            })
+            .attr("cy",function () {
+                return (num*0.05+0.02)*height
+            })
+            .attr("r",0.008*height)
+            .attr("fill",function (d,i) {
+                return getEventColor(d.eid)
+            })
+    }
+}
+matchinfo.prototype.timealign =function () {
+    width=this.width;
+    height=this.height;
+
+    for(var num=0;num<this.data.length;num++) {
+        var name = "#g_sequence" + (num + 1);
+        var g_sequence = d3.select("#Sequence").select(name)
+        var smallqurt= new Field(g_sequence,0.84*width,(num*0.08+0.01)*height,0.075*width,0.07*height,"smallfield"+num,0,0,0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        console.log(phase_small.nodes);
+        var len=phase_small.nodes.length;
+        var max=(phase_small.nodes[len-1].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[len-1].time.sec-phase_small.nodes[0].time.sec
+        if(max>10) max=10;
+        this.g_align=g_sequence.append("g")
+            .attr("id","align_g")
+        this.g_align.append("rect")
+            .attr("id","align_g")
+            .attr("x",0.83*width)
+            .attr("y",(num*0.05+0.01)*height)
+            .attr("width",(0.016*max+0.005)*width)
+            .attr("height",0.025*height)
+            .attr("fill","white")
+            .attr("stroke","black")
+            .attr("stroke-width","1px")
+            .attr("fill-opacity",1);
+        this.g_align.selectAll("circle")
+            .data(phase_small.links)
+            .enter().append("circle")
+            .attr("cx",function (d) {
+                var t=(phase_small.nodes[d.source].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[d.source].time.sec-phase_small.nodes[0].time.sec
+                return (t*0.016+0.83)*width
             })
             .attr("cy",function () {
                 return (num*0.05+0.02)*height
@@ -404,7 +450,7 @@ matchinfo.prototype.viewtransform = function (type,time) {
         case 4:this.clear();this.proj(1);break;
         case 5:this.clear();this.proj(0);break;
         case 6:this.clear();this.distancealign();break;
-        case 7:this.clear();this.distancealign();break;
+        case 7:this.clear();this.timealign();break;
         case 8:this.clear();this.donut();break;
     }
 }
