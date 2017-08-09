@@ -387,7 +387,7 @@ Cluster.prototype.tagCloud = function() {
 Cluster.prototype.matrixVis = function() {
     var num = this.playerNum;
     var that = this;
-    var size = 5, pad = 0;
+    var size = 10, pad = 0;
     var currentwid = num*size+2*pad;
     var currenthei = num*size+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -449,9 +449,10 @@ Cluster.prototype.matrixVis = function() {
 
         this.cg.select("#subClusterGroup"+this.num)
             .append("text")
-            .attr("x").attr("y")
-            .attr("style")
-            .text("");
+            .attr("x",-size/2).attr("y",size*i+size*3/4)
+            .attr("style","font-size:"+size+"; text-anchor: end")
+            //.attr("transform","rotate(-90 "+(i*size)+","+0+")")
+            .text(pm.findNameByPid(this.player[i].pid));
     }
 
     for(i = this.start; i <= this.end; i++)
@@ -536,7 +537,7 @@ function repaintPath(id, duration, style) {
                     y_source,
                     x_target,
                     y_target,
-                    10
+                    2
                 ));
             }
             else if(style == -1)
