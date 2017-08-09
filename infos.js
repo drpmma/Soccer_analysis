@@ -7,6 +7,7 @@ Infos = function(svg, x, y, width, height, data) {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.data = data;
     this.infoNum = data[0].stats.length;
     this.limit = new Array(this.infoNum);
     for(var i = 0; i < this.infoNum; i++)
@@ -122,16 +123,32 @@ Infos = function(svg, x, y, width, height, data) {
 
 };
 
-Infos.prototype.changeValues = function(data) {
-    this.infosGroup.select("#name").select("text")
-        .transition()
-        .duration(this.changeDuration)
-        .text(data.first_name + " " + data.last_name + " - " + data.jersey + " " + data.position);
-
-    for(var i = 0; i < data.stats.length; i++)
+Infos.prototype.changeValues = function(pid) {
+    var i;
+    if(pid == -1)
     {
-        this.info[i].changeValue(data.stats[i].nb);
+        this.infosGroup.select("#name").select("text")
+            .transition()
+            .duration(this.changeDuration)
+            .text("");
+
+        for (i = 0; i < this.data[0].stats.length; i++)
+            this.info[i].changeValue(0);
     }
+    else
+    {
+        for(i = 0; i < this.data.length; i++) if(this.data[i].pid == pid) break;
+        if(i != this.data.length) {
+            this.infosGroup.select("#name").select("text")
+                .transition()
+                .duration(this.changeDuration)
+                .text(this.data[i].first_name + " " + this.data[i].last_name + " - " + this.data[i].jersey + " " + this.data[i].position);
+
+            for (var j = 0; j < this.data[i].stats.length; j++)
+                this.info[j].changeValue(this.data[i].stats[j].nb);
+        }
+    }
+
 };
 
 Infos.prototype.clearAll = function() {

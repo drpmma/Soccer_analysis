@@ -194,11 +194,14 @@ Sequence.prototype.draw_node = function (group, r,color)
         .attr("transform", function (d) {
             return "translate(" + that.scale(d.x, d.y) + ")";
         })
+        .attr("x",function(d){return that.x_scale(d.x);})
+        .attr("y",function(d){return that.y_scale(d.y);})
         .append("circle")
         .attr("r", r)
         .attr("stroke", "black")
         .attr("fill", color)
-        .on("mouseover", function(){d3.select(this).style("cursor", "pointer")});
+        .on("mouseover", function(){d3.select(this).style("cursor", "pointer")})
+        .on("click", function(d) {pm.reChoose(d.pid);});
     return this.node_container;
 }
 

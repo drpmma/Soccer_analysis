@@ -18,6 +18,7 @@ PlayersManager.prototype.reChoose = function(pid) {
         if(this.player[i].pid == pid && this.player[i].chosen == 0) this.player[i].choose();
         else if(this.player[i].pid != pid && this.player[i].chosen == 1) this.player[i].dechoose();
     }
+    this.infos.changeValues(pid);
 };
 
 PlayersManager.prototype.findJerseyByPid = function(pid) {
@@ -30,6 +31,7 @@ PlayersManager.prototype.findJerseyByPid = function(pid) {
 Players = function(field, data) {
     //console.log(data);
     this.size = field.r_scale(5);
+    this.playerNum = data.length;
 
     var num = new Array(10);
     num[0] = num[1] = num[2] = num[3] = num[4] = num[5] = num[6] = num[7] = num[8] = num[9] = 0;
@@ -42,7 +44,7 @@ Players = function(field, data) {
             case "Striker": num[3]++; break;
             case "Substitute": num[4]++; break;
         }
-
+    this.pos = new Array();
     for (i = 0; i < data.length; i++)
     {
         var x, y;
@@ -54,8 +56,16 @@ Players = function(field, data) {
             case "Striker": num[8]++; x = num[8] * 100 / (num[3]+1); y = 30; break;
             case "Substitute": num[9]++; x = -6; y = 105 - num[9]*8; break;
         }
-        if(field.direct == 0) pm.addPlayer(field, 100-y, x, this.size, data[i].pid, data[i]);
-        else pm.addPlayer(field, x, y, this.size, data[i].pid, data[i]);
+        if(field.direct == 0)
+        {
+            pm.addPlayer(field, 100-y, x, this.size, data[i].pid, data[i]);
+            this.pos.push({pid: data[i].pid, x: 100-y, y: x});
+        }
+        else
+        {
+            pm.addPlayer(field, x, y, this.size, data[i].pid, data[i]);
+            this.pos.push({pid: data[i].pid, x: x, y: y});
+        }
     }
 };
 
@@ -100,7 +110,7 @@ Player = function (field, x, y, size, pid, data) {
 Player.prototype.click = function() {
     pm.reChoose(this.pid);
     console.log(this.data);
-    pm.infos.changeValues(this.data);
+    //pm.infos.changeValues(this.data);
 };
 
 Player.prototype.resetPos = function(x, y) {
