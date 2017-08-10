@@ -78,7 +78,7 @@ Field.prototype.draw_field = function () {
 }
 
 Field.prototype.draw_rect = function(x, y, width, height) {
-    this.fieldGroup.append("rect")
+    var rect = this.fieldGroup.append("rect")
         .attr("class", "fieldRect")
         .attr("x", this.x_scale(x))
         .attr("y", this.y_scale(y))
@@ -87,6 +87,7 @@ Field.prototype.draw_rect = function(x, y, width, height) {
         .attr("fill", "white")
         .attr("stroke", "black")
         .style("stroke-width","1px");
+    return rect;
 }
 
 Field.prototype.draw_circle = function(x, y, r) {

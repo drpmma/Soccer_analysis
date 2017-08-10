@@ -363,6 +363,9 @@ function getArc(sx,sy,tx,ty,r){
         {x:tx, y:ty}];
 }
 
+function isShot(action){
+    return C_SHOT.indexOf(action.eid) != -1;
+}
 
 var PID_SHOT_DEST = -1;
 /*

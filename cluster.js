@@ -487,7 +487,7 @@ Cluster.prototype.matrixVis = function() {
 };
 
 Cluster.prototype.shoot = function(start, end) {
-    var wid = 210, hei = 270, pad = 2;
+    var wid = 180, hei = 270, pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -552,6 +552,10 @@ function resetNodeSize(id, r, duration) {
 }
 
 function repaintPath(id, duration, style) {
+    if(style == 2){
+        d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
+            .attr("stroke-width", "5");
+    }
     d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
         .transition().duration(duration)
         .attr("d", function(d){
@@ -560,7 +564,7 @@ function repaintPath(id, duration, style) {
                 y_source = (+d3.select("#mainfield").select("#node_container").select("#node"+id).attr("y")),
                 x_target = (+d3.select("#mainfield").select("#node_container").select("#node"+(id+1)).attr("x")),
                 y_target = (+d3.select("#mainfield").select("#node_container").select("#node"+(id+1)).attr("y"));
-            if(style == 0){
+            if(style == 0 || style == 2){
                 return line(getArc(
                     x_source,
                     y_source,
