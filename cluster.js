@@ -507,7 +507,8 @@ Cluster.prototype.matrixVis = function() {
 };
 
 Cluster.prototype.shoot = function(start, end) {
-    var wid = 180, hei = 270, pad = 2;
+    var wid = 210, hei = 320, pad = 2;
+    var panelHeight = 60;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -532,7 +533,7 @@ Cluster.prototype.shoot = function(start, end) {
         .attr("width",currentwid)
         .attr("height",currenthei);
 
-    this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, start, end, currentx, currenty);
+    this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, panelHeight, start, end, currentx, currenty);
 };
 
 Cluster.prototype.setDuration = function(duration) {

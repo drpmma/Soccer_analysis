@@ -367,6 +367,10 @@ function isShot(action){
     return C_SHOT.indexOf(action.eid) != -1;
 }
 
+function catchEvent(){
+    if(d3.event)d3.event.stopPropagation();
+}
+
 var PID_SHOT_DEST = -1;
 /*
  Constants for shots
