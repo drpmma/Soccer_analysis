@@ -73,15 +73,19 @@ Setting.prototype.func3 = function() {
 };
 
 Setting.prototype.func4 = function() {
-    console.log("this.funct4");
     var sel1 = document.getElementById("fieldSettingSelect0"),
         sel2 = document.getElementById("fieldSettingSelect1");
     var val1 = sel1.options[sel1.selectedIndex].value,
         val2 = sel2.options[sel2.selectedIndex].value;
+
+    switch (+val2)
+    {
+        case 0: pm.changeToCircle();break;
+        case 1: pm.changeToJersey();break;
+    }
 };
 
 Setting.prototype.func5 = function() {
-    console.log("this.funct5");
     var sel1 = document.getElementById("sequenceSettingSelect0"),
         sel2 = document.getElementById("sequenceSettingSelect1");
     var val1 = sel1.options[sel1.selectedIndex].value,

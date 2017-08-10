@@ -705,6 +705,8 @@ function resetNodePos(id, x, y, duration) {
 }
 
 function resetNodeSize(id, r, duration) {
+    d3.select("#mainfield").select("#node_container").select("#node"+id)
+        .attr("size", r);
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("circle")
         .transition()
         .duration(duration)

@@ -36,6 +36,51 @@ PlayersManager.prototype.reChoose = function(pid) {
         }
 };
 
+PlayersManager.prototype.changeToCircle = function() {
+    for (var i = 0; i < this.player.length; i++)
+        this.player[i].drawCircle();
+    for( i = 0; i < seq.nodes.length; i++)
+    {
+        var size = d3.select("#mainfield").select("#node_container").select("#node"+i).attr("size");
+        d3.select("#mainfield").select("#node_container").select("#node"+i).select("path").remove();
+        d3.select("#mainfield").select("#node_container").select("#node"+i).insert("circle","text")
+            .attr("cx", 0)
+            .attr("cy", 0)
+            .attr("r", 0)
+            .transition()
+            .duration(200)
+            .attr("r", size)
+            .attr("style", "stroke: black; fill: whitesmoke; stroke-width: 1px");
+    }
+};
+
+PlayersManager.prototype.changeToJersey = function() {
+    for (var i = 0; i < this.player.length; i++)
+        this.player[i].drawJersey();
+    for( i = 0; i < seq.nodes.length; i++)
+    {
+        var size = d3.select("#mainfield").select("#node_container").select("#node"+i).attr("size");
+        d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle").remove();
+        d3.select("#mainfield").select("#node_container").select("#node"+i).insert("path","text")
+            .attr("d","M "+(-0.4*size)+" "+(-0.9*size)+
+                " L "+(-0.9*size)+" "+(-0.1*size)+
+                " L "+(-0.8*size)+" "+(0.2*size)+
+                " L "+(-0.6*size)+" "+(-0.1*size)+
+                " L "+(-0.6*size)+" "+(0.7*size)+
+                " L "+(0.6*size)+" "+(0.7*size)+
+                " L "+(0.6*size)+" "+(-0.1*size)+
+                " L "+(0.8*size)+" "+(0.2*size)+
+                " L "+(0.9*size)+" "+(-0.1*size)+
+                " L "+(0.4*size)+" "+(-0.9*size)+
+                " Z")
+            .attr("style", "stroke: black; fill: whitesmoke; stroke-width: 1px;")
+            .attr("opacity", 0)
+            .transition()
+            .duration(200)
+            .attr("opacity", 1);
+    }
+};
+
 PlayersManager.prototype.findJerseyByPid = function(pid) {
     for (var i = 0; i < data.players.length; i++)
         if(data.players[i].pid == pid) break;
