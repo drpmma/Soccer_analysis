@@ -105,7 +105,7 @@ matchinfo = function (svg,field,data,width,height) {
                 id=d3.select(this).select("circle").attr("id")
                 if(cm != undefined) cm.clearAll();
                 seq = new Sequence(field.fieldGroup, data[parseInt(id.substring(15))],10,"white",1);
-                cm = new ClusterManager(field, seq);
+                // cm = new ClusterManager(field, seq);
             })
         g.append("circle")
             .attr("id",function()
