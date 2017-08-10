@@ -47,7 +47,7 @@ ClusterManager.prototype.deleteOne = function() {
 };
 
 ClusterManager.prototype.change = function(style) {
-    if(this.chosen != -1)
+    if(this.chosen != -1 && this.clusters[this.chosen].type != CT_Shoot)
     {
         this.clusters[this.chosen].Clear();
         switch(style)
@@ -78,6 +78,7 @@ Cluster = function(start, end, type, num) {
     this.data = cm.originData;
     this.changeDuration = cm.changeDuration;
     this.isChosen = 0;
+    this.cleared = 0;
 
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0,this.cg.attr("width")]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0,this.cg.attr("height")]).clamp(true);
@@ -232,6 +233,7 @@ Cluster = function(start, end, type, num) {
 };
 
 Cluster.prototype.Clear = function() {
+    if(this.cleared == 1) return;
     currentx = this.x_scale((this.minx+this.maxx)/2);
     currenty = this.y_scale((this.miny+this.maxy)/2);
     this.cg.select("#cluster"+this.num)
@@ -253,7 +255,7 @@ Cluster.prototype.Clear = function() {
     if(this.start >= 1) repaintPath(this.start-1,this.changeDuration, -1);
     for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, -1)
     if(this.end != seq.nodes.length-1) repaintPath(this.end, this.changeDuration, -1);
-    this.start = this.end+1;
+    this.cleared = 1;
 };
 
 Cluster.prototype.nodeLink = function() {
@@ -299,6 +301,7 @@ Cluster.prototype.nodeLink = function() {
     if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
 
     this.type = CT_Node_Link;
+    this.cleared = 0;
 };
 
 Cluster.prototype.nodeLinkAll = function() {
@@ -340,6 +343,7 @@ Cluster.prototype.nodeLinkAll = function() {
             y = tempf.y_scale(tempp.pos[j].y)+currenty+pad;
             resetNodePos(i, x, y, this.changeDuration);
             resetNodeSize(i, tempf.r_scale(5), this.changeDuration);
+            showNodeText(i, this.changeDuration);
         }
     }
     if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
@@ -347,6 +351,7 @@ Cluster.prototype.nodeLinkAll = function() {
     if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
 
     this.type = CT_Node_Link_All;
+    this.cleared = 0;
 };
 
 Cluster.prototype.hivePlot = function() {
@@ -416,6 +421,7 @@ Cluster.prototype.hivePlot = function() {
     }
 
     this.type = CT_Hive_Plot;
+    this.cleared = 0;
 };
 
 Cluster.prototype.tagCloud = function() {
@@ -504,6 +510,7 @@ Cluster.prototype.tagCloud = function() {
     if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
 
     this.type = CT_Tag_Cloud;
+    this.cleared = 0;
 };
 
 Cluster.prototype.matrixVis = function() {
@@ -606,6 +613,7 @@ Cluster.prototype.matrixVis = function() {
     }
 
     this.type = CT_Matrix;
+    this.cleared = 0;
 };
 
 Cluster.prototype.shoot = function(start, end) {
@@ -637,6 +645,7 @@ Cluster.prototype.shoot = function(start, end) {
     this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, start, end, currentx, currenty);
 
     this.type = CT_Shoot;
+    this.cleared = 0;
 };
 
 Cluster.prototype.setDuration = function(duration) {
