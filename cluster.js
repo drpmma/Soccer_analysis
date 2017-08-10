@@ -404,7 +404,88 @@ Cluster.prototype.hivePlot = function() {
 };
 
 Cluster.prototype.tagCloud = function() {
+    var that = this;
+    var players = new Array();
 
+    for (var i = 0; i < this.player.length; i++) {
+        players.push({
+            size: Math.floor(Math.random()*11+10),
+            pid: that.player[i].pid,
+            x: i,
+            y: i,
+            rotate: 0,
+            text: pm.findNameByPid(that.player[i].pid)
+        })
+    }
+    console.log(players);
+
+    var currentwid = Math.max(150,d3.sum(players,function(d){return d.size}));
+    var currenthei = Math.max(150,d3.sum(players,function(d){return d.size}));
+    var currentx = (+this.cg.select("#cluster" + this.num).attr("x")) + this.cg.select("#cluster" + this.num).attr("width") / 2 - currentwid / 2;
+    var currenty = (+this.cg.select("#cluster" + this.num).attr("y")) + this.cg.select("#cluster" + this.num).attr("height") / 2 - currenthei / 2;
+    var size = 2;
+
+    this.cg.select("#cluster" + this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("transform", "translate(" + currentx + "," + currenty + ")").attr("x", currentx).attr("y", currenty)
+        .attr("width", currentwid)
+        .attr("height", currenthei);
+    this.cg.select("#clusterrect" + this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("width", currentwid)
+        .attr("height", currenthei)
+        .attr("opacity", 1);
+    this.cg.select("#subClusterGroup" + this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("width", currentwid)
+        .attr("height", currenthei);
+
+    var fill = d3.scaleOrdinal(d3.schemeCategory20);
+
+    d3.layout.cloud().size([currentwid, currenthei])
+        .words(players)
+        .rotate(0)
+        .font("Impact")
+        .fontSize(function(d) { return d.size;})
+        .on("end", draw)
+        .start();
+
+    function draw(words) {
+        console.log(words);
+        that.cg.select("#subClusterGroup"+that.num)
+            .append("g")
+            .attr("transform", "translate("+[currentwid/2,currenthei/2]+")")
+            .selectAll("text.word")
+            .data(words)
+            .enter()
+            .append("text")
+            .attr("class","word")
+            .style("font-size", function(d) { return d.size + "px"; })
+            .attr("pid",function(d){return d.pid})
+            .style("font-family", "Impact")
+            .style("fill", function(d, i) { return fill(i); })
+            .attr("text-anchor", "middle")
+            .attr("transform", function(d) {
+                return "translate(" + [d.x, d.y] + ")rotate(0)";
+            })
+            .text(function(d) { return d.text; });
+        for(i = that.start; i <= that.end; i++)
+        {
+            for(j = 0; j < words.length; j++)
+            if(that.sequence.nodes[i].pid == words[j].pid)
+            {
+                resetNodePos(i, currentx+currentwid/2+words[j].x+words[j].x0, currenty+currenthei/2+words[j].y+words[j].y0/2, that.changeDuration);
+                resetNodeSize(i, size, that.changeDuration);
+            }
+        }
+    }
+
+    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
+    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
 };
 
 Cluster.prototype.matrixVis = function() {
