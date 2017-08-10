@@ -711,6 +711,20 @@ function resetNodeSize(id, r, duration) {
         .transition()
         .duration(duration)
         .attr("r",r);
+    d3.select("#mainfield").select("#node_container").select("#node"+id).select("path")
+        .transition()
+        .duration(duration)
+        .attr("d","M "+(-0.4*r)+" "+(-0.9*r)+
+            " L "+(-0.9*r)+" "+(-0.1*r)+
+            " L "+(-0.8*r)+" "+(0.2*r)+
+            " L "+(-0.6*r)+" "+(-0.1*r)+
+            " L "+(-0.6*r)+" "+(0.7*r)+
+            " L "+(0.6*r)+" "+(0.7*r)+
+            " L "+(0.6*r)+" "+(-0.1*r)+
+            " L "+(0.8*r)+" "+(0.2*r)+
+            " L "+(0.9*r)+" "+(-0.1*r)+
+            " L "+(0.4*r)+" "+(-0.9*r)+
+            " Z");
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
         .transition()
         .duration(duration)
