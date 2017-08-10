@@ -22,8 +22,35 @@ ClusterManager = function(field, sequence) {
 };
 
 ClusterManager.prototype.clusterize = function(style) {
-    this.addCluster(0,this.sequence.nodes.length-3,style)
-    this.addCluster(this.sequence.nodes.length-2,this.sequence.nodes.length-1,CT_Shoot);
+    var i = 0;
+    while(i < this.sequence.nodes.length)
+    {
+        if(i != this.sequence.nodes.length -1) {
+            switch (this.sequence.links[i].eid) {
+                case E_PASS: case E_RUN:
+                    var j = i;
+                    while (j < this.sequence.links.length) {
+                        if( ((this.sequence.links[j].eid == E_PASS)&&(!isLongPass(this.sequence.links[j],this.sequence.nodes[j])))||
+                            (this.sequence.links[j].eid == E_RUN))
+                            j++;
+                        else break;
+                    }
+                    if(j - i >= 3) {this.addCluster(i, j, style);i = j+1;}
+                    else {this.addCluster(i, i, CT_Node_Link);i = i+1;}
+                    break;
+                case E_SHOT_CHANCE_MISSED:case E_SHOT_GOAL:case E_SHOT_MISS:case E_SHOT_POST:case E_SHOT_SAVED:
+                    if(i == this.sequence.nodes.length-2) {this.addCluster(i, i+1, CT_Shoot);i = i+2;}
+                    else {this.addCluster(i, i, CT_Node_Link);i = i+1;}
+                    break;
+                default: this.addCluster(i, i, CT_Node_Link);i = i+1;
+            }
+        }
+        else
+        {
+            this.addCluster(this.sequence.nodes.length -1, this.sequence.nodes.length -1, CT_Node_Link);
+            i = i+1;
+        }
+    }
 };
 
 ClusterManager.prototype.addCluster = function(start, end, type) {
@@ -39,6 +66,7 @@ ClusterManager.prototype.setDuration = function(duration) {
 
 ClusterManager.prototype.clearAll = function() {
     for(var i = 0; i < this.clusterNum; i++) this.clusters[i].Clear();
+    this.clusterGroup.remove();
 };
 
 ClusterManager.prototype.deleteOne = function() {
@@ -184,7 +212,6 @@ Cluster = function(start, end, type, num) {
 
         for(var i = start; i <= end; i++)
         {
-            //console.log(xflag,yflag);
             var x = d3.select("#node_container").select("#node"+i).attr("x"),
                 y = d3.select("#node_container").select("#node"+i).attr("y");
             x = (+x)+(+dx);
@@ -287,12 +314,15 @@ Cluster.prototype.nodeLink = function() {
             this.player[j].avgdy*times+currenty+currenthei/2, this.changeDuration);
         if(i == this.start || i == this.end)
         {
-            resetNodeSize(i, seq.r*times*2, this.changeDuration);
+            resetNodeSize(i, seq.r*times*3, this.changeDuration);
             showNodeText(i, this.changeDuration);
         }
         else
         {
-            resetNodeSize(i, seq.r*times, this.changeDuration);
+            if( this.sequence.nodes[i].pid == this.sequence.nodes[this.start].pid ||
+                this.sequence.nodes[i].pid == this.sequence.nodes[this.end].pid)
+                resetNodeSize(i, 0, this.changeDuration);
+            else resetNodeSize(i, seq.r*times, this.changeDuration);
             hideNodeText(i, this.changeDuration);
         }
     }
@@ -438,7 +468,6 @@ Cluster.prototype.tagCloud = function() {
             text: pm.findNameByPid(that.player[i].pid)
         })
     }
-    console.log(players);
 
     var currentwid = Math.max(150,d3.sum(players,function(d){return d.size}));
     var currenthei = Math.max(150,d3.sum(players,function(d){return d.size}));
@@ -475,7 +504,6 @@ Cluster.prototype.tagCloud = function() {
         .start();
 
     function draw(words) {
-        console.log(words);
         that.cg.select("#subClusterGroup"+that.num)
             .append("g")
             .attr("transform", "translate("+[currentwid/2,currenthei/2]+")")
@@ -702,11 +730,6 @@ function showNodeText(id, duration) {
 }
 
 function repaintPath(id, duration, style) {
-    // if(style == 2){
-    //     d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
-    //         .attr("stroke-width", "5");
-    // }
-    console.log(style);
     d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
         .transition().duration(duration)
         .attr("style", function() {
@@ -735,7 +758,7 @@ function repaintPath(id, duration, style) {
                     // y_source = parseFloat(seq.y_scale(seq.nodes[seq.links[id].source].y));
                     // x_target = parseFloat(seq.x_scale(seq.nodes[seq.links[id].target].x));
                     // y_target = parseFloat(seq.y_scale(seq.nodes[seq.links[id].target].y));
-                    if(isLongPass(seq.links[id],seq.nodes[seq.links[id].source])){
+                    if(isLongPass(seq.links[id],seq.nodes[id])){
                         return line(getArc(
                             x_source,
                             y_source,
