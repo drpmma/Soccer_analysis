@@ -5,13 +5,14 @@ ShotVis = function (Sequence, clusterGroup, width, height, pad, shotNum, endNum,
     this.height = height;
     this.pad = pad;
     this.shotNode = this.Sequence.nodes[shotNum];
+    this.shotNum = shotNum;
     this.endNode = this.Sequence.nodes[endNum];
-    this.field = new Field(this.clusterGroup, pad, pad, width, height, "clusterField", 0, 0, 0);
+    this.endNum = endNum;
+    this.currentX = currentX;
+    this.currentY = currentY;
+    this.field = new Field(this.clusterGroup, pad, pad, 180, 150, "clusterField", 0, 0, 0);
     this.drawHalfField();
-    resetNodePos(shotNum, (this.shotNode.x - 50)/50 * this.width + currentX, (this.shotNode.y)/100 * this.height + currentY, 100);
-    resetNodePos(endNum, (this.endNode.x - 50)/50 * this.width + currentX, (this.endNode.y)/100 * this.height + currentY, 100);
-    repaintPath(shotNum - 1, 100, 1);
-    repaintPath(endNum - 1, 100, 0);
+    this.drawPosition();
 }
 
 ShotVis.prototype.drawHalfField = function () {
@@ -48,6 +49,17 @@ ShotVis.prototype.drawHalfField = function () {
         this.field.draw_circle(22, 50, 1);
         this.field.draw_circle(100, 50, 1);
     }
+}
+
+ShotVis.prototype.drawPosition = function(){
+    var width = this.field.fieldGroup.attr("width");
+    var height = this.field.fieldGroup.attr("height");
+    resetNodePos(this.shotNum, (this.shotNode.x - 50)/50 * width + this.currentX,
+        (this.shotNode.y)/100 * height + this.currentY, 100);
+    resetNodePos(this.endNum, (this.endNode.x - 50)/50 * width + this.currentX,
+        (this.endNode.y)/100 * height + this.currentY, 100);
+    repaintPath(this.shotNum - 1, 100, 1);
+    repaintPath(this.endNum - 1, 100, 0);
 }
 
 // ShotVis.prototype.getShotNode = function () {
