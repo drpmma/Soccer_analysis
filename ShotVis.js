@@ -18,6 +18,8 @@ ShotVis = function (Sequence, clusterGroup, width, height, pad, shotNum, endNum,
     this.drawSplitLine();
     this.drawPost();
     this.drawPosition();
+
+    this.drawShots();
 }
 
 ShotVis.prototype.drawHalfField = function () {
@@ -47,27 +49,21 @@ ShotVis.prototype.drawHalfField = function () {
 
 ShotVis.prototype.drawPosition = function(){
     var that = this;
-    var resetX = function(y){
-        return y/100 * that.fieldWidth + that.currentX;
-    };
-    var resetY = function(x){
-        return (50 - Math.abs(x - 50))/50 * that.fieldHeight + that.currentY + that.height - that.fieldHeight;
-    };
 
     var endX, endY;
     var style;
     var shot_dest = getShotDestination(this.Sequence.links[this.Sequence.links.length - 1]);
     if(shot_dest.type == SHOT_DEST_TYPE_MOUTH){
-        endX = this.currentX + this.post_x_scale(shot_dest.y)/100 * this.width;
-        endY = this.currentY + (100 - this.post_y_scale(shot_dest.z))/100 * (this.height - this.fieldHeight);
+        endX = this.setPostX(shot_dest.y);
+        endY = this.setPostY(shot_dest.z);
         style = 2;
     }
     else{
-        endX = resetX(this.endNode.y);
-        endY = resetY(this.endNode.x);
+        endX = this.resetX(this.endNode.y);
+        endY = this.resetY(this.endNode.x);
         style = 0;
     }
-    resetNodePos(this.shotNum, resetX(this.shotNode.y), resetY(this.shotNode.x), 100);
+    resetNodePos(this.shotNum, this.resetX(this.shotNode.y), this.resetY(this.shotNode.x), 100);
     resetNodePos(this.endNum, endX, endY, 100);
     repaintPath(this.shotNum - 1, 100, 1);
     repaintPath(this.endNum - 1, 100, style);
@@ -104,6 +100,68 @@ ShotVis.prototype.drawPost = function () {
 
 ShotVis.prototype.drawShots = function () {
     var that = this;
+    if(this.shots == undefined){
+        this.shots = this.clusterGroup.append("g")
+            .attr("class", "shotContext")
+            .selectAll("g")
+            .data(this.context_data)
+            .enter()
+            .append("g")
+            .attr("class", function (d) {
+                return "shots_" + d.shot_type;
+            });
+    }
+    this.shots.append("circle")
+        .attr("class", "shotNode")
+        .attr("transform", function (d) {
+            return "translate(" + [that.resetX(d.y) - that.currentX, that.resetY(d.x) - that.currentY] + ")";
+        })
+        .attr("r", 3)
+        .attr("fill", function (d) {
+            return that.getShotColor(d);
+        });
+    this.shots.each(function (d) {
+        var mouth = that.getMouth(d);
+        if(mouth != null){
+            d3.select(this).append("circle")
+                .attr("class", "shotNode")
+                .attr("transform", function () {
+                    return "translate(" + [that.setPostX(mouth[0]) - that.currentX,
+                        that.setPostY(mouth[1]) - that.currentY] + ")";
+                })
+                .attr("r", 3)
+                .attr("fill", function (d) {
+                    return that.getShotColor(d);
+                });
+
+            d3.select(this).append("line")
+                .attr("class", "shotLine")
+                .attr("x1", function (d) {
+                    return that.resetX(d.y) - that.currentX;
+                })
+                .attr("y1", function (d) {
+                    return that.resetY(d.x) - that.currentY;
+                })
+                .attr("x2", function () {
+                    return that.setPostX(mouth[0]) - that.currentX;
+                })
+                .attr("y2", function () {
+                    return that.setPostY(mouth[1]) - that.currentY;
+                })
+                .attr("stroke", function (d) {
+                    return that.getShotColor(d);
+                })
+                .attr("stroke-width", 2);
+        }
+        else{
+            var blocked = that.getBlocked(d);
+            if(blocked != null){
+            }
+            else{
+            }
+        }
+
+    })
 }
 
 ShotVis.prototype.getShotType = function(shot){
@@ -181,15 +239,34 @@ ShotVis.prototype.getContextData = function(){
     }
 };
 
-// ShotVis.prototype.getShotNode = function () {
-//     var shotNode = -1;
-//     for(var s in this.Sequence.nodes)
-//     {
-//         if(this.Sequence.nodes[s].eid >= 13 && this.Sequence.nodes[s].eid <= 16 || this.Sequence.nodes[s].eid == 60)
-//         {
-//             shotNode = this.Sequence.nodes[s];
-//             break;
-//         }
-//     }
-//     return shotNode;
-// }
+ShotVis.prototype.resetX = function(y){
+    return y/100 * this.fieldWidth + this.currentX;
+};
+
+ShotVis.prototype.resetY = function(x){
+    return (50 - Math.abs(x - 50))/50 * this.fieldHeight + this.currentY + this.height - this.fieldHeight;
+};
+
+ShotVis.prototype.setPostX = function (x) {
+    return this.currentX + this.post_x_scale(x)/100 * this.width;
+};
+
+ShotVis.prototype.setPostY = function (y) {
+    return this.currentY + (100 - this.post_y_scale(y))/100 * (this.distanceHeight);
+};
+
+ShotVis.prototype.getShotColor = function (d) {
+    switch(d.shot_type) {
+        case "goal":
+            return "green";
+        case "post":
+            return "pink";
+        case "saved":
+            return "blue";
+        case "missed":
+            return "red";
+        default:
+            console.log("unknown name for shot: " + d.name);
+            return "yellow";
+    }
+}
