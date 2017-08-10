@@ -123,7 +123,7 @@ matchinfo = function (svg,field,data,width,height) {
                 return color;
             })
     }
-    this.viewtransform(6,0);
+    this.viewtransform(0,0);
 }
 matchinfo.prototype.donut =function () {
     width=this.width;

@@ -55,22 +55,19 @@ ShotVis.prototype.drawPosition = function(){
     };
 
     var endX, endY;
-    var style;
     var shot_dest = getShotDestination(this.Sequence.links[this.Sequence.links.length - 1]);
     if(shot_dest.type == SHOT_DEST_TYPE_MOUTH){
         endX = this.currentX + this.post_x_scale(shot_dest.y)/100 * this.width;
         endY = this.currentY + (100 - this.post_y_scale(shot_dest.z))/100 * (this.height - this.fieldHeight);
-        style = 2;
     }
     else{
         endX = resetX(this.endNode.y);
         endY = resetY(this.endNode.x);
-        style = 0;
     }
     resetNodePos(this.shotNum, resetX(this.shotNode.y), resetY(this.shotNode.x), 100);
     resetNodePos(this.endNum, endX, endY, 100);
     repaintPath(this.shotNum - 1, 100, 1);
-    repaintPath(this.endNum - 1, 100, style);
+    repaintPath(this.endNum - 1, 100, 2);
 }
 
 ShotVis.prototype.drawSplitLine = function () {
