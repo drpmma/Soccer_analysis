@@ -23,6 +23,7 @@ Setting.prototype.func1 = function() {
     var val1 = sel1.options[sel1.selectedIndex].value,
         val2 = sel2.options[sel2.selectedIndex].value;
     if(cm != undefined) cm.clearAll();
+    setTimeout(function(){ }, 100);
     cm = new ClusterManager(mainfield, seq);
     cm.setDuration(val1);
     var type;

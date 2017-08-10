@@ -191,7 +191,8 @@ Cluster = function(start, end, type, num) {
             resetNodePos(i, x, y, 0);
         }
         if(start>=1) repaintPath(start-1, 0, 1);
-        for(i = start; i < end; i++) repaintPath(i, 0, 0);
+        if(that.type == CT_Shoot) for(i = start; i < end; i++) repaintPath(i, 0, 2);
+        else for(i = start; i < end; i++) repaintPath(i, 0, 0);
         if(end != seq.nodes.length-1) repaintPath(end, 0, 1);
     }
 
@@ -246,11 +247,13 @@ Cluster.prototype.Clear = function() {
     for(var i = this.start; i <= this.end; i++)
     {
         resetNodePos(i, +this.x_scale(seq.nodes[i].x), +this.y_scale(seq.nodes[i].y), this.changeDuration);
-        resetNodeSize(i, seq.r, this.changeDuration)
+        resetNodeSize(i, seq.r, this.changeDuration);
+        showNodeText(i, this.changeDuration);
     }
     if(this.start >= 1) repaintPath(this.start-1,this.changeDuration, -1);
     for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, -1)
     if(this.end != seq.nodes.length-1) repaintPath(this.end, this.changeDuration, -1);
+    this.start = this.end+1;
 };
 
 Cluster.prototype.nodeLink = function() {
@@ -280,10 +283,22 @@ Cluster.prototype.nodeLink = function() {
         for(var j = 0; j < this.playerNum; j++) if(this.player[j].pid == this.sequence.nodes[i].pid) break;
         resetNodePos(i, this.player[j].avgdx*times+currentx+currentwid/2,
             this.player[j].avgdy*times+currenty+currenthei/2, this.changeDuration);
+        if(i == this.start || i == this.end)
+        {
+            resetNodeSize(i, seq.r*times*2, this.changeDuration);
+            showNodeText(i, this.changeDuration);
+        }
+        else
+        {
+            resetNodeSize(i, seq.r*times, this.changeDuration);
+            hideNodeText(i, this.changeDuration);
+        }
     }
     if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
     for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
     if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+
+    this.type = CT_Node_Link;
 };
 
 Cluster.prototype.nodeLinkAll = function() {
@@ -330,6 +345,8 @@ Cluster.prototype.nodeLinkAll = function() {
     if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
     for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
     if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+
+    this.type = CT_Node_Link_All;
 };
 
 Cluster.prototype.hivePlot = function() {
@@ -387,11 +404,7 @@ Cluster.prototype.hivePlot = function() {
         var coor = coor_change(2*this.playerIndex[i-this.start]*Math.PI/num, r_center+(i-this.start)*r_step);
         resetNodePos(i, coor.x+currentwid/2+currentx, coor.y+currenthei/2+currenty, this.changeDuration);
         resetNodeSize(i, r_point, this.changeDuration);
-        this.cg.select("#cluster"+this.num)
-            .append("circle")
-            .attr("cx",coor.x+currentwid/2).attr("cy",coor.y+currenthei/2)
-            .attr("r",r_point)
-            .attr("style","fill:black;stroke:black;stroke-width:1;");
+        hideNodeText(i, this.changeDuration);
     }
     if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
     for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
@@ -401,6 +414,8 @@ Cluster.prototype.hivePlot = function() {
         coor = {x: radius * Math.cos(radian), y: radius * Math.sin(radian)};
         return coor;
     }
+
+    this.type = CT_Hive_Plot;
 };
 
 Cluster.prototype.tagCloud = function() {
@@ -479,6 +494,7 @@ Cluster.prototype.tagCloud = function() {
             {
                 resetNodePos(i, currentx+currentwid/2+words[j].x+words[j].x0, currenty+currenthei/2+words[j].y+words[j].y0/2, that.changeDuration);
                 resetNodeSize(i, size, that.changeDuration);
+                hideNodeText(i, that.changeDuration)
             }
         }
     }
@@ -486,6 +502,8 @@ Cluster.prototype.tagCloud = function() {
     if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
     for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
     if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+
+    this.type = CT_Tag_Cloud;
 };
 
 Cluster.prototype.matrixVis = function() {
@@ -565,6 +583,7 @@ Cluster.prototype.matrixVis = function() {
             if(this.sequence.nodes[i].pid == this.player[j].pid) break;
         resetNodePos(i, j*size+pad+currentx+size/2, j*size+pad+currenty+size/2, this.changeDuration);
         resetNodeSize(i,size/2,this.changeDuration);
+        hideNodeText(i, this.changeDuration);
     }
     if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
     for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
@@ -585,6 +604,8 @@ Cluster.prototype.matrixVis = function() {
         }
         return "rgb("+r+","+g+","+b+")";
     }
+
+    this.type = CT_Matrix;
 };
 
 Cluster.prototype.shoot = function(start, end) {
@@ -614,10 +635,12 @@ Cluster.prototype.shoot = function(start, end) {
         .attr("height",currenthei);
 
     this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, start, end, currentx, currenty);
+
+    this.type = CT_Shoot;
 };
 
 Cluster.prototype.setDuration = function(duration) {
-    this.duration = duration;
+    this.changeDuration = duration;
 };
 
 Cluster.prototype.chosen = function() {
@@ -649,56 +672,92 @@ function resetNodeSize(id, r, duration) {
         .transition()
         .duration(duration)
         .attr("r",r);
+    d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
+        .transition()
+        .duration(duration)
+        .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;");
+}
+
+function hideNodeText(id, duration) {
+    d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
+        .attr("opacity",1)
+        .transition().duration(duration)
+        .attr("opacity",0);
+}
+
+function showNodeText(id, duration) {
+    d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
+        .attr("opacity",0)
+        .transition().duration(duration)
+        .attr("opacity",1);
 }
 
 function repaintPath(id, duration, style) {
-    if(style == 2){
-        d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
-            .attr("stroke-width", "5");
-    }
+    // if(style == 2){
+    //     d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
+    //         .attr("stroke-width", "5");
+    // }
+    console.log(style);
     d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
         .transition().duration(duration)
-        .attr("d", function(d){
+        .attr("style", function() {
+            var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
+                stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
+            switch(style)
+            {
+                case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
+                case 0: stroke = "gray"; stroke_width = "1px"; break;
+                case 1: stroke_width = "2px"; break;
+                case 2: stroke = "green"; stroke_width = "5px"; break;
+            }
+            return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
+        })
+        .attr("d", function(){
             // source and target are duplicated for straight lines
             var x_source = (+d3.select("#mainfield").select("#node_container").select("#node"+id).attr("x")),
                 y_source = (+d3.select("#mainfield").select("#node_container").select("#node"+id).attr("y")),
                 x_target = (+d3.select("#mainfield").select("#node_container").select("#node"+(id+1)).attr("x")),
                 y_target = (+d3.select("#mainfield").select("#node_container").select("#node"+(id+1)).attr("y"));
-            if(style == 0 || style == 2){
-                return line(getArc(
-                    x_source,
-                    y_source,
-                    x_target,
-                    y_target,
-                    2
-                ));
-            }
-            else if(style == -1)
+            switch(style)
             {
-                x_source = parseFloat(seq.x_scale(seq.nodes[seq.links[id].source].x));
-                y_source = parseFloat(seq.y_scale(seq.nodes[seq.links[id].source].y));
-                x_target = parseFloat(seq.x_scale(seq.nodes[seq.links[id].target].x));
-                y_target = parseFloat(seq.y_scale(seq.nodes[seq.links[id].target].y));
-                if(isLongPass(seq.links[id],seq.nodes[seq.links[id].source])){
+                case -1:
+                {
+                    // x_source = parseFloat(seq.x_scale(seq.nodes[seq.links[id].source].x));
+                    // y_source = parseFloat(seq.y_scale(seq.nodes[seq.links[id].source].y));
+                    // x_target = parseFloat(seq.x_scale(seq.nodes[seq.links[id].target].x));
+                    // y_target = parseFloat(seq.y_scale(seq.nodes[seq.links[id].target].y));
+                    if(isLongPass(seq.links[id],seq.nodes[seq.links[id].source])){
+                        return line(getArc(
+                            x_source,
+                            y_source,
+                            x_target,
+                            y_target,
+                            10
+                        ));
+                    }
+                    else{
+                        return line([
+                            {x:x_source, y:y_source}, {x:x_source, y:y_source},
+                            {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
+                    }
+                }
+                case 0:case 2:
+                {
                     return line(getArc(
                         x_source,
                         y_source,
                         x_target,
                         y_target,
-                        10
+                        2
                     ));
                 }
-                else{
-                    return line([
-                        {x:x_source, y:y_source}, {x:x_source, y:y_source},
-                        {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
+                case 1:
+                {
+                    return "M"+x_source+" "+y_source+
+                        "C"+x_target+" "+y_source+
+                        " "+x_source+" "+y_target+
+                        " "+x_target+" "+y_target;
                 }
-            }
-            else if(style == 1) {
-                return "M"+x_source+" "+y_source+
-                       "C"+x_target+" "+y_source+
-                       " "+x_source+" "+y_target+
-                       " "+x_target+" "+y_target;
             }
         });
 }
