@@ -272,7 +272,7 @@ Cluster.prototype.Clear = function() {
         .attr("x",0).attr("y",0).attr("width",0).attr("height",0)
         .attr("opacity", 0);
     this.cg.select("#subClusterGroup"+this.num).remove();
-    this.cg.select("g").append("g").attr("id","subClusterGroup"+this.num);
+    this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num);
     for(var i = this.start; i <= this.end; i++)
     {
         resetNodePos(i, +this.x_scale(seq.nodes[i].x), +this.y_scale(seq.nodes[i].y), this.changeDuration);
