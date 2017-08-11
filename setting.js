@@ -12,6 +12,7 @@ Setting = function(x, y, width, height) {
     this.addClusterSetting();
     this.addFieldSetting();
     this.addSequenceSetting();
+    this.addDataSetting();
 
     this.optionList();
     this.addElement();
@@ -93,6 +94,14 @@ Setting.prototype.func5 = function() {
     f3.viewtransform(val2,val1);
 };
 
+Setting.prototype.func6 = function() {
+
+};
+
+Setting.prototype.func7 = function() {
+
+};
+
 Setting.prototype.addSelect = function(options, setting) {
     setting.selectList[setting.selNum] = setting.G.append("select")
         .attr("id",setting.ID + "Select"+setting.selNum)
@@ -126,25 +135,33 @@ Setting.prototype.addBr = function(setting) {
 Setting.prototype.addClusterSetting = function() {
     var x = 0,
         y = 0,
-        width = this.width*0.32,
+        width = this.width*0.235,
         height = this.height;
-    this.clusterSetting = new ClusterSetting(this.settingGroup,x,y,width,height);
+    this.clusterSetting = new SubSetting(this.settingGroup,x,y,width,height,"cluster");
 };
 
 Setting.prototype.addFieldSetting = function() {
-    var x = this.width*0.34,
+    var x = this.width*0.255,
         y = 0,
-        width = this.width*0.32,
+        width = this.width*0.235,
         height = this.height;
-    this.fieldSetting = new FieldSetting(this.settingGroup,x,y,width,height);
+    this.fieldSetting = new SubSetting(this.settingGroup,x,y,width,height,"field");
 };
 
 Setting.prototype.addSequenceSetting = function() {
-    var x = this.width*0.68,
+    var x = this.width*0.51,
         y = 0,
-        width = this.width*0.32,
+        width = this.width*0.235,
         height = this.height;
-    this.sequenceSetting = new SequenceSetting(this.settingGroup,x,y,width,height);
+    this.sequenceSetting = new SubSetting(this.settingGroup,x,y,width,height,"sequence");
+};
+
+Setting.prototype.addDataSetting = function() {
+    var x = this.width*0.765,
+        y = 0,
+        width = this.width*0.235,
+        height = this.height;
+    this.dataSetting = new SubSetting(this.settingGroup,x,y,width,height,"data");
 };
 
 Setting.prototype.addElement = function() {
@@ -168,6 +185,11 @@ Setting.prototype.addElement = function() {
     this.addText("序列样式：",this.sequenceSetting);this.addSelect(this.sequenceStyleOptions,this.sequenceSetting);
     this.addBr(this.sequenceSetting);
     this.addButton("变换序列样式",function(){that.func5();},this.sequenceSetting);
+
+    this.addText("数据选择：",this.dataSetting);this.addSelect(this.dataListOptions,this.dataSetting);
+    this.addBr(this.dataSetting);
+    this.addButton("切换数据",function(){that.func6();},this.dataSetting);
+    this.addButton("导入数据",function(){that.func7();},this.dataSetting);
 };
 
 Setting.prototype.optionList = function() {
@@ -202,12 +224,16 @@ Setting.prototype.optionList = function() {
 
     this.sequenceDurationOptions = new Array();
     for(i = 0; i < 20; i++) this.sequenceDurationOptions[i] = {value: i*100,text: i*100};
+
+    this.dataListOptions = new Array();
+    this.dataListOptions[0] = {value:1,text:"数据1"};
+    this.dataListOptions[1] = {value:2,text:"数据2"};
 };
 
-ClusterSetting = function(g, x, y, width, height){
-    this.x = x; this.y = y; this.width = width; this.height = height;
+SubSetting = function(g, x, y, width, height, name){
+    this.x = x; this.y = y; this.width = width; this.height = height; this.name = name;
     this.G = g.append("div")
-        .attr("id","clusterSettingFrame")
+        .attr("id",name+"SettingFrame")
         .attr("style","background:whitesmoke; border:2px solid black;"+
                       "position:absolute; left:"+x+"px; top:"+y+"px;"+
                       "width:"+width+"px; height:"+height+"px;");
@@ -217,38 +243,5 @@ ClusterSetting = function(g, x, y, width, height){
     this.textNum = 0;
     this.buttonList = new Array();
     this.buttonNum = 0;
-    this.ID = "clusterSetting";
+    this.ID = name+"Setting";
 };
-
-FieldSetting = function(g, x, y, width, height){
-    this.x = x; this.y = y; this.width = width; this.height = height;
-    this.G = g.append("div")
-        .attr("id","fieldSettingFrame")
-        .attr("style","background:whitesmoke; border:2px solid black;"+
-            "position:absolute; left:"+x+"px; top:"+y+"px;"+
-            "width:"+width+"px; height:"+height+"px;");
-    this.selectList = new Array();
-    this.selNum = 0;
-    this.textList = new Array();
-    this.textNum = 0;
-    this.buttonList = new Array();
-    this.buttonNum = 0;
-    this.ID = "fieldSetting";
-};
-
-SequenceSetting = function(g, x, y, width, height){
-    this.x = x; this.y = y; this.width = width; this.height = height;
-    this.G = g.append("div")
-        .attr("id","sequenceSettingFrame")
-        .attr("style","background:whitesmoke; border:2px solid black;"+
-            "position:absolute; left:"+x+"px; top:"+y+"px;"+
-            "width:"+width+"px; height:"+height+"px;");
-    this.selectList = new Array();
-    this.selNum = 0;
-    this.textList = new Array();
-    this.textNum = 0;
-    this.buttonList = new Array();
-    this.buttonNum = 0;
-    this.ID = "sequenceSetting";
-};
-
