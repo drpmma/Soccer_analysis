@@ -26,7 +26,6 @@ Data = function (_data) {
             }
         });
     });
-
 }
 
 Data.prototype.computePlayersStats = function(){
@@ -369,6 +368,95 @@ function isShot(action){
 
 function catchEvent(){
     if(d3.event)d3.event.stopPropagation();
+}
+
+function createDefs() {
+//add the arrow marker
+    var defs = d3.select("svg").append("defs");
+    defs.append("svg:marker")
+        .attr("id", "arrowHead")
+        .attr("orient", "auto")//the arrow follows the line direction
+        .attr("markerWidth", 6)
+        .attr("markerHeight", 8)
+        .attr("refX", 5)
+        .attr("refY", 4)
+        .append("svg:path")
+        .attr("d", "M0,0 V8 L6,4 Z")
+        .attr("fill", "black");
+
+//the shadow for aerial passes
+    var s = defs.append("svg:filter")
+        .attr("id","shadow-pass");
+    s.append("svg:feOffset")//Shadow Offset
+        .attr("dx","0")
+        .attr("dy","0");
+    s.append("svg:feGaussianBlur")//Shadow Blur
+        .attr("result","offset-blur")
+        .attr("stdDeviation","2");
+    s.append("svg:feFlood")//Color & Opacity
+        .attr("flood-color","black")
+        .attr("flood-opacity","1")
+        .attr("result","color");
+    s.append("svg:feComposite")//Clip color inside shadow
+        .attr("operator","in")
+        .attr("in","color")
+        .attr("in2","offset-blur")
+        .attr("result","shadow");
+    s.append("svg:feComposite")//Clip color inside shadow
+        .attr("operator","over")
+        .attr("in","SourceGraphic")
+        .attr("in2","shadow");
+
+    /*
+     <rect width="90" height="90" stroke="green" stroke-width="3"
+     fill="yellow" filter="url(#f1)" />
+     */
+
+//the "sine" path for waves along path
+    var f = defs.append("svg:font")
+        .attr("id", "fontWaves")
+        .attr("horiz-adv-x", 100);
+    f.append("svg:font-face")
+        .attr("font-family", "fontWaves")
+        .attr("units-per-em", 100);
+    f.append("svg:missing-glyph")
+        .attr("horiz-adv-x",100);
+    f.append("svg:glyph")
+        .attr("unicode", "a")
+        .attr("horiz-adv-x",25)
+        .attr("d","M 0 0 C10 10 15 15 26 15 ");
+    f.append("svg:glyph")
+        .attr("unicode", "b")
+        .attr("horiz-adv-x",25)
+        .attr("d","M 0 15 C10 15 15 10 26 0 ");
+    f.append("svg:glyph")
+        .attr("unicode", "c")
+        .attr("horiz-adv-x",25)
+        .attr("d","M 0 0 C10 -10 15 -15 26 -15 ");
+    f.append("svg:glyph")
+        .attr("unicode", "d")
+        .attr("horiz-adv-x",25)
+        .attr("d","M 0 -15 C10 -15 15 -10 26 0 ");
+
+    var gradientValues = [
+        {color:"#840000", offset:"0%", opacity:0.3},
+        {color:"#840000", offset:"20%", opacity:0.2},
+        {color:"#FF0000", offset:"50%", opacity:0.1},
+        {color:"#FF0000", offset:"100%", opacity:0}
+    ];
+    var gradient = defs.append("svg:radialGradient")
+        .attr("id", "radialGradientSpray")
+        .attr("cx", "50%")
+        .attr("cy", "50%")
+        .attr("r", "50%");
+
+    for(var v in gradientValues){
+        gradient.append("svg:stop")
+            .attr("offset", gradientValues[v].offset)
+            .attr("stop-color", gradientValues[v].color)
+            .attr("stop-opacity", gradientValues[v].opacity);
+    }
+
 }
 
 var PID_SHOT_DEST = -1;

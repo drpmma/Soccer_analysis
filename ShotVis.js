@@ -141,7 +141,7 @@ ShotVis.prototype.drawShots = function () {
             .enter()
             .append("g")
             .attr("class", function (d) {
-                return ".shots_shots shots_" + d.shot_type;
+                return "shots_shots shots_" + d.shot_type;
             });
     }
     this.shots.append("circle")
@@ -282,15 +282,18 @@ ShotVis.prototype.drawStats = function () {
 
     this.statsBarScale = d3.scaleLinear()
         .domain([0, d3.max(this.stats, function(d){return d.nb})])
-        .range([0, that.panelHeight]);
+        .range([0, that.panelHeight / 3]);
     var barWidth = 10;
 
     this.statsGroups.append("rect")
         .attr("class", function(d){return "shot_bar_"+d.type;})
-        .attr("x", 0)
-        .attr("y", function(d){return (that.panelHeight - that.statsBarScale(d.nb))})//this.panelHeight)
+        .attr("x", 8)
+        .attr("y", function(d){return (that.panelHeight / 3 - that.statsBarScale(d.nb))})//this.panelHeight)
         .attr("width", barWidth)
-        .attr("height", function(d){return that.statsBarScale(d.nb);});
+        .attr("height", function(d){return that.statsBarScale(d.nb);})
+        .attr("fill", function (d) {
+            return that.getShotColor(d.type);
+        });
 
     var totalShots = d3.sum(this.stats, function(d){return d.nb});
 
@@ -306,7 +309,7 @@ ShotVis.prototype.drawStats = function () {
     this.totalShotsGroup = this.clusterGroup.selectAll(".visuShotsTotalShots")
         .data([totalShots])
         .enter()
-        .append("svg:g")
+        .append("g")
         .attr("transform", "translate(" + [this.pad, this.pad] + ")")
         .attr("class", ".visuShotsTotalShots");
 
@@ -433,6 +436,42 @@ ShotVis.prototype.drawModes = function () {
     function overVisuMode(){
         d3.select(this).style("cursor", "pointer");
     }
+
+    //the "brush" mode
+    // this.brushing = this.visuModesPanel
+    //     .append("svg:g")
+    //     .attr("transform", "translate("+(0)+","+25+")")
+    //     .attr("class", "visuShotsBrushing")
+    //     .on("click", clickBrushing)
+    //     .on("mouseover", overBrushing);
+    //
+    // this.brushing
+    //     .append("svg:rect")
+    //     .attr("x", 0)
+    //     .attr("y", 0)
+    //     .attr("width", 10)
+    //     .attr("height", 10);
+    //
+    // this.brushing
+    //     .append("svg:text")
+    //     .text("Brush")
+    //     .attr("class", "modes_text")
+    //     .attr("text-anchor", "start")
+    //     .attr("x", 17)
+    //     .attr("y", 8);
+    //
+    // function clickBrushing(){
+    //     catchEvent();
+    //     $this.brush = !$this.brush;
+    //     d3.select(this).select("rect").classed("modes_selected", function () {
+    //         return $this.brush;
+    //     });
+    //     $this.clickBrushing();
+    // }
+    //
+    // function overBrushing(){
+    //     d3.select(this).style("cursor", "pointer");
+    // }
 }
 
 ShotVis.prototype.changeSprayRadius = function(val){
@@ -494,12 +533,14 @@ ShotVis.prototype.filterShots = function(){
     }
 
     //update the stats
-    this.statsBarScale = d3.scaleLinear().domain([0, d3.max(this.stats, function(d){return d.nb})]).range([0, that.panelHeight]);
+    this.statsBarScale = d3.scaleLinear()
+        .domain([0, d3.max(this.stats, function(d){return d.nb})])
+        .range([0, that.panelHeight / 3]);
     var totalShots = d3.sum(this.stats, function(d){return d.nb});
     this.statsGroups
         .select("rect")
         .transition().duration(600)
-        .attr("y", function(d){return (that.panelHeight-that.statsBarScale(d.nb))})
+        .attr("y", function(d){return (that.panelHeight / 3-that.statsBarScale(d.nb))})
         .attr("height", function(d){return that.statsBarScale(d.nb);});
 
     this.statsGroups
@@ -690,7 +731,7 @@ ShotVis.prototype.getShotColor = function (shot_type) {
         case "missed":
             return "red";
         default:
-            console.log("unknown name for shot: " + d.name);
+            console.log("unknown name for shot: " + d);
             return "yellow";
     }
 }

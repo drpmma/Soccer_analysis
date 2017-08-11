@@ -273,10 +273,10 @@ Sequence.prototype.draw_path = function (group,gray) {
                     {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
             }
         })
-        // .style("filter", function(d){
-        //     if(isLongPass(d,that.nodes[d.source])) return "url(#shadow-pass)";
-        //     return "";
-        // })
+        .style("filter", function(d){
+            if(isLongPass(d,that.nodes[d.source])) return "url(#shadow-pass)";
+            return "";
+        })
         .attr("id",function(d,i){return "linkPath"+i})
         .attr("d", function(d){
             // source and target are duplicated for straight lines
