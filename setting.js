@@ -95,7 +95,10 @@ Setting.prototype.func5 = function() {
 };
 
 Setting.prototype.func6 = function() {
-
+    d3.select("#screen").remove();
+    var sel=document.getElementById("dataSettingSelect0");
+    var value=sel.options[sel.selectedIndex].value;
+    data_select.main(value);
 };
 
 Setting.prototype.func7 = function() {
@@ -226,8 +229,12 @@ Setting.prototype.optionList = function() {
     for(i = 0; i < 20; i++) this.sequenceDurationOptions[i] = {value: i*100,text: i*100};
 
     this.dataListOptions = new Array();
-    this.dataListOptions[0] = {value:1,text:"数据1"};
-    this.dataListOptions[1] = {value:2,text:"数据2"};
+    this.dataListOptions[0] = {value:"./data/dumpData_t178_m456391_agg0.json",text:"数据1"};
+    this.dataListOptions[1] = {value:"./data/dumpData_t1_m483676_agg0.json",text:"数据2"};
+    this.dataListOptions[2] = {value:"./data/dumpData_t120_m483683_agg0.json",text:"数据3"};
+    this.dataListOptions[3] = {value:"./data/dumpData_t186_m456391_agg0.json",text:"数据4"};
+    this.dataListOptions[4] = {value:"./data/dumpData_t178_m483675_agg0.json",text:"数据5"};
+    this.dataListOptions[5] = {value:"./data/dumpData_t186_m486612_agg0.json",text:"数据6"};
 };
 
 SubSetting = function(g, x, y, width, height, name){

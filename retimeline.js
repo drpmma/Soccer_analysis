@@ -1,6 +1,10 @@
 /**
  * Created by zf on 2017/7/27.
  */
+var x_smallfield=0.84
+var width_smallfield=0.065
+var height_smallfield=0.07
+
 timeline= function (svg,width,height) {
     this.svg=svg;
     this.width=width;
@@ -186,13 +190,13 @@ matchinfo.prototype.proj = function (X) {
     for(var num=0;num<this.data.length;num++) {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,0.84*width,(num*0.08+0.01)*height,0.075*width,0.07*height,"smallfield"+num,0,0,1);
+        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
-            .attr("x",0.84*width)
+            .attr("x",x_smallfield*width)
             .attr("y",(num*0.08+0.01)*height)
-            .attr("width",0.075*width)
-            .attr("height",0.07*height)
+            .attr("width",width_smallfield*width)
+            .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
@@ -211,12 +215,12 @@ matchinfo.prototype.proj = function (X) {
                 .data(datax)
                 .enter().append("rect")
                 .attr("x",function (d,i) {
-                    return (0.84+0.0075*i)*width
+                    return (x_smallfield+0.0075*i)*width
                 })
                 .attr("y",(num*0.08+0.01)*height)
                 .attr("width",0.0075*width)
                 .attr("height",function(d){
-                    return (d/10)*0.07*height;
+                    return (d/10)*height_smallfield*height;
                 })
                 .attr("fill","steelblue")
                 .attr("opacity","0.5")
@@ -225,7 +229,7 @@ matchinfo.prototype.proj = function (X) {
                 .data(datax)
                 .enter().append("text")
                 .attr("x",function (d,i) {
-                    return (0.84+0.0075*i+0.001)*width
+                    return (x_smallfield+0.0075*i+0.001)*width
                 })
                 .attr("y",(num*0.08+0.02)*height)
                 .attr("font-size","80%")
@@ -241,9 +245,9 @@ matchinfo.prototype.proj = function (X) {
                 .attr("y",function (d,i) {
                     return (num*0.08+0.007*i)*height;
                 })
-                .attr("x",0.84*width)
+                .attr("x",x_smallfield*width)
                 .attr("width",function (d) {
-                    return (d/6)*0.075*width;
+                    return (d/6)*width_smallfield*width;
                 })
                 .attr("height",0.007*height)
                 .attr("fill","steelblue")
@@ -271,7 +275,7 @@ matchinfo.prototype.distancealign =function () {
     for(var num=0;num<this.data.length;num++) {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,0.84*width,(num*0.08+0.01)*height,0.075*width,0.07*height,"smallfield"+num,0,0,0);
+        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,0);
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
         min=phase_small.nodes[0].x;
         for(var j=0;j<phase_small.nodes.length;j++)
@@ -312,7 +316,7 @@ matchinfo.prototype.timealign =function () {
     for(var num=0;num<this.data.length;num++) {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,0.84*width,(num*0.08+0.01)*height,0.075*width,0.07*height,"smallfield"+num,0,0,0);
+        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,0);
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
         console.log(phase_small.nodes);
         var len=phase_small.nodes.length;
@@ -353,13 +357,13 @@ matchinfo.prototype.point =function () {
     for(var num=0;num<this.data.length;num++) {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,0.84*width,(num*0.08+0.01)*height,0.075*width,0.07*height,"smallfield"+num,0,0,1);
+        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
-            .attr("x",0.84*width)
+            .attr("x",x_smallfield*width)
             .attr("y",(num*0.08+0.01)*height)
-            .attr("width",0.075*width)
-            .attr("height",0.07*height)
+            .attr("width",width_smallfield*width)
+            .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
@@ -373,13 +377,13 @@ matchinfo.prototype.mark =function () {
     for(var num=0;num<this.data.length;num++) {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,0.84*width,(num*0.08+0.01)*height,0.075*width,0.07*height,"smallfield"+num,0,0,1);
+        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
-            .attr("x",0.84*width)
+            .attr("x",x_smallfield*width)
             .attr("y",(num*0.08+0.01)*height)
-            .attr("width",0.075*width)
-            .attr("height",0.07*height)
+            .attr("width",width_smallfield*width)
+            .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
@@ -394,13 +398,13 @@ matchinfo.prototype.point_link =function () {
     for(var num=0;num<this.data.length;num++) {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,0.84*width,(num*0.08+0.01)*height,0.075*width,0.07*height,"smallfield"+num,0,0,1);
+        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
-            .attr("x",0.84*width)
+            .attr("x",x_smallfield*width)
             .attr("y",(num*0.08+0.01)*height)
-            .attr("width",0.075*width)
-            .attr("height",0.07*height)
+            .attr("width",width_smallfield*width)
+            .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
@@ -415,13 +419,13 @@ matchinfo.prototype.worm =function () {
     for(var num=0;num<this.data.length;num++) {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,0.84*width,(num*0.08+0.01)*height,0.075*width,0.07*height,"smallfield"+num,0,0,1);
+        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
-            .attr("x",0.84*width)
+            .attr("x",x_smallfield*width)
             .attr("y",(num*0.08+0.01)*height)
-            .attr("width",0.075*width)
-            .attr("height",0.07*height)
+            .attr("width",width_smallfield*width)
+            .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);

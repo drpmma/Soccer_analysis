@@ -8,47 +8,11 @@ dataselect = function () {
 
     this.main("./data/dumpData_t178_m456391_agg0.json");
 }
-button_data=function () {
-    this.width = document.getElementById("svg_div").getBoundingClientRect().width;
-    this.height = document.getElementById("svg_div").getBoundingClientRect().height;
-
-    this.drawbutton()
-}
-button_data.prototype.drawbutton = function () {
-    width=this.width;
-    height=this.height;
-
-    this.div=d3.select("#svg_div").append("div")
-        .attr("style","position:absolute; left:"+0.16*width+"px;top:"+0.1*height+"px;width:"+0.04*width+"px;height:"+0.05*height+"px;")
-    this.datatext=this.div.append("text")
-        .attr("style","font-size:1px")
-        .text("数据选择")
-    this.div.append("br")
-    this.dataselect=this.div.append("select")
-        .attr("style","margin:2px")
-        .attr("id","datachoose")
-    var optionlist=new Array()
-    optionlist[0]={value:"./data/dumpData_t178_m456391_agg0.json",text:"1"};
-    optionlist[1]={value:"./data/dumpData_t1_m483676_agg0.json",text:"2"};
-    for(var i=0;i<optionlist.length;i++)
-    {
-        this.dataselect.append("option")
-            .attr("value",optionlist[i].value)
-            .text(optionlist[i].text)
-    }
-    this.button=this.div.append("button")
-        .attr("style","font-size:1px")
-        .text("数据转换")
-        .on("click",function () {
-            data_select.datachoose();
-        })
-}
 dataselect.prototype.datachoose = function () {
     d3.select("#screen").remove();
     var sel=document.getElementById("datachoose");
     console.log(sel.options)
     var value=sel.options[sel.selectedIndex].value;
-    console.log("x",x)
     data_select.main(value);
 }
 dataselect.prototype.main=function (value) {
@@ -70,6 +34,6 @@ dataselect.prototype.main=function (value) {
         f3= new matchinfo(svg,mainfield,data.sequences,width,height);
         var f2 = new Field(svg, 0.007*width, 0.01*height, 0.15*width, 0.45*height, "playerfield", 1, 1,1);
         var players = new Players(f2, data.players);
-        setting = new Setting(0.2*width, 0.86*height, 0.62*width, 0.112*height);
+        // setting = new Setting(0.2*width, 0.86*height, 0.62*width, 0.112*height);
     }
 }
