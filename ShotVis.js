@@ -437,41 +437,41 @@ ShotVis.prototype.drawModes = function () {
         d3.select(this).style("cursor", "pointer");
     }
 
-    // // the "brush" mode
-    // this.brushing = this.visuModesPanel
-    //     .append("g")
-    //     .attr("transform", "translate("+(160)+","+25+")")
-    //     .attr("class", "visuShotsBrushing")
-    //     .on("click", clickBrushing)
-    //     .on("mouseover", overBrushing);
-    //
-    // this.brushing
-    //     .append("rect")
-    //     .attr("x", 0)
-    //     .attr("y", 0)
-    //     .attr("width", 10)
-    //     .attr("height", 10);
-    //
-    // this.brushing
-    //     .append("text")
-    //     .text("Brush")
-    //     .attr("class", "modes_text")
-    //     .attr("text-anchor", "start")
-    //     .attr("x", 17)
-    //     .attr("y", 8);
-    //
-    // function clickBrushing(){
-    //     catchEvent();
-    //     that.brush = !that.brush;
-    //     d3.select(this).select("rect").classed("modes_selected", function () {
-    //         return that.brush;
-    //     });
-    //     that.clickBrushing();
-    // }
-    //
-    // function overBrushing(){
-    //     d3.select(this).style("cursor", "pointer");
-    // }
+    // the "brush" mode
+    this.brushing = this.visuModesPanel
+        .append("g")
+        .attr("transform", "translate("+(160)+","+25+")")
+        .attr("class", "visuShotsBrushing")
+        .on("click", clickBrushing)
+        .on("mouseover", overBrushing);
+
+    this.brushing
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", 10)
+        .attr("height", 10);
+
+    this.brushing
+        .append("text")
+        .text("Brush")
+        .attr("class", "modes_text")
+        .attr("text-anchor", "start")
+        .attr("x", 17)
+        .attr("y", 8);
+
+    function clickBrushing(){
+        catchEvent();
+        that.brush = !that.brush;
+        d3.select(this).select("rect").classed("modes_selected", function () {
+            return that.brush;
+        });
+        that.clickBrushing();
+    }
+
+    function overBrushing(){
+        d3.select(this).style("cursor", "pointer");
+    }
 }
 
 ShotVis.prototype.changeSprayRadius = function(val){
@@ -511,7 +511,8 @@ ShotVis.prototype.filterShots = function(){
         else{
             var brushedField = that.brushedShotsField != null;
             var brushedMouth = that.brushedShotsMouth != null;
-            if(brushedField && brushedMouth && (that.brushedShotsField.indexOf(d)==-1 || that.brushedShotsMouth.indexOf(d)==-1)//if not brushed by one of the brush
+            if(brushedField && brushedMouth
+                && (that.brushedShotsField.indexOf(d)==-1 || that.brushedShotsMouth.indexOf(d)==-1)//if not brushed by one of the brush
                 || brushedField && that.brushedShotsField.indexOf(d)==-1 //if not brushed in field
                 || brushedMouth && that.brushedShotsMouth.indexOf(d)==-1 //if not brushed in mouth
             ){
@@ -560,30 +561,36 @@ ShotVis.prototype.clickBrushing = function(){
     var that = this;
     //activate the brushing
     if(this.brush){
-
+        var fieldBrushScale = [[2 *that.pad, that.distanceHeight + that.splitWidth + that.pad],
+                                [that.width, that.height - that.panelHeight]];
         //brush on the field
         this.clusterGroup.append("g")
             .attr("class", "brush")
-            .attr("transform", that.field.fieldGroup.attr("transform"))
+            .attr("id", "brushField")
+            // .attr("transform", that.field.fieldGroup.attr("transform"))
             .call(d3.brush()
+                .extent(fieldBrushScale)
                 .on("brush", brushmoveField)
                 .on("end", brushendField));
 
         //brush on the mouth
+        var postBrushScale = [[2 * that.pad, that.pad], [that.width, that.distanceHeight - that.pad]];
         this.clusterGroup.append("g")
             .attr("class", "brush")
-            .attr("transform", that.post.fieldGroup.attr("transform"))
+            .attr("id", "brushPost")
+            // .attr("transform", that.post.fieldGroup.attr("transform"))
             .call(d3.brush()
+                .extent(postBrushScale)
                 .on("brush", brushmoveMouth)
                 .on("end", brushendMouth));
 
 
         function brushmoveField() {
-            var e = d3.event.target.extent();
+            var e = d3.brushSelection(d3.select("#brushField").node());
             that.brushedShotsField = [];
             that.shotsField.each(function(d){
-                var shotx = that.xBrushShotsField(d.x);
-                var shoty = that.yBrushShotsField(d.y);
+                var shotx = that.resetX(d.y) - that.currentX;
+                var shoty = that.resetY(d.x) - that.currentY;
                 if( e[0][0] <= shotx && shotx <= e[1][0]
                     && e[0][1] <= shoty && shoty <= e[1][1]){
                     that.brushedShotsField.push(d);
@@ -593,13 +600,14 @@ ShotVis.prototype.clickBrushing = function(){
         }
 
         function brushmoveMouth() {
-            var e = d3.event.target.extent();
+            var e = d3.brushSelection(d3.select("#brushPost").node());
             that.brushedShotsMouth = [];
             that.shotsField.each(function(d){
                 var mouth = that.getMouth(d);
+                console.log("mouth", mouth)
                 if(mouth == null) return;
-                var mouthx = that.xBrushShotsMouth(mouth[1]);
-                var mouthy = that.yBrushShotsMouth(mouth[0]);
+                var mouthx = that.setPostX(mouth[0]) - that.currentX;
+                var mouthy = that.setPostY(mouth[1]) - that.currentY;
                 if( e[0][0] <= mouthx && mouthx <= e[1][0]
                     && e[0][1] <= mouthy && mouthy <= e[1][1]){
                     that.brushedShotsMouth.push(d);
@@ -609,11 +617,11 @@ ShotVis.prototype.clickBrushing = function(){
         }
 
         function brushendField() {
-            if(d3.event.target.empty()) that.brushedShotsField = null;
+            if(d3.brushSelection(d3.select("#brushField").node()) == null) that.brushedShotsField = null;
             that.filterShots();
         }
         function brushendMouth() {
-            if(d3.event.target.empty()) that.brushedShotsMouth = null;
+            if(d3.brushSelection(d3.select("#brushPost").node()) == null) that.brushedShotsMouth = null;
             that.filterShots();
         }
     }
