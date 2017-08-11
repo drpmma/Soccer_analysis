@@ -144,7 +144,7 @@ ShotVis.prototype.drawShots = function () {
                 return "shots_shots shots_" + d.shot_type;
             });
     }
-    this.shots.append("circle")
+    this.shotsField = this.shots.append("circle")
         .attr("class", "shotNode")
         .attr("transform", function (d) {
             return "translate(" + [that.resetX(d.y) - that.currentX, that.resetY(d.x) - that.currentY] + ")";
@@ -437,23 +437,23 @@ ShotVis.prototype.drawModes = function () {
         d3.select(this).style("cursor", "pointer");
     }
 
-    //the "brush" mode
+    // // the "brush" mode
     // this.brushing = this.visuModesPanel
-    //     .append("svg:g")
-    //     .attr("transform", "translate("+(0)+","+25+")")
+    //     .append("g")
+    //     .attr("transform", "translate("+(160)+","+25+")")
     //     .attr("class", "visuShotsBrushing")
     //     .on("click", clickBrushing)
     //     .on("mouseover", overBrushing);
     //
     // this.brushing
-    //     .append("svg:rect")
+    //     .append("rect")
     //     .attr("x", 0)
     //     .attr("y", 0)
     //     .attr("width", 10)
     //     .attr("height", 10);
     //
     // this.brushing
-    //     .append("svg:text")
+    //     .append("text")
     //     .text("Brush")
     //     .attr("class", "modes_text")
     //     .attr("text-anchor", "start")
@@ -462,11 +462,11 @@ ShotVis.prototype.drawModes = function () {
     //
     // function clickBrushing(){
     //     catchEvent();
-    //     $this.brush = !$this.brush;
+    //     that.brush = !that.brush;
     //     d3.select(this).select("rect").classed("modes_selected", function () {
-    //         return $this.brush;
+    //         return that.brush;
     //     });
-    //     $this.clickBrushing();
+    //     that.clickBrushing();
     // }
     //
     // function overBrushing(){
@@ -555,78 +555,78 @@ ShotVis.prototype.filterShots = function(){
 
 };
 
-// ShotVis.prototype.clickBrushing = function(){
-//     catchEvent();
-//     var that = this;
-//     //activate the brushing
-//     if(this.brush){
-//
-//         //brush on the field
-//         this.clusterGroup.append("g")
-//             .attr("class", "brush")
-//             .attr("transform", that.fieldRect.attr("transform"))
-//             .call(d3.svg.brush().x(that.xBrushField).y(that.yBrushField)
-//                 .on("brush", brushmoveField)
-//                 .on("brushend", brushendField));
-//
-//         //brush on the mouth
-//         this.visSVG.append("svg:g")
-//             .attr("class", "brush")
-//             .attr("transform", that.goalRect.attr("transform"))
-//             .call(d3.svg.brush().x(that.xBrushMouth).y(that.yBrushMouth)
-//                 .on("brush", brushmoveMouth)
-//                 .on("brushend", brushendMouth));
-//
-//
-//         function brushmoveField() {
-//             var e = d3.event.target.extent();
-//             that.brushedShotsField = [];
-//             that.shotsField.each(function(d){
-//                 var shotx = that.xBrushShotsField(d.x);
-//                 var shoty = that.yBrushShotsField(d.y);
-//                 if( e[0][0] <= shotx && shotx <= e[1][0]
-//                     && e[0][1] <= shoty && shoty <= e[1][1]){
-//                     that.brushedShotsField.push(d);
-//                 }
-//             });
-//             that.filterShots();
-//         }
-//
-//         function brushmoveMouth() {
-//             var e = d3.event.target.extent();
-//             that.brushedShotsMouth = [];
-//             that.shotsField.each(function(d){
-//                 var mouth = that.getMouth(d);
-//                 if(mouth == null) return;
-//                 var mouthx = that.xBrushShotsMouth(mouth[1]);
-//                 var mouthy = that.yBrushShotsMouth(mouth[0]);
-//                 if( e[0][0] <= mouthx && mouthx <= e[1][0]
-//                     && e[0][1] <= mouthy && mouthy <= e[1][1]){
-//                     that.brushedShotsMouth.push(d);
-//                 }
-//             });
-//             that.filterShots();
-//         }
-//
-//         function brushendField() {
-//             if(d3.event.target.empty()) that.brushedShotsField = null;
-//             that.filterShots();
-//         }
-//         function brushendMouth() {
-//             if(d3.event.target.empty()) that.brushedShotsMouth = null;
-//             that.filterShots();
-//         }
-//     }
-//     //cancel the brushing
-//     else{
-//         //console.log("remove brush");
-//         this.visSVG.selectAll(".brush").remove();
-//         this.visSVG.style("cursor", "default");
-//         that.brushedShotsField = null;
-//         that.brushedShotsMouth = null;
-//         that.filterShots();
-//     }
-// };
+ShotVis.prototype.clickBrushing = function(){
+    catchEvent();
+    var that = this;
+    //activate the brushing
+    if(this.brush){
+
+        //brush on the field
+        this.clusterGroup.append("g")
+            .attr("class", "brush")
+            .attr("transform", that.field.fieldGroup.attr("transform"))
+            .call(d3.brush()
+                .on("brush", brushmoveField)
+                .on("end", brushendField));
+
+        //brush on the mouth
+        this.clusterGroup.append("g")
+            .attr("class", "brush")
+            .attr("transform", that.post.fieldGroup.attr("transform"))
+            .call(d3.brush()
+                .on("brush", brushmoveMouth)
+                .on("end", brushendMouth));
+
+
+        function brushmoveField() {
+            var e = d3.event.target.extent();
+            that.brushedShotsField = [];
+            that.shotsField.each(function(d){
+                var shotx = that.xBrushShotsField(d.x);
+                var shoty = that.yBrushShotsField(d.y);
+                if( e[0][0] <= shotx && shotx <= e[1][0]
+                    && e[0][1] <= shoty && shoty <= e[1][1]){
+                    that.brushedShotsField.push(d);
+                }
+            });
+            that.filterShots();
+        }
+
+        function brushmoveMouth() {
+            var e = d3.event.target.extent();
+            that.brushedShotsMouth = [];
+            that.shotsField.each(function(d){
+                var mouth = that.getMouth(d);
+                if(mouth == null) return;
+                var mouthx = that.xBrushShotsMouth(mouth[1]);
+                var mouthy = that.yBrushShotsMouth(mouth[0]);
+                if( e[0][0] <= mouthx && mouthx <= e[1][0]
+                    && e[0][1] <= mouthy && mouthy <= e[1][1]){
+                    that.brushedShotsMouth.push(d);
+                }
+            });
+            that.filterShots();
+        }
+
+        function brushendField() {
+            if(d3.event.target.empty()) that.brushedShotsField = null;
+            that.filterShots();
+        }
+        function brushendMouth() {
+            if(d3.event.target.empty()) that.brushedShotsMouth = null;
+            that.filterShots();
+        }
+    }
+    //cancel the brushing
+    else{
+        //console.log("remove brush");
+        this.clusterGroup.selectAll(".brush").remove();
+        this.clusterGroup.style("cursor", "default");
+        that.brushedShotsField = null;
+        that.brushedShotsMouth = null;
+        that.filterShots();
+    }
+};
 
 ShotVis.prototype.clickFilterMode = function(){
     catchEvent();
