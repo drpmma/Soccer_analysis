@@ -204,7 +204,10 @@ Sequence.prototype.draw_node = function (group, r,color)
         .attr("r", r)
         .attr("stroke", "black")
         .attr("stroke-width", "1px;")
-        .attr("fill", color);
+        .attr("fill", function (d) {
+            if (color=="white") return "white"
+            return getEventColor(d.eid);
+        });
 
     for(var i = 0; i < this.nodes.length; i++)
     {

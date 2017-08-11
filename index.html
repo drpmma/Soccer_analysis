@@ -10,7 +10,7 @@
     <script type = "text/javascript" src = "Field.js"></script>
     <script type = "text/javascript" src = "player.js"></script>
     <script type = "text/javascript" src = "infos.js"></script>
-
+    <script type = "text/javascript" src = "dataconvert.js"></script>
     <style>
         .dashed {
             stroke-dasharray: 5,5;
@@ -22,7 +22,7 @@
 <body>
     <div id = "svg_div"></div>
     <script>
-        d3.queue().defer(d3.json, "./data/dumpData_t178_m456391_agg0.json").await(main);
+//        d3.queue().defer(d3.json, "./data/dumpData_t178_m456391_agg0.json").await(main);
         var data;
         var infos;
         var pm;
@@ -31,30 +31,33 @@
         var seq;
         var mainfield;
         var f3;
-        function main(error, jsondata) {
-            if (error) throw error;
-            console.log(jsondata);
-
-            var width, height;
-            data = new Data(jsondata);
-            width = document.getElementById("svg_div").getBoundingClientRect().width;
-            height = document.getElementById("svg_div").getBoundingClientRect().height;
-            var svg = d3.select("#svg_div").append("svg");
-            svg.attr("width", width).attr("height", height);
-            mainfield = new Field(svg, 0.2*width, 0.2*height, 0.62*width, 0.65*height, "mainfield", 0, 0,1);
-            infos = new Infos(svg, 0.007*width, 0.47*height, 0.15*width, 0.5*height, data.players);
-            pm = new PlayersManager();
-            var time_line=new timeline(svg,width,height);
-            f3= new matchinfo(svg,mainfield,data.sequences,width,height);
-            var f2 = new Field(svg, 0.007*width, 0.01*height, 0.15*width, 0.45*height, "playerfield", 1, 1,1);
-            var players = new Players(f2, data.players);
-            setting = new Setting(0.2*width, 0.86*height, 0.62*width, 0.112*height);
-        }
+        var data_select=new dataselect();
+        var b=new button_data();
+//        function main(error, jsondata) {
+//            if (error) throw error;
+//            console.log(jsondata);
+//            x=new dataselect();
+//            var width, height;
+//            data = new Data(jsondata);
+//            width = document.getElementById("svg_div").getBoundingClientRect().width;
+//            height = document.getElementById("svg_div").getBoundingClientRect().height;
+//            var svg = d3.select("#svg_div").append("svg");
+//            svg.attr("width", width).attr("height", height);
+//            mainfield = new Field(svg, 0.2*width, 0.2*height, 0.62*width, 0.65*height, "mainfield", 0, 0,1);
+//            infos = new Infos(svg, 0.007*width, 0.47*height, 0.15*width, 0.5*height, data.players);
+//            pm = new PlayersManager();
+//            var time_line=new timeline(svg,width,height);
+//            f3= new matchinfo(svg,mainfield,data.sequences,width,height);
+//            var f2 = new Field(svg, 0.007*width, 0.01*height, 0.15*width, 0.45*height, "playerfield", 1, 1,1);
+//            var players = new Players(f2, data.players);
+//            setting = new Setting(0.2*width, 0.86*height, 0.62*width, 0.112*height);
+//        }
     </script>
     <script type = "text/javascript" src = "Sequence.js"></script>
     <script type = "text/javascript" src = "cluster.js"></script>
     <script type = "text/javascript" src = "retimeline.js"></script>
     <script type = "text/javascript" src = "setting.js"></script>
     <script type = "text/javascript" src = "ShotVis.js"></script>
+    <script type = "text/javascript" src = "dataconvert.js"></script>
 </body>
 </html>    
