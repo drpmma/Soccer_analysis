@@ -358,7 +358,7 @@ ShotVis.prototype.drawModes = function () {
     this.filterModes
         .append("text")
         .attr("class", "filters_text")
-        .text(function(d){return d.name})
+        .text(function(d){return that.getShotName(d.name)})
         .attr("text-anchor", "start")
         .attr("x", 25)
         .attr("y", 12)
@@ -396,7 +396,7 @@ ShotVis.prototype.drawModes = function () {
 
     this.visuModes
         .append("text")
-        .text(function(d){return d})
+        .text(function(d){return that.getModeName(d)})
         .attr("class", "modes_text")
         .attr("text-anchor", "start")
         .attr("x", 25)
@@ -451,7 +451,7 @@ ShotVis.prototype.drawModes = function () {
 
     this.brushing
         .append("text")
-        .text("Brush")
+        .text("筛选")
         .attr("class", "modes_text")
         .attr("text-anchor", "start")
         .attr("x", 17)
@@ -468,6 +468,22 @@ ShotVis.prototype.drawModes = function () {
 
     function overBrushing(){
         d3.select(this).style("cursor", "pointer");
+    }
+}
+
+ShotVis.prototype.getModeName = function (name) {
+    switch(name){
+        case "dots": return "点图";
+        case "spray": return "雾图";
+    }
+}
+
+ShotVis.prototype.getShotName = function (name) {
+    switch(name){
+        case "goal": return "进球";
+        case "post": return "门柱";
+        case "saved": return "扑出";
+        case "missed": return "偏出";
     }
 }
 
