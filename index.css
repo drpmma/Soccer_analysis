@@ -13,6 +13,50 @@ html, body
     background-color: whitesmoke;
 }
 
+.visuShotsSlider line {
+    stroke: red;
+    stroke-width: 10;
+    cursor: pointer;
+}
+
+.visuShotsSlider rect {
+    fill: white;
+}
+
+.visuShotsFilterModes, .visuShotsVisuModes, .visuShotsBrushing{
+    fill:white;
+}
+
+.brush .extent {
+    stroke: orange;
+    stroke-width:2;
+    fill-opacity: .08;
+    shape-rendering: crispEdges;
+}
+
+.shot_hidden{
+    opacity:0;
+}
+
+.shot_visible{
+    opacity:.6;
+}
+
+.shot_transparent{
+    opacity:0.15;
+}
+
+.modes_text, .filters_text, .stats_text{
+    font-size: 9px;
+    font-family:'Trebuchet MS',Arial, Helvetica;
+    fill:white;
+    stroke-width:0;
+}
+
+.modes_selected, .orders_selected{
+    fill:red;
+}
+
 /*.titlerect{*/
     /*stroke-width:1px;*/
     /*stroke:rgb(0,0,8);*/
