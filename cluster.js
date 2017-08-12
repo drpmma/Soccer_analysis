@@ -27,23 +27,28 @@ ClusterManager.prototype.clusterize = function(style) {
     var i = 0;
     while(i < this.sequence.nodes.length)
     {
-        var link = this.sequence.links[i];
-        var nodes = this.sequence.nodes;
+        var link = cm.sequence.links[i];
+        var nodes = cm.sequence.nodes;
         var passCat;
-        // if(passCat = getPassCategory(link, nodes[link.source]) != SUB_CHAIN_TYPE_PASS_STANDARD){
-        //     if(passCat == SUB_CHAIN_TYPE_PASS_CENTRE || passCat == SUB_CHAIN_TYPE_PASS_CORNER){
-        //         centreParams = {
-        //             type: passCat,
-        //             entry: link.source,
-        //             exit: link.target,
-        //             links: [link],
-        //             nodes: [link.source,link.target],
-        //             time: link.time
-        //         };
-        //         this.addCluster(centreParams.entry, centreParams.exit, CT_Centre);
-        //     }
-        //     i++;
-        // } else
+
+        if(link == undefined)
+            return;
+        if(link.eid == E_PASS && (passCat = getPassCategory(link, nodes[link.source])) != SUB_CHAIN_TYPE_PASS_STANDARD){
+            if(passCat == SUB_CHAIN_TYPE_PASS_CENTRE || passCat == SUB_CHAIN_TYPE_PASS_CORNER){
+                centreParams = {
+                    type: passCat,
+                    entry: link.source,
+                    exit: link.target,
+                    links: [link],
+                    nodes: [link.source,link.target],
+                    time: link.time
+                };
+                console.log("centreParams:", centreParams);
+                this.addCluster(centreParams.entry, centreParams.exit, CT_Centre);
+            }
+            i=i+2;
+        }
+        else
             if(i != this.sequence.nodes.length -1) {
             switch (this.sequence.links[i].eid) {
                 case E_PASS: case E_RUN:
@@ -239,6 +244,7 @@ Cluster = function(start, end, type, num) {
         }
         if(start>=1) repaintPath(start-1, 0, 1);
         if(that.type == CT_Shoot) for(i = start; i < end; i++) repaintPath(i, 0, 2);
+        else if(that.type == CT_Centre) for(i = start; i < end; i++) repaintPath(i, 0, 2);
         else for(i = start; i < end; i++) repaintPath(i, 0, 0);
         if(end != seq.nodes.length-1) repaintPath(end, 0, 1);
     }
@@ -710,7 +716,7 @@ Cluster.prototype.shoot = function(start, end) {
 };
 
 Cluster.prototype.centre = function (params) {
-    var wid = 210, hei = 320, pad = 2;
+    var wid = 100, hei = 200, pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -735,7 +741,7 @@ Cluster.prototype.centre = function (params) {
         .attr("width",currentwid)
         .attr("height",currenthei);
 
-    // this.centreVis = new CentreVis(this.sequence, clusterGroup, wid, hei, pad, currentx, currenty, centreParams);
+    this.centreVis = new CentreVis(this.sequence, clusterGroup, wid, hei, pad, currentx, currenty, centreParams);
 }
 
 Cluster.prototype.setDuration = function(duration) {
