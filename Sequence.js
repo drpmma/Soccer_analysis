@@ -8,7 +8,6 @@ Sequence = function (field, sequence, r, color, f) {
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
     this.computeNodeLinks();
-    console.log("nodes", this.nodes);
     if(f==1)
     {
         this.draw_path("link",0);

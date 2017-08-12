@@ -1,13 +1,13 @@
-ShotVis = function (Sequence, clusterGroup, width, height, pad, panelHeight, shotNum, endNum, currentX, currentY) {
-    this.Sequence = Sequence;
+ShotVis = function (sequence, clusterGroup, width, height, pad, panelHeight, shotNum, endNum, currentX, currentY) {
+    this.sequence = sequence;
     this.clusterGroup = clusterGroup;
     this.width = width;
     this.height = height;
     this.pad = pad;
     this.panelHeight = panelHeight;
-    this.shotNode = this.Sequence.nodes[shotNum];
+    this.shotNode = this.sequence.nodes[shotNum];
     this.shotNum = shotNum;
-    this.endNode = this.Sequence.nodes[endNum];
+    this.endNode = this.sequence.nodes[endNum];
     this.endNum = endNum;
     this.currentX = currentX;
     this.currentY = currentY;
@@ -40,15 +40,15 @@ ShotVis = function (Sequence, clusterGroup, width, height, pad, panelHeight, sho
 ShotVis.prototype.createBrush = function () {
     this.brush = false;
 
-    this.xBrushField = d3.scaleLinear().range([0, this.fieldWidth]);
-    this.yBrushField = d3.scaleLinear().range([this.fieldHeight, 0]);
-    this.xBrushShotsField = d3.scaleLinear().domain([50,100]).range([0,1]);
-    this.yBrushShotsField = d3.scaleLinear().domain([0,100]).range([0,1]);
-
-    this.xBrushMouth = d3.scaleLinear().range([0, this.width]);
-    this.yBrushMouth = d3.scaleLinear().range([0, this.distanceHeight]);
-    this.xBrushShotsMouth = d3.scaleLinear().domain([0,100]).range([0,1]);
-    this.yBrushShotsMouth = d3.scaleLinear().domain([34.6,65.4]).range([0,1]);
+    // this.xBrushField = d3.scaleLinear().range([0, this.fieldWidth]);
+    // this.yBrushField = d3.scaleLinear().range([this.fieldHeight, 0]);
+    // this.xBrushShotsField = d3.scaleLinear().domain([50,100]).range([0,1]);
+    // this.yBrushShotsField = d3.scaleLinear().domain([0,100]).range([0,1]);
+    //
+    // this.xBrushMouth = d3.scaleLinear().range([0, this.width]);
+    // this.yBrushMouth = d3.scaleLinear().range([0, this.distanceHeight]);
+    // this.xBrushShotsMouth = d3.scaleLinear().domain([0,100]).range([0,1]);
+    // this.yBrushShotsMouth = d3.scaleLinear().domain([34.6,65.4]).range([0,1]);
 
     this.brushedShotsField = null;
     this.brushedShotsMouth = null;
@@ -84,7 +84,7 @@ ShotVis.prototype.drawPosition = function(){
     var that = this;
 
     var endX, endY;
-    var shot_dest = getShotDestination(this.Sequence.links[this.Sequence.links.length - 1]);
+    var shot_dest = getShotDestination(this.sequence.links[this.sequence.links.length - 1]);
     if(shot_dest.type == SHOT_DEST_TYPE_MOUTH){
         endX = this.setPostX(shot_dest.y);
         endY = this.setPostY(shot_dest.z);
