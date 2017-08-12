@@ -1,84 +1,46 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <link rel="stylesheet" href="index.css" type="text/css" />
-        <link rel="stylesheet" href="gameinfo.css" type="text/css" />
-        <link rel="stylesheet" href="setting.css" type="text/css" />
-        <!--<script src="https://d3js.org/d3.v4.min.js"></script>-->
-        <script type="text/javascript" src="d3.js"></script>
-        <script type="text/javascript" src="Data.js"></script>
-        
-    </head>
-    <body>
-        <div id = "time_line">
-        </div>
-        <div id = "player_pos">
-            <svg id = "player_svg_field" width = "100%" height = "100%">
-                <g class = "g_field" width = "100%" height = "100%" >
-                    <rect class = "fieldRect" y = "0" x = "0" width = "100%" height = "100%"></rect>
-                    <circle class = "fieldLines" cy = "11%", cx = "50%", r = "12.5%"> </circle>
-                    <circle class = "fieldLines" cy = "89%", cx = "50%", r = "12.5%"> </circle>
-                    <rect class = "fieldLines" y = "0%" x = "20%" height = "15%" width = "60%"></rect>
-                    <rect class = "fieldLines" y = "85%" x = "20%" height = "15%" width = "60%"></rect>
-                    <rect class = "fieldLines" y = "0%" x = "37%" height = "5%" width = "26%"></rect>
-                    <rect class = "fieldLines" y = "95%" x = "37%" height = "5%" width = "26%"></rect>
-                    <line class = "Gate" y1 = "0%" x1 = "45%" y2 = "0%" x2 = "55%"></line>
-                    <line class = "Gate" y1 = "100%" x1 = "45%" y2 = "100%" x2 = "55%"></line> 
-                    <circle class = "Points" cy = "11%", cx = "50%", r = "0.5%"> </circle>
-                    <circle class = "Points" cy = "89%", cx = "50%", r = "0.5%"> </circle>
-                    <circle class = "fieldLines" cy = "50%", cx = "50%", r = "12.5%"> </circle>
-                    <circle class = "Points" cy = "50%", cx = "50%", r = "0.5%"> </circle>
-                    <line class = "fieldLines" y1 = "50%" x1 = "0%" y2 = "50%" x2 = "100%"></line> 
-                </g>
-            </svg>
-        </div>
-        <div id = "player_info">
-
-        </div>
-        <div id = "player_value">
-
-        </div>
-        <div id = "game_title">
-            <svg id="game_title_field" width = "100%" height = "100%">
-                <span id = "span1"> VS </span>
-            </svg>
-        </div>
-        <div id = "field">
-            <svg id = "svg_field" width = "100%" height = "100%">
-                <g class = "g_field" width = "100%" height = "100%">
-                    <rect class = "fieldRect" x = "0" y = "0" width = "100%" height = "100%"></rect>
-                    <circle class = "fieldLines" cx = "11%", cy = "50%", r = "12.5%"> </circle>
-                    <circle class = "fieldLines" cx = "89%", cy = "50%", r = "12.5%"> </circle>
-                    <rect class = "fieldLines" x = "0%" y = "20%" width = "15%" height = "60%"></rect>
-                    <rect class = "fieldLines" x = "85%" y = "20%" width = "15%" height = "60%"></rect>
-                    <rect class = "fieldLines" x = "0%" y = "37%" width = "5%" height = "26%"></rect>
-                    <rect class = "fieldLines" x = "95%" y = "37%" width = "5%" height = "26%"></rect>
-                    <line class = "Gate" x1 = "0%" y1 = "45%" x2 = "0%" y2 = "55%"></line>
-                    <line class = "Gate" x1 = "100%" y1 = "45%" x2 = "100%" y2 = "55%"></line> 
-                    <circle class = "Points" cx = "11%", cy = "50%", r = "0.5%"> </circle>
-                    <circle class = "Points" cx = "89%", cy = "50%", r = "0.5%"> </circle>
-                    <circle class = "fieldLines" cx = "50%", cy = "50%", r = "12.5%"> </circle>
-                    <circle class = "Points" cx = "50%", cy = "50%", r = "0.5%"> </circle>
-                    <line class = "fieldLines" x1 = "50%" y1 = "0%" x2 = "50%" y2 = "100%"></line> 
-                </g>
-            </svg>
-        </div>
-        <!--<div id = "setting1">-->
-            <!--setting1-->
-        <!--</div>-->
-        <div id = "setting">
-        </div>
-    </body>
-    <script type="text/javascript" src="Cluster.js"></script>
-    <script type="text/javascript" src="setting.js"></script>
-    <script type="text/javascript" src="timeline.js"></script>
-    <script type="text/javascript" src="smallcourt.js"></script>
-    <script type="text/javascript" src="data_smallcourt.js"></script>
-    <script src="./player_info.js"></script>
-    <script src="./player_value.js"></script>
-    <script src="./player_pos.js"></script>
-    <script src="./teaminfo.js"></script>
-    <script type = "text/javascript" src="path.js"></script>
-    <script type="text/javascript" src="parser.js"></script>
-</html>
+<head>
+    <title>D3</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="index.css" type="text/css" />
+    <script type = "text/javascript" src = "d3.js"></script>
+    <script type = "text/javascript" src = "d3.layout.cloud.js"></script>
+    <script type = "text/javascript" src = "Data.js"></script>
+    <script type = "text/javascript" src = "Field.js"></script>
+    <script type = "text/javascript" src = "player.js"></script>
+    <script type = "text/javascript" src = "infos.js"></script>
+    <script type = "text/javascript" src = "dataconvert.js"></script>
+    <script type = "text/javascript" src = "setting.js"></script>
+    <style>
+        .dashed {
+            stroke-dasharray: 5,5;
+            fill: none;
+            stroke: black;
+            stroke-width: 2;
+    }</style>
+</head>
+<body>
+    <div id = "svg_div"></div>
+    <script>
+        var data;
+        var infos;
+        var pm;
+        var cm;
+        var setting;
+        var seq;
+        var mainfield;
+        var f3;
+        var data_select=new dataselect();
+        width = document.getElementById("svg_div").getBoundingClientRect().width;
+        height = document.getElementById("svg_div").getBoundingClientRect().height;
+        setting = new Setting(0.2*width, 0.86*height, 0.62*width, 0.112*height);
+    </script>
+    <script type = "text/javascript" src = "Sequence.js"></script>
+    <script type = "text/javascript" src = "cluster.js"></script>
+    <script type = "text/javascript" src = "retimeline.js"></script>
+    <script type = "text/javascript" src = "setting.js"></script>
+    <script type = "text/javascript" src = "ShotVis.js"></script>
+    <script type = "text/javascript" src = "dataconvert.js"></script>
+</body>
+</html>    
