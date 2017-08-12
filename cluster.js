@@ -21,11 +21,30 @@ ClusterManager = function(field, sequence) {
     this.clusters = new Array();
 };
 
+var centreParams = 0;
+
 ClusterManager.prototype.clusterize = function(style) {
     var i = 0;
     while(i < this.sequence.nodes.length)
     {
-        if(i != this.sequence.nodes.length -1) {
+        var link = this.sequence.links[i];
+        var nodes = this.sequence.nodes;
+        var passCat;
+        // if(passCat = getPassCategory(link, nodes[link.source]) != SUB_CHAIN_TYPE_PASS_STANDARD){
+        //     if(passCat == SUB_CHAIN_TYPE_PASS_CENTRE || passCat == SUB_CHAIN_TYPE_PASS_CORNER){
+        //         centreParams = {
+        //             type: passCat,
+        //             entry: link.source,
+        //             exit: link.target,
+        //             links: [link],
+        //             nodes: [link.source,link.target],
+        //             time: link.time
+        //         };
+        //         this.addCluster(centreParams.entry, centreParams.exit, CT_Centre);
+        //     }
+        //     i++;
+        // } else
+            if(i != this.sequence.nodes.length -1) {
             switch (this.sequence.links[i].eid) {
                 case E_PASS: case E_RUN:
                     var j = i;
@@ -248,14 +267,28 @@ Cluster = function(start, end, type, num) {
         .attr("opacity", 0);
     this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num);
 
-    switch (type)
-    {
-        case CT_Node_Link: this.nodeLink(); break;
-        case CT_Node_Link_All: this.nodeLinkAll(); break;
-        case CT_Hive_Plot: this.hivePlot(); break;
-        case CT_Tag_Cloud: this.tagCloud(); break;
-        case CT_Matrix: this.matrixVis(); break;
-        case CT_Shoot: this.shoot(start, end); break;
+    switch (type) {
+        case CT_Node_Link:
+            this.nodeLink();
+            break;
+        case CT_Node_Link_All:
+            this.nodeLinkAll();
+            break;
+        case CT_Hive_Plot:
+            this.hivePlot();
+            break;
+        case CT_Tag_Cloud:
+            this.tagCloud();
+            break;
+        case CT_Matrix:
+            this.matrixVis();
+            break;
+        case CT_Shoot:
+            this.shoot(start, end);
+            break;
+        case CT_Centre:
+            this.centre(centreParams);
+            break;
     }
 };
 
@@ -675,6 +708,35 @@ Cluster.prototype.shoot = function(start, end) {
     this.type = CT_Shoot;
     this.cleared = 0;
 };
+
+Cluster.prototype.centre = function (params) {
+    var wid = 210, hei = 320, pad = 2;
+    var currentwid = wid+2*pad;
+    var currenthei = hei+2*pad;
+    var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
+    var currenty=(+this.cg.select("#cluster"+this.num).attr("y"))+this.cg.select("#cluster"+this.num).attr("height")/2-currenthei/2;
+
+    this.cg.select("#cluster"+this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
+        .attr("width",currentwid)
+        .attr("height",currenthei);
+    this.cg.select("#clusterrect"+this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("width",currentwid)
+        .attr("height",currenthei)
+        .attr("opacity", 1);
+    var clusterGroup = this.cg.select("#subClusterGroup"+this.num);
+
+    clusterGroup.transition()
+        .duration(this.changeDuration)
+        .attr("width",currentwid)
+        .attr("height",currenthei);
+
+    // this.centreVis = new CentreVis(this.sequence, clusterGroup, wid, hei, pad, currentx, currenty, centreParams);
+}
 
 Cluster.prototype.setDuration = function(duration) {
     this.changeDuration = duration;
