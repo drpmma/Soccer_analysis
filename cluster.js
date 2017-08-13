@@ -86,7 +86,7 @@ ClusterManager.prototype.addCluster = function(start, end, type) {
 ClusterManager.prototype.setDuration = function(duration) {
     this.changeDuration = duration;
     for(var i = 0; i < this.clusterNum; i++) this.clusters[i].setDuration(duration);
-}
+};
 
 ClusterManager.prototype.clearAll = function() {
     for(var i = 0; i < this.clusterNum; i++) this.clusters[i].Clear();
@@ -508,8 +508,8 @@ Cluster.prototype.tagCloud = function() {
         })
     }
 
-    var currentwid = Math.max(150,d3.sum(players,function(d){return d.size}));
-    var currenthei = Math.max(150,d3.sum(players,function(d){return d.size}));
+    var currentwid = Math.max(200,d3.sum(players,function(d){return 2*d.size}));
+    var currenthei = Math.max(200,d3.sum(players,function(d){return 2*d.size}));
     var currentx = (+this.cg.select("#cluster" + this.num).attr("x")) + this.cg.select("#cluster" + this.num).attr("width") / 2 - currentwid / 2;
     var currenty = (+this.cg.select("#cluster" + this.num).attr("y")) + this.cg.select("#cluster" + this.num).attr("height") / 2 - currenthei / 2;
     var size = 2;
@@ -533,6 +533,7 @@ Cluster.prototype.tagCloud = function() {
         .attr("height", currenthei);
 
     var fill = d3.scaleOrdinal(d3.schemeCategory20);
+    var drawn = 0;
 
     d3.layout.cloud().size([currentwid, currenthei])
         .words(players)
@@ -542,7 +543,9 @@ Cluster.prototype.tagCloud = function() {
         .on("end", draw)
         .start();
 
-    function draw(words) {
+    function draw(words){
+        if(words.length != players.length) return;
+        drawn = 1;
         that.cg.select("#subClusterGroup"+that.num)
             .append("g")
             .attr("transform", "translate("+[currentwid/2,currenthei/2]+")")
@@ -562,22 +565,30 @@ Cluster.prototype.tagCloud = function() {
             .text(function(d) { return d.text; });
         for(i = that.start; i <= that.end; i++)
         {
-            for(j = 0; j < words.length; j++)
-            if(that.sequence.nodes[i].pid == words[j].pid)
+            for(j = 0; j < players.length; j++)
+            if(that.sequence.nodes[i].pid == players[j].pid)
             {
-                resetNodePos(i, currentx+currentwid/2+words[j].x+words[j].x0, currenty+currenthei/2+words[j].y+words[j].y0/2, that.changeDuration);
+                resetNodePos(i, currentx+currentwid/2+players[j].x+players[j].x0, currenty+currenthei/2+players[j].y+players[j].y0/2, that.changeDuration);
                 resetNodeSize(i, size, that.changeDuration);
                 hideNodeText(i, that.changeDuration)
             }
         }
     }
 
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(!drawn)
+    {
+        this.Clear();
+        this.tagCloud();
+    }
+    else
+    {
+        if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
+        for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
+        if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
 
-    this.type = CT_Tag_Cloud;
-    this.cleared = 0;
+        this.type = CT_Tag_Cloud;
+        this.cleared = 0;
+    }
 };
 
 Cluster.prototype.matrixVis = function() {

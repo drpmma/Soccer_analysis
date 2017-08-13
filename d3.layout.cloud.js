@@ -45,9 +45,11 @@
                     d;
                 while (+new Date - start < timeInterval && ++i < n && timer) {
                     d = data[i];
+
                     d.x = (size[0] * (Math.random() + .5)) >> 1;
                     d.y = (size[1] * (Math.random() + .5)) >> 1;
                     cloudSprite(d, data, i);
+
                     if (place(board, d, bounds)) {
                         tags.push(d);
                         event.call("word",this,d);
@@ -59,8 +61,11 @@
                     }
                 }
                 if (i >= n) {
-                    cloud.stop();
-                    event.call("end", this, tags, bounds);
+                    if(tags.length == data.length)
+                    {
+                        cloud.stop();
+                        event.call("end", this, tags, bounds);
+                    }
                 }
             }
         }
@@ -292,7 +297,7 @@
                 h = d.y1 - d.y0,
                 p = d.padding;
             // Zero the buffer
-            for (var i = 0; i < h * w32; i++) sprite[i] = 0;
+            for (var ii = 0; ii < h * w32; ii++) sprite[ii] = 0;
             x = d.xoff;
             if (x == null) return;
             y = d.yoff;
