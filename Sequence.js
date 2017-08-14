@@ -179,6 +179,74 @@ Sequence.prototype.computeNodeLinks = function(){
             nodeIndex++;
         }
     }
+    var i = 0;
+    while(i < this.nodes.length)
+    {
+        var link = this.links[i];
+        var nodes = this.nodes;
+        var passCat;
+        if(link == undefined) break;
+        if(link.eid == E_PASS && (passCat = getPassCategory(link, nodes[i])) != SUB_CHAIN_TYPE_PASS_STANDARD){
+            if(passCat == SUB_CHAIN_TYPE_PASS_CENTRE || passCat == SUB_CHAIN_TYPE_PASS_CORNER) {
+                nodes.splice(i+1,0,nodes[i+1]);
+                this.links.splice(i+1,0,{
+                    source: i+1,
+                    target: i+2,
+                    eid: E_DUPLICATE
+                })
+                i=i+2;
+            }
+            else i++;
+        }
+        else
+        if(i != this.nodes.length -1) {
+            switch (this.links[i].eid) {
+                case E_PASS: case E_RUN:
+                var j = i;
+                while (j < this.links.length) {
+                    var that = this;
+                    var isPass = function(k)
+                    {
+                        return (that.links[k]!=undefined)&&(that.links[k].eid == E_PASS)&&(!isLongPass(that.links[k],that.nodes[k]));
+                    };
+                    if( (isPass(j))||
+                        (this.links[j].eid == E_RUN&&isPass(j+1)))
+                        j++;
+                    else break;
+                }
+                if(j - i >= 3) i = j;
+                else i = i+1;
+                break;
+                case E_SHOT_CHANCE_MISSED:
+                case E_SHOT_GOAL:
+                case E_SHOT_MISS:
+                case E_SHOT_POST:
+                case E_SHOT_SAVED:
+                    if (i == this.nodes.length - 2) {
+                        if(i!=0 && this.links[i-1].eid != E_DUPLICATE)
+                        {
+                            nodes.splice(i,0,nodes[i]);
+                            this.links.splice(i,0,{
+                                source: i,
+                                target: i+1,
+                                eid: E_DUPLICATE
+                            })
+                            i = i + 2;
+                        }
+                        else i++;
+                    }
+                    else i++;
+                    break;
+                default: i = i+1;
+            }
+        }
+        else i++;
+    }
+    for(i = 0; i< this.nodes.length-1;i++)
+    {
+        this.links[i].source = i;
+        this.links[i].target = i+1;
+    }
 };
 
 Sequence.prototype.draw_node = function (group, r,color)

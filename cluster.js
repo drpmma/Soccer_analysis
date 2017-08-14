@@ -35,6 +35,7 @@ ClusterManager.prototype.clusterize = function(style) {
             return;
         if(link.eid == E_PASS && (passCat = getPassCategory(link, nodes[link.source])) != SUB_CHAIN_TYPE_PASS_STANDARD){
             if(passCat == SUB_CHAIN_TYPE_PASS_CENTRE || passCat == SUB_CHAIN_TYPE_PASS_CORNER){
+                console.log("1");
                 centreParams = {
                     type: passCat,
                     entry: link.source,
@@ -45,8 +46,14 @@ ClusterManager.prototype.clusterize = function(style) {
                 };
                 console.log("centreParams:", centreParams);
                 this.addCluster(centreParams.entry, centreParams.exit, CT_Centre);
+                i=i+2;
             }
-            i=i+2;
+            else
+            {
+                console.log("2");
+                this.addCluster(i, i, CT_Node_Link);
+                i = i+1;
+            }
         }
         else
             if(i != this.sequence.nodes.length -1) {
@@ -54,8 +61,13 @@ ClusterManager.prototype.clusterize = function(style) {
                 case E_PASS: case E_RUN:
                     var j = i;
                     while (j < this.sequence.links.length) {
-                        if( ((this.sequence.links[j].eid == E_PASS)&&(!isLongPass(this.sequence.links[j],this.sequence.nodes[j])))||
-                            (this.sequence.links[j].eid == E_RUN))
+                        var that = this.sequence;
+                        var isPass = function(k)
+                        {
+                            return (that.links[k]!=undefined)&&(that.links[k].eid == E_PASS)&&(!isLongPass(that.links[k],that.nodes[k]));
+                        };
+                        if( (isPass(j))||
+                            (this.sequence.links[j].eid == E_RUN&&isPass(j+1)))
                             j++;
                         else break;
                     }
@@ -121,6 +133,7 @@ ClusterManager.prototype.chooseCluster = function(num) {
 };
 
 Cluster = function(start, end, type, num) {
+    console.log(start,end);
     this.cg = cm.clusterGroup;
     this.start = start;
     this.end = end;
@@ -242,11 +255,11 @@ Cluster = function(start, end, type, num) {
             y = (+y)+(+dy);
             resetNodePos(i, x, y, 0);
         }
-        if(start>=1) repaintPath(start-1, 0, 1);
-        if(that.type == CT_Shoot) for(i = start; i < end; i++) repaintPath(i, 0, 2);
-        else if(that.type == CT_Centre) for(i = start; i < end; i++) repaintPath(i, 0, 2);
+        if(start>=1) repaintPath(start-1, 1, 0);
+        if(that.type == CT_Shoot) for(i = start; i < end; i++) repaintPath(i, 2, 0);
+        else if(that.type == CT_Centre) for(i = start; i < end; i++) repaintPath(i, 2, 0);
         else for(i = start; i < end; i++) repaintPath(i, 0, 0);
-        if(end != seq.nodes.length-1) repaintPath(end, 0, 1);
+        if(end != seq.nodes.length-1) repaintPath(end, 1, 0);
     }
 
     //rect
@@ -290,7 +303,7 @@ Cluster = function(start, end, type, num) {
             this.matrixVis();
             break;
         case CT_Shoot:
-            this.shoot(start, end);
+            this.shoot();
             break;
         case CT_Centre:
             this.centre(centreParams);
@@ -310,17 +323,22 @@ Cluster.prototype.Clear = function() {
         .transition().duration(this.changeDuration)
         .attr("x",0).attr("y",0).attr("width",0).attr("height",0)
         .attr("opacity", 0);
-    this.cg.select("#subClusterGroup"+this.num).remove();
+    this.cg.select("#subClusterGroup"+this.num)
+        .attr("opacity", 1)
+        .transition().duration(this.changeDuration)
+        .attr("opacity", 0)
+        .delay(this.changeDuration)
+        .remove();
     this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num);
     for(var i = this.start; i <= this.end; i++)
     {
-        resetNodePos(i, +this.x_scale(seq.nodes[i].x), +this.y_scale(seq.nodes[i].y), this.changeDuration);
-        resetNodeSize(i, seq.r, this.changeDuration);
-        showNodeText(i, this.changeDuration);
+        resetNodePos(i, +this.x_scale(seq.nodes[i].x), +this.y_scale(seq.nodes[i].y), this.changeDuration, this.changeDuration);
+        resetNodeSize(i, seq.r, this.changeDuration, this.changeDuration);
+        showNodeText(i, this.changeDuration, this.changeDuration);
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration, -1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, -1)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end, this.changeDuration, -1);
+    if(this.start >= 1) repaintPath(this.start-1, -1,this.changeDuration, this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, -1, this.changeDuration, this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end, -1, this.changeDuration, this.changeDuration*2);
     this.cleared = 1;
 };
 
@@ -333,41 +351,41 @@ Cluster.prototype.nodeLink = function() {
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
     var currenty=(+this.cg.select("#cluster"+this.num).attr("y"))+this.cg.select("#cluster"+this.num).attr("height")/2-currenthei/2;
 
-    this.cg.select("#cluster"+this.num)
-        .transition()
-        .duration(this.changeDuration)
-        .attr("transform", "translate("+currentx+","+currenty+")").attr("x", currentx).attr("y",currenty)
-        .attr("width",currentwid)
-        .attr("height",currenthei);
-    this.cg.select("#clusterrect"+this.num)
-        .transition()
-        .duration(this.changeDuration)
-        .attr("width",currentwid)
-        .attr("height",currenthei)
-        .attr("opacity", 1);
-
     for(var i = this.start; i <= this.end; i++)
     {
         for(var j = 0; j < this.playerNum; j++) if(this.player[j].pid == this.sequence.nodes[i].pid) break;
         resetNodePos(i, this.player[j].avgdx*times+currentx+currentwid/2,
-            this.player[j].avgdy*times+currenty+currenthei/2, this.changeDuration);
+            this.player[j].avgdy*times+currenty+currenthei/2, this.changeDuration, 0);
         if(i == this.start || i == this.end)
         {
-            resetNodeSize(i, seq.r*times*3, this.changeDuration);
-            showNodeText(i, this.changeDuration);
+            resetNodeSize(i, seq.r*times*3, this.changeDuration, 0);
+            showNodeText(i, this.changeDuration, 0);
         }
         else
         {
             if( this.sequence.nodes[i].pid == this.sequence.nodes[this.start].pid ||
                 this.sequence.nodes[i].pid == this.sequence.nodes[this.end].pid)
-                resetNodeSize(i, 0, this.changeDuration);
-            else resetNodeSize(i, seq.r*times, this.changeDuration);
-            hideNodeText(i, this.changeDuration);
+                resetNodeSize(i, 0, this.changeDuration, 0);
+            else resetNodeSize(i, seq.r*times, this.changeDuration, 0);
+            hideNodeText(i, this.changeDuration, 0);
         }
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration);
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2)
+        .duration(this.changeDuration)
+        .attr("transform", "translate("+currentx+","+currenty+")").attr("x", currentx).attr("y",currenty)
+        .attr("width",currentwid)
+        .attr("height",currenthei);
+    this.cg.select("#clusterrect"+this.num)
+        .transition().delay(this.changeDuration*2)
+        .duration(this.changeDuration)
+        .attr("width",currentwid)
+        .attr("height",currenthei)
+        .attr("opacity", 1);
 
     this.type = CT_Node_Link;
     this.cleared = 0;
@@ -415,9 +433,9 @@ Cluster.prototype.nodeLinkAll = function() {
             showNodeText(i, this.changeDuration);
         }
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration);
 
     this.type = CT_Node_Link_All;
     this.cleared = 0;
@@ -480,9 +498,9 @@ Cluster.prototype.hivePlot = function() {
         resetNodeSize(i, r_point, this.changeDuration);
         hideNodeText(i, this.changeDuration);
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration);
 
     function coor_change(radian, radius) {
         coor = {x: radius * Math.cos(radian), y: radius * Math.sin(radian)};
@@ -582,9 +600,9 @@ Cluster.prototype.tagCloud = function() {
     }
     else
     {
-        if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-        for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-        if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+        if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration);
+        for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration)
+        if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration);
 
         this.type = CT_Tag_Cloud;
         this.cleared = 0;
@@ -670,9 +688,9 @@ Cluster.prototype.matrixVis = function() {
         resetNodeSize(i,size/2,this.changeDuration);
         hideNodeText(i, this.changeDuration);
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration);
 
     function chooseColorByTimes(times) {
         if(times>=3) level = 2;
@@ -694,7 +712,7 @@ Cluster.prototype.matrixVis = function() {
     this.cleared = 0;
 };
 
-Cluster.prototype.shoot = function(start, end) {
+Cluster.prototype.shoot = function() {
     var wid = 210, hei = 320, pad = 2;
     var panelHeight = 60;
     var currentwid = wid+2*pad;
@@ -721,7 +739,7 @@ Cluster.prototype.shoot = function(start, end) {
         .attr("width",currentwid)
         .attr("height",currenthei);
 
-    this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, panelHeight, start, end, currentx, currenty); 
+    this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, panelHeight, this.start, this.end, currentx, currenty);
     this.type = CT_Shoot;
     this.cleared = 0;
 };
@@ -775,23 +793,28 @@ Cluster.prototype.dechosen = function() {
         .attr("style", "stroke:black; fill:whitesmoke; stroke-width:1;");
 };
 
-function resetNodePos(id, x, y, duration) {
+function resetNodePos(id, x, y, duration, delay) {
+    if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id)
         .attr("x",x).attr("y",y)
         .transition()
+        .delay(delay)
         .duration(duration)
         .attr("transform","translate("+x+","+y+")");
 }
 
-function resetNodeSize(id, r, duration) {
+function resetNodeSize(id, r, duration, delay) {
+    if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id)
         .attr("size", r);
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("circle")
         .transition()
+        .delay(delay)
         .duration(duration)
         .attr("r",r);
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("path")
         .transition()
+        .delay(delay)
         .duration(duration)
         .attr("d","M "+(-0.4*r)+" "+(-0.9*r)+
             " L "+(-0.9*r)+" "+(-0.1*r)+
@@ -806,27 +829,31 @@ function resetNodeSize(id, r, duration) {
             " Z");
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
         .transition()
+        .delay(delay)
         .duration(duration)
         .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;");
 }
 
-function hideNodeText(id, duration) {
+function hideNodeText(id, duration, delay) {
+    if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
         .attr("opacity",1)
-        .transition().duration(duration)
+        .transition().delay(delay).duration(duration)
         .attr("opacity",0);
 }
 
-function showNodeText(id, duration) {
+function showNodeText(id, duration, delay) {
+    if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
         .attr("opacity",0)
-        .transition().duration(duration)
+        .transition().delay(delay).duration(duration)
         .attr("opacity",1);
 }
 
-function repaintPath(id, duration, style) {
+function repaintPath(id, style, duration, delay) {
+    if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
-        .transition().duration(duration)
+        .transition().delay(delay).duration(duration)
         .attr("style", function() {
             var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
                 stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
