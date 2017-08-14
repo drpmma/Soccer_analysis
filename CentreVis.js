@@ -66,8 +66,6 @@ CentreVis.prototype.drawPosition = function() {
                     newTx = that.currentX + that.x_scale(d.x);
                     newTy = that.currentY + that.y_scale(d.y);
                     resetNodePos(node, newTx, newTy, 100);
-                    console.log("d:", d);
-                    console.log(node, that.currentX, that.currentY, newTx, newTy);
                     return d;
             }
         });
@@ -91,16 +89,12 @@ CentreVis.prototype.getContextData = function () {
     switch(this.type){
         case SUB_CHAIN_TYPE_PASS_CENTRE:
             this.context_data = this.getContextCentres(
-                this.context,
-                this.fromRight,
-                this.sequence.nodes[this.nodes[0]].pid
+                this.fromRight
             );
             break;
         case SUB_CHAIN_TYPE_PASS_CORNER:
             this.context_data = this.getContextCorners(
-                this.context,
-                this.fromRight,
-                this.sequence.nodes[this.nodes[0]].pid
+                this.fromRight
             );
             break;
         default:
@@ -175,7 +169,7 @@ CentreVis.prototype.drawContext = function(){
         return {col: Math.floor(col), row: Math.floor(row)};
     }
 
-    //console.log(heatmapData);
+    console.log(heatmapData);
 
     var max_value_dest = d3.max(heatmapData, function(d){if(d.type=="dest") return d.val});
     var max_value_orig = d3.max(heatmapData, function(d){if(d.type=="orig") return d.val});
@@ -193,7 +187,7 @@ CentreVis.prototype.drawContext = function(){
     //do not draw the val=0 squares
         .data(heatmapData.filter(function(d) { return d.val > 0 ? true : false; }))
         .enter()
-        .append("svg:rect")
+        .append("rect")
         .attr("class", "heatmap_square")
         .attr("x", function(d){
             return (d.index%nb_cols)*cell_width;
