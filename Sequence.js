@@ -246,7 +246,14 @@ Sequence.prototype.computeNodeLinks = function(){
         this.links[i].source = i;
         this.links[i].target = i+1;
     }
-    for(i = 0; i< this.nodes.length;i++) this.nodes[i].index = i;
+    //console.log(this.nodes);
+    for(i = 0; i<this.nodes.length;i++)
+    {
+        console.log(i, this.nodes[i]);
+        this.nodes[i].index = i;
+        console.log(i, this.nodes[i]);
+    }
+    console.log(this.nodes);
 };
 
 Sequence.prototype.draw_node = function (group, r,color)
