@@ -164,6 +164,7 @@ Infos.prototype.addInfo = function(num, max, title) {
 };
 
 Info = function(g, num, max, title) {
+    var that = this;
     this.g = g;
     this.num = num;
     this.maxValue = max;
@@ -201,7 +202,10 @@ Info = function(g, num, max, title) {
         .attr("id","value")
         .attr("x",this.rect_x+0.5)
         .attr("y",this.rect_y+0.5)
-        .attr("width",this.currentValue * (this.rect_width-1) / this.maxValue)
+        .attr("width",function(){
+            if(that.maxValue == 0) return 0;
+            else return that.currentValue * (that.rect_width-1) / that.maxValue;
+        })
         .attr("height",this.rect_height-1)
         .attr("rx",this.rect_rx-0.5)
         .attr("ry",this.rect_ry-0.5)
@@ -216,11 +220,15 @@ Info = function(g, num, max, title) {
 };
 
 Info.prototype.changeValue = function(value) {
+    var that = this;
     this.currentValue = value;
     this.infoGroup.select("#value")
         .transition()
         .duration(this.g.changeDuration)
-        .attr("width",this.currentValue * (this.rect_width-1) / this.maxValue);
+        .attr("width",function(){
+            if(that.maxValue == 0) return 0;
+            else return that.currentValue * (that.rect_width-1) / that.maxValue;
+        });
 
     this.infoGroup.select("#num")
         .transition()

@@ -853,7 +853,12 @@ function showNodeText(id, duration, delay) {
 function repaintPath(id, style, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
-        .transition().delay(delay).duration(duration)
+        .transition()
+        .attr("opacity",1)
+        .duration(duration)
+        .attr("opacity",0)
+        .delay(delay).duration(duration)
+        .attr("opacity",1)
         .attr("style", function() {
             var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
                 stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");

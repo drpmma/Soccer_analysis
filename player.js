@@ -19,29 +19,30 @@ PlayersManager.prototype.reChoose = function(pid) {
         else if(this.player[i].pid != pid && this.player[i].chosen == 1) this.player[i].dechoose();
     }
     this.infos.changeValues(pid);
-    for( i = 0; i < seq.nodes.length; i++)
-        if(seq.nodes[i].pid == pid)
-        {
-            d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
-                .transition().duration(200)
-                .attr("stroke","red")
-                .attr("style","stroke-width: 2px;");
-            d3.select("#mainfield").select("#node_container").select("#node"+i).select("path")
-                .transition().duration(200)
-                .attr("stroke","red")
-                .attr("style","stroke-width: 2px; fill: whitesmoke;");
-        }
-        else
-        {
-            d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
-                .transition().duration(200)
-                .attr("stroke","black")
-                .attr("style","stroke-width: 1px;");
-            d3.select("#mainfield").select("#node_container").select("#node"+i).select("path")
-                .transition().duration(200)
-                .attr("stroke","black")
-                .attr("style","stroke-width: 1px; fill: whitesmoke;");
-        }
+    if(seq!=undefined)
+        for( i = 0; i < seq.nodes.length; i++)
+            if(seq.nodes[i].pid == pid)
+            {
+                d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
+                    .transition().duration(200)
+                    .attr("stroke","red")
+                    .attr("style","stroke-width: 2px;");
+                d3.select("#mainfield").select("#node_container").select("#node"+i).select("path")
+                    .transition().duration(200)
+                    .attr("stroke","red")
+                    .attr("style","stroke-width: 2px; fill: whitesmoke;");
+            }
+            else
+            {
+                d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
+                    .transition().duration(200)
+                    .attr("stroke","black")
+                    .attr("style","stroke-width: 1px;");
+                d3.select("#mainfield").select("#node_container").select("#node"+i).select("path")
+                    .transition().duration(200)
+                    .attr("stroke","black")
+                    .attr("style","stroke-width: 1px; fill: whitesmoke;");
+            }
 };
 
 PlayersManager.prototype.changeToCircle = function() {
