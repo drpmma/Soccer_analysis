@@ -180,8 +180,7 @@ Sequence.prototype.computeNodeLinks = function(){
         }
     }
     var i = 0;
-    while(i < this.nodes.length)
-    {
+    while(i < this.nodes.length) {
         var link = this.links[i];
         var nodes = this.nodes;
         var passCat;
@@ -247,6 +246,7 @@ Sequence.prototype.computeNodeLinks = function(){
         this.links[i].source = i;
         this.links[i].target = i+1;
     }
+    for(i = 0; i< this.nodes.length;i++) this.nodes[i].index = i;
 };
 
 Sequence.prototype.draw_node = function (group, r,color)
@@ -283,6 +283,7 @@ Sequence.prototype.draw_node = function (group, r,color)
             .append("text")
             .attr("x",0).attr("y",0)
             .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
+            .attr("opacity", 1)
             .text(pm.findJerseyByPid(this.nodes[i].pid));
     }
     return this.node_container;

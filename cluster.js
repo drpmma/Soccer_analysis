@@ -355,24 +355,24 @@ Cluster.prototype.nodeLink = function() {
     {
         for(var j = 0; j < this.playerNum; j++) if(this.player[j].pid == this.sequence.nodes[i].pid) break;
         resetNodePos(i, this.player[j].avgdx*times+currentx+currentwid/2,
-            this.player[j].avgdy*times+currenty+currenthei/2, this.changeDuration, 0);
+            this.player[j].avgdy*times+currenty+currenthei/2, this.changeDuration, this.changeDuration);
         if(i == this.start || i == this.end)
         {
-            resetNodeSize(i, seq.r*times*3, this.changeDuration, 0);
-            showNodeText(i, this.changeDuration, 0);
+            resetNodeSize(i, seq.r*times*3, this.changeDuration, this.changeDuration);
+            showNodeText(i, this.changeDuration, this.changeDuration);
         }
         else
         {
             if( this.sequence.nodes[i].pid == this.sequence.nodes[this.start].pid ||
                 this.sequence.nodes[i].pid == this.sequence.nodes[this.end].pid)
-                resetNodeSize(i, 0, this.changeDuration, 0);
-            else resetNodeSize(i, seq.r*times, this.changeDuration, 0);
-            hideNodeText(i, this.changeDuration, 0);
+                resetNodeSize(i, 0, this.changeDuration, this.changeDuration);
+            else resetNodeSize(i, seq.r*times, this.changeDuration, this.changeDuration);
+            hideNodeText(i, this.changeDuration, this.changeDuration);
         }
     }
-    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration);
-    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration*2);
 
     this.cg.select("#cluster"+this.num)
         .transition().delay(this.changeDuration*2)
@@ -837,7 +837,7 @@ function resetNodeSize(id, r, duration, delay) {
 function hideNodeText(id, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
-        .attr("opacity",1)
+        //.attr("opacity",1)
         .transition().delay(delay).duration(duration)
         .attr("opacity",0);
 }
@@ -845,7 +845,7 @@ function hideNodeText(id, duration, delay) {
 function showNodeText(id, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
-        .attr("opacity",0)
+        //.attr("opacity",0)
         .transition().delay(delay).duration(duration)
         .attr("opacity",1);
 }
@@ -853,12 +853,11 @@ function showNodeText(id, duration, delay) {
 function repaintPath(id, style, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
-        .transition()
         .attr("opacity",1)
-        .duration(duration)
-        .attr("opacity",0)
-        .delay(delay).duration(duration)
-        .attr("opacity",1)
+        .transition().duration(duration)
+        .attr("opacity",0);
+    d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
+        .transition().delay(duration)
         .attr("style", function() {
             var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
                 stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
@@ -913,5 +912,7 @@ function repaintPath(id, style, duration, delay) {
                         " " + x_target + " " + y_target;
                 }
             }
-        });
+        })
+        .transition().delay(delay-duration).duration(duration)
+        .attr("opacity",1);
 }
