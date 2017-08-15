@@ -187,7 +187,17 @@ Sequence.prototype.computeNodeLinks = function(){
         if(link == undefined) break;
         if(link.eid == E_PASS && (passCat = getPassCategory(link, nodes[i])) != SUB_CHAIN_TYPE_PASS_STANDARD){
             if(passCat == SUB_CHAIN_TYPE_PASS_CENTRE || passCat == SUB_CHAIN_TYPE_PASS_CORNER) {
-                nodes.splice(i+1,0,nodes[i+1]);
+                nodes.splice(i+1,0,{
+                    index: i+1,
+                    unique_id: nodes[i+1].unique_id,
+                    additional: nodes[i+1].additional,
+                    after_run: nodes[i+1].after_run,
+                    eid: nodes[i+1].eid,
+                    pid: nodes[i+1].pid,
+                    time: nodes[i+1].time,
+                    x: nodes[i+1].x,
+                    y: nodes[i+1].y
+                });
                 this.links.splice(i+1,0,{
                     source: i+1,
                     target: i+2,
@@ -224,7 +234,17 @@ Sequence.prototype.computeNodeLinks = function(){
                     if (i == this.nodes.length - 2) {
                         if(i!=0 && this.links[i-1].eid != E_DUPLICATE)
                         {
-                            nodes.splice(i,0,nodes[i]);
+                            nodes.splice(i,0,{
+                                index: i,
+                                unique_id: nodes[i].unique_id,
+                                additional: nodes[i].additional,
+                                after_run: nodes[i].after_run,
+                                eid: nodes[i].eid,
+                                pid: nodes[i].pid,
+                                time: nodes[i].time,
+                                x: nodes[i].x,
+                                y: nodes[i].y
+                            });
                             this.links.splice(i,0,{
                                 source: i,
                                 target: i+1,
