@@ -141,14 +141,14 @@ html, body
 
 .fieldRect
 {
-    stroke-width: 3;
+    stroke-width: 1;
     fill: white;
     stroke: gray;
 }
 
 .fieldLines
 {
-    stroke-width: 3;
+    stroke-width: 1;
     fill: white;
     stroke: gray;
 }
