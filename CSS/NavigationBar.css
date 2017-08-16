@@ -1,0 +1,20 @@
+.navigationTextTeam {
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 20px;
+}
+
+.navigationTextVS {
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 20px;
+}
+
+.navigationTextDate {
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 15px;
+}
