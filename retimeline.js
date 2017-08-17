@@ -106,6 +106,11 @@ matchinfo = function (svg,field,data,width,height) {
                 d3.select(this).select("#mouse_field").remove();
             })
             .on("click",function () {
+                var sel1 = document.getElementById("sequenceSettingSelect0"),
+                    sel2 = document.getElementById("sequenceSettingSelect1");
+                var val1 = sel1.options[sel1.selectedIndex].value,
+                    val2 = sel2.options[sel2.selectedIndex].value;
+                time=val1;
                 d3.select("#mainfield").select("#path_container").remove();
                 d3.select("#mainfield").select("#node_container").remove();
                 id=d3.select(this).select("circle").attr("id")
@@ -217,10 +222,10 @@ matchinfo.prototype.proj = function (X) {
                 .data(datax)
                 .enter().append("rect")
                 .attr("x",function (d,i) {
-                    return (x_smallfield+0.0075*i)*width
+                    return (x_smallfield+width_smallfield/10*(i))*width
                 })
                 .attr("y",(num*0.08+0.01)*height)
-                .attr("width",0.0075*width)
+                .attr("width",width_smallfield/10*width)
                 .attr("height",function(d){
                     return (d/10)*height_smallfield*height;
                 })
@@ -231,7 +236,7 @@ matchinfo.prototype.proj = function (X) {
                 .data(datax)
                 .enter().append("text")
                 .attr("x",function (d,i) {
-                    return (x_smallfield+0.0075*i+0.001)*width
+                    return (x_smallfield+width_smallfield/10*(i)+0.001)*width
                 })
                 .attr("y",(num*0.08+0.02)*height)
                 .attr("font-size","80%")
@@ -369,7 +374,7 @@ matchinfo.prototype.point =function () {
             .attr("fill","gray")
             .attr("fill-opacity","0")
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
-        phase_small.draw_node("node",3,"black");
+        phase_small.draw_node("node",2,"black");
     }
 }
 matchinfo.prototype.mark =function () {
@@ -389,7 +394,7 @@ matchinfo.prototype.mark =function () {
             .attr("fill","gray")
             .attr("fill-opacity","0")
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
-        phase_small.draw_node("node",3,"black");
+        phase_small.draw_node("node",2,"black");
         phase_small.draw_path("link",1)
     }
 }
@@ -410,7 +415,7 @@ matchinfo.prototype.point_link =function () {
             .attr("fill","gray")
             .attr("fill-opacity","0")
         var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
-        phase_small.draw_node("node",3,"black");
+        phase_small.draw_node("node",2,"black");
         phase_small.draw_path("link",0)
     }
 }
@@ -434,22 +439,22 @@ matchinfo.prototype.worm =function () {
         phase_small.draw_path("link",1)
     }
 }
-matchinfo.prototype.clear = function (time) {
+matchinfo.prototype.clear = function () {
     for(var num=0;num<this.data.length;num++) {
         var name = "#g_sequence" + (num + 1);
         var name1="#smallfield"+num
-        d3.select("#Sequence").select(name).select(name1).transition().duration(+time).remove();
-        d3.select("#Sequence").select(name).selectAll("#rect_g").transition().duration(+time).remove();
-        d3.select("#Sequence").select(name).selectAll("#align_g").transition().duration(+time).remove();
-        d3.select("#Sequence").select(name).selectAll("#arc_g").transition().duration(+time).remove();
-        d3.select("#Sequence").select(name).selectAll("#g_proj").transition().duration(+time).remove();
+        d3.select("#Sequence").select(name).select(name1).remove();
+        d3.select("#Sequence").select(name).selectAll("#rect_g").remove();
+        d3.select("#Sequence").select(name).selectAll("#align_g").remove();
+        d3.select("#Sequence").select(name).selectAll("#arc_g").remove();
+        d3.select("#Sequence").select(name).selectAll("#g_proj").remove();
     }
 }
 
 matchinfo.prototype.viewtransform = function (type,time) {
     switch (+type)
     {
-        case 0:this.clear(time);this.point();break;
+        case 0:this.clear();this.point();break;
         case 1:this.clear();this.point_link();break;
         case 2:this.clear();this.mark();break;
         case 3:this.clear();this.worm();break;

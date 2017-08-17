@@ -198,7 +198,8 @@ Setting.prototype.addElement = function() {
 Setting.prototype.optionList = function() {
     var i;
     this.clusterDurationOptions = new Array();
-    for(i = 0; i < 20; i++) this.clusterDurationOptions[i] = {value: i*100,text: i*100};
+    this.clusterDurationOptions[0]={value: 500,text: 500}
+    for(i = 1; i < 20; i++) this.clusterDurationOptions[i] = {value: i*100,text: i*100};
 
     this.clusterStyleOptions = new Array();
     this.clusterStyleOptions[0] = {value:0,text:"普通"};
@@ -208,7 +209,8 @@ Setting.prototype.optionList = function() {
     this.clusterStyleOptions[4] = {value:4,text:"文字云"};
 
     this.fieldDurationOptions = new Array();
-    for(i = 0; i < 20; i++) this.fieldDurationOptions[i] = {value: i*100,text: i*100};
+    this.fieldDurationOptions[0]={value: 500,text: 500}
+    for(i = 1; i < 20; i++) this.fieldDurationOptions[i] = {value: i*100,text: i*100};
 
     this.playerStyleOptions = new Array();
     this.playerStyleOptions[0] = {value:0,text:"圆"};
@@ -226,7 +228,8 @@ Setting.prototype.optionList = function() {
     this.sequenceStyleOptions[8] = {value:8,text:"饼图"};
 
     this.sequenceDurationOptions = new Array();
-    for(i = 0; i < 20; i++) this.sequenceDurationOptions[i] = {value: i*100,text: i*100};
+    this.sequenceDurationOptions[0]={value: 500,text: 500}
+    for(i = 1; i < 20; i++) this.sequenceDurationOptions[i] = {value: i*100,text: i*100};
 
     this.dataListOptions = new Array();
     this.dataListOptions[0] = {value:"./data/dumpData_t178_m456391_agg0.json",text:"数据1"};
