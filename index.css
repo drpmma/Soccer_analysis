@@ -27,7 +27,7 @@ html, body
     fill:white;
 }
 
-.brush .extent {
+.selection{
     stroke: orange;
     stroke-width:2;
     fill-opacity: .08;

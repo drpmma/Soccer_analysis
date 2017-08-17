@@ -113,6 +113,7 @@ ShotVis.prototype.drawSplitLine = function () {
         .append("rect")
         .attr("x", this.pad)
         .attr("y", 0)
+        .attr("rx", this.pad)
         .attr("width", this.fieldWidth)
         .attr("height", this.splitWidth);
 }
@@ -274,6 +275,7 @@ ShotVis.prototype.drawStats = function () {
     this.statsPanel.append("rect")
         .attr("width", this.fieldWidth)
         .attr("height", this.panelHeight)
+        .attr("rx", 2 * this.pad)
         .style("stroke-width", 0)
         .style("fill", "grey");
 
@@ -296,6 +298,7 @@ ShotVis.prototype.drawStats = function () {
         .attr("y", function(d){return (that.panelHeight / 3 + that.settingPad - that.statsBarScale(d.nb))})//this.panelHeight)
         .attr("width", this.barWidth)
         .attr("height", function(d){return that.statsBarScale(d.nb);})
+        .attr("rx", this.pad)
         .attr("fill", function (d) {
             return that.getShotColor(d.type);
         });
@@ -321,6 +324,7 @@ ShotVis.prototype.drawStats = function () {
     this.totalShotsGroup.append("rect")
         .style("stroke", "black")
         .style("fill", "white")
+        .attr("rx", this.pad)
         .attr("width", 2 * this.barWidth)
         .attr("height", this.height / 18);
 
@@ -354,6 +358,7 @@ ShotVis.prototype.drawModes = function () {
         .append("rect")
         .attr("x", this.barWidth / 2)
         .attr("y", this.settingPad)
+        .attr("rx", this.pad)
         .attr("width", this.barWidth)
         .attr("height", this.barWidth);
 
@@ -393,6 +398,7 @@ ShotVis.prototype.drawModes = function () {
         .append("rect")
         .attr("x", this.barWidth / 2)
         .attr("y", 0)
+        .attr("rx", this.pad)
         .attr("width", this.barWidth)
         .attr("height", this.barWidth);
 
@@ -448,6 +454,7 @@ ShotVis.prototype.drawModes = function () {
         .append("rect")
         .attr("x", this.barWidth / 2)
         .attr("y", 0)
+        .attr("rx", this.pad)
         .attr("width", this.barWidth)
         .attr("height", this.barWidth);
 
@@ -776,6 +783,7 @@ SimpleSlider.prototype.init = function(params){
         .attr("class", "layer")
         .attr("x", 0)
         .attr("y", 0)
+        .attr("rx", params.padding)
         .attr("width", params.width)
         .attr("height", params.height);
 
