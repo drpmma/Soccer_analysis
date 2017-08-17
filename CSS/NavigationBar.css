@@ -17,4 +17,16 @@
     vertical-align: middle;
     text-align: center;
     font-size: 15px;
+    color: #eee;
+}
+
+.navigationTextSetting {
+    display: table-cell;
+    cursor: pointer;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 15px;
+    color: #eee;
 }

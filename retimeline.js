@@ -2,6 +2,8 @@
  * Created by zf on 2017/7/27.
  */
 var x_smallfield=0.84
+var x_timeline = 0.2
+var y_timeline = 0.13
 var width_smallfield=0.065
 var height_smallfield=0.07
 
@@ -10,15 +12,15 @@ timeline= function (svg,width,height) {
     this.width=width;
     this.height=height;
 
-    this.title=svg.append("rect")
-        .attr("id","teamname")
-        .attr("x",0.2*width)
-        .attr("y",0.02*height)
-        .attr("height",0.1*height)
-        .attr("width",0.62*width)
-        .attr("fill","white")
-        .attr("stroke","black")
-        .attr("stroke-width","0.5px")
+    // this.title=svg.append("rect")
+    //     .attr("id","teamname")
+    //     .attr("x",0.2*width)
+    //     .attr("y",0.02*height)
+    //     .attr("height",0.1*height)
+    //     .attr("width",0.62*width)
+    //     .attr("fill","white")
+    //     .attr("stroke","black")
+    //     .attr("stroke-width","0.5px")
     this.g_timeline=svg.append("g")
         .attr("id","timeline");
     this.g_timeline.append("line")

@@ -271,8 +271,8 @@ td, th {
 
 @font-face {
     font-family: 'Glyphicons Halflings';
-    src: url(../fonts/glyphicons-halflings-regular.eot);
-    src: url(../fonts/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'), url(../fonts/glyphicons-halflings-regular.woff2) format('woff2'), url(../fonts/glyphicons-halflings-regular.woff) format('woff'), url(../fonts/glyphicons-halflings-regular.ttf) format('truetype'), url(../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular) format('svg')
+    src: url(https://cdn.bootcss.com/bootstrap/3.3.7/fonts/glyphicons-halflings-regular.eot);
+    src: url(https://cdn.bootcss.com/bootstrap/3.3.7/fonts/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'), url(https://cdn.bootcss.com/bootstrap/3.3.7/fonts/glyphicons-halflings-regular.woff2) format('woff2'), url(https://cdn.bootcss.com/bootstrap/3.3.7/fonts/glyphicons-halflings-regular.woff) format('woff'), url(https://cdn.bootcss.com/bootstrap/3.3.7/fonts/glyphicons-halflings-regular.ttf) format('truetype'), url(https://cdn.bootcss.com/bootstrap/3.3.7/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular) format('svg')
 }
 
 .glyphicon {
@@ -5000,8 +5000,9 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 }
 
 .navbar-inverse .navbar-nav > .disabled > a, .navbar-inverse .navbar-nav > .disabled > a:focus, .navbar-inverse .navbar-nav > .disabled > a:hover {
-    color: #444;
-    background-color: transparent
+    color: #eee;
+    background-color: transparent;
+    cursor: default;
 }
 
 .navbar-inverse .navbar-toggle {
