@@ -1,10 +1,10 @@
-ShotVis = function (sequence, clusterGroup, width, height, pad, panelHeight, shotNum, endNum, currentX, currentY) {
+ShotVis = function (sequence, clusterGroup, width, height, pad, shotNum, endNum, currentX, currentY) {
     this.sequence = sequence;
     this.clusterGroup = clusterGroup;
     this.width = width;
     this.height = height;
     this.pad = pad;
-    this.panelHeight = panelHeight;
+    this.panelHeight = height / 4;
     this.shotNode = this.sequence.nodes[shotNum];
     this.shotNum = shotNum;
     this.endNode = this.sequence.nodes[endNum];
@@ -31,6 +31,8 @@ ShotVis = function (sequence, clusterGroup, width, height, pad, panelHeight, sho
     this.drawPosition();
 
     this.drawShots();
+
+    this.modeSetting();
     this.drawStats();
     this.drawModes();
     this.clickFilterMode();
@@ -58,8 +60,8 @@ ShotVis.prototype.createBrush = function () {
 ShotVis.prototype.drawHalfField = function () {
     var that = this;
 
-    this.fieldWidth = 210;
-    this.fieldHeight = 180;
+    this.fieldWidth = this.width;
+    this.fieldHeight = 0.5 * this.height;
 
     this.field = new Field(this.clusterGroup, this.pad, this.pad + this.height - this.fieldHeight - this.panelHeight,
         this.fieldWidth, this.fieldHeight, "clusterField", 0, 0, 0);
@@ -81,8 +83,6 @@ ShotVis.prototype.drawHalfField = function () {
 }
 
 ShotVis.prototype.drawPosition = function(){
-    var that = this;
-
     var endX, endY;
     var shot_dest = getShotDestination(this.sequence.links[this.sequence.links.length - 1]);
     if(shot_dest.type == SHOT_DEST_TYPE_MOUTH){
@@ -101,7 +101,7 @@ ShotVis.prototype.drawPosition = function(){
 
 ShotVis.prototype.drawSplitLine = function () {
     var that = this;
-    this.splitWidth = 10;
+    this.splitWidth = this.height / 30;
     this.distanceHeight = that.height - that.fieldHeight - that.splitWidth - that.panelHeight;
     this.clusterGroup.append("g")
         .attr("id", "splitLine")
@@ -248,6 +248,11 @@ ShotVis.prototype.getMouth = function(d){
     else return null;
 };
 
+ShotVis.prototype.modeSetting = function () {
+    this.barWidth = this.width / 20;
+    this.settingPad = this.height / 30;
+}
+
 ShotVis.prototype.drawStats = function () {
     var that = this;
 
@@ -279,14 +284,16 @@ ShotVis.prototype.drawStats = function () {
 
     this.statsBarScale = d3.scaleLinear()
         .domain([0, d3.max(this.stats, function(d){return d.nb})])
-        .range([0, that.panelHeight / 3]);
-    var barWidth = 10;
+        .range([0, this.panelHeight / 3]);
 
     this.statsGroups.append("rect")
         .attr("class", function(d){return "shot_bar_"+d.type;})
         .attr("x", 8)
-        .attr("y", function(d){return (that.panelHeight / 3 - that.statsBarScale(d.nb))})//this.panelHeight)
-        .attr("width", barWidth)
+        .attr("y", function(d){
+            console.log("d.nb:", d.nb);
+            console.log("scale:",that.statsBarScale(d.nb) );
+            return (that.panelHeight / 3 + that.settingPad - that.statsBarScale(d.nb))})//this.panelHeight)
+        .attr("width", this.barWidth)
         .attr("height", function(d){return that.statsBarScale(d.nb);})
         .attr("fill", function (d) {
             return that.getShotColor(d.type);
@@ -299,7 +306,7 @@ ShotVis.prototype.drawStats = function () {
         .attr("text-anchor", "start")
         .attr("class", "stats_text")
         .attr("font-size", 10)
-        .attr("x", barWidth + 10)
+        .attr("x", this.barWidth + 10)
         .attr("y", 16)
         .attr("fill", "white");
 
@@ -329,22 +336,16 @@ ShotVis.prototype.drawStats = function () {
 ShotVis.prototype.drawModes = function () {
     var that = this;
 
-    this.filterModesPanel = this.clusterGroup.append("svg:g")
+    this.filterModesPanel = this.clusterGroup.append("g")
         .attr("class","filterModes")
         .attr("transform", "translate(" + [0, this.height - this.panelHeight] + ")");
-
-    // this.filterModesPanel.append("rect")
-    //     .attr("width", this.fieldWidth)
-    //     .attr("height", this.panelHeight)
-    //     .style("stroke-width", 0)
-    //     .style("fill", "grey");
 
     this.filterModes = this.filterModesPanel.selectAll("g.visuShotsModes")
         .data(this.filterModesArray)
         .enter()
         .append("g")
         .attr("class", "visuShotsFilterModes")
-        .attr("transform", function(d,i){return "translate(" + [(50*i), 22] + ")";})
+        .attr("transform", function(d, i){return "translate(" + [(50 * i), 25] + ")";})
         .on("click", clickFilterMode)
         .on("mouseover", overFilterMode);
 
