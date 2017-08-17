@@ -289,6 +289,10 @@ Sequence.prototype.draw_node = function (group, r,color)
         .on("mouseover", function(){d3.select(this).style("cursor", "pointer")})
         .on("click", function(d) {pm.reChoose(d.pid);})
         .append("circle")
+        .attr("x",0)
+        .attr("y",0)
+        .attr("r",0)
+        .transition().duration(time)
         .attr("r", r)
         .attr("stroke", "black")
         .attr("stroke-width", "1px;")
@@ -303,6 +307,8 @@ Sequence.prototype.draw_node = function (group, r,color)
             .select("#"+group + i)
             .append("text")
             .attr("x",0).attr("y",0)
+            .attr("opacity", 0)
+            .transition().duration(time)
             .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
             .attr("opacity", 1)
             .text(pm.findJerseyByPid(this.nodes[i].pid));
@@ -320,6 +326,30 @@ Sequence.prototype.draw_path = function (group,gray) {
             return "link " + getEventName(d.eid);
         })
         .append("path")
+        .attr("stroke-width",0)
+        .attr("stroke","white")
+        .attr("d", function(d){
+            // source and target are duplicated for straight lines
+            var x_source = parseFloat(that.x_scale(that.nodes[d.source].x)),
+                y_source = parseFloat(that.y_scale(that.nodes[d.source].y)),
+                x_target = parseFloat(that.x_scale(that.nodes[d.target].x)),
+                y_target = parseFloat(that.y_scale(that.nodes[d.target].y));
+            if(isLongPass(d,that.nodes[d.source])){
+                return line(getArc(
+                    x_source,
+                    y_source,
+                    x_source,
+                    y_source,
+                    10
+                ));
+            }
+            else{
+                return line([
+                    {x:x_source, y:y_source}, {x:x_source, y:y_source},
+                    {x:x_source, y:y_source}, {x:x_source, y:y_source}]);
+            }
+        })
+        .transition().duration(time)
         .attr("id", function (d, i) {
             return group + i;
         })
