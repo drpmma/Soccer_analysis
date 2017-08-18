@@ -28,6 +28,11 @@ sideSettingBar.prototype.nodeTimeSelect = function(k) {
 sideSettingBar.prototype.playerStyleSelect = function(k) {
     console.log("playerStyleSelect"+k);
     this.playerStyleSel = k;
+    switch (+k)
+    {
+        case 0: pm.changeToCircle();break;
+        case 1: pm.changeToJersey();break;
+    }
 };
 sideSettingBar.prototype.EnCnSelect = function(k) {
     console.log("EnCnSelect"+k);
@@ -46,18 +51,62 @@ sideSettingBar.prototype.dataListSelect = function(k) {
     this.dataListSel = k;
 };
 sideSettingBar.prototype.clusterizeBtn = function() {
+    if(cm != undefined) cm.clearAll();
+    cm = new ClusterManager(mainfield, seq);
+    cm.setDuration(this.clusterTimeOptions[this.clusterTimeSel]);
+    var type;
+    switch(+this.clusterStyleSel)
+    {
+        case 0:type = CT_Node_Link;break;
+        case 1:type = CT_Node_Link_All;break;
+        case 2:type = CT_Hive_Plot;break;
+        case 3:type = CT_Matrix;break;
+        case 4:type = CT_Tag_Cloud;break;
+    }
+    cm.clusterize(type);
     console.log("clusterizeBtn");
 };
 sideSettingBar.prototype.clusterChangeBtn = function() {
+    if(cm != undefined)
+    {
+        cm.setDuration(this.clusterTimeOptions[this.clusterTimeSel]);
+        var type;
+        switch(+this.clusterStyleSel)
+        {
+            case 0:type = CT_Node_Link;break;
+            case 1:type = CT_Node_Link_All;break;
+            case 2:type = CT_Hive_Plot;break;
+            case 3:type = CT_Matrix;break;
+            case 4:type = CT_Tag_Cloud;break;
+        }
+        cm.change(type);
+    }
+    else console.log("Error: There is nothing to be changed.");
     console.log("clusterChangeBtn")
 };
 sideSettingBar.prototype.declusterizeBtn = function() {
+    if(cm != undefined)
+    {
+        cm.setDuration(this.clusterTimeOptions[this.clusterTimeSel]);
+        cm.deleteOne();
+    }
+    else console.log("Error: There is nothing to be deleted.");
     console.log("declusterizeBtn")
 };
 sideSettingBar.prototype.sequenceChangeBtn = function() {
+    f3.viewtransform(this.sequenceStyleSel,this.sequenceTimeOptions[this.sequenceTimeSel]);
     console.log("sequenceChangeBtn")
 };
 sideSettingBar.prototype.dataChangeBtn = function() {
+    var data_name = new Array();
+    data_name[0] = "./data/dumpData_t178_m456391_agg0.json";
+    data_name[1] = "./data/dumpData_t1_m483676_agg0.json";
+    data_name[2] = "./data/dumpData_t120_m483683_agg0.json";
+    data_name[3] = "./data/dumpData_t186_m456391_agg0.json";
+    data_name[4] = "./data/dumpData_t178_m483675_agg0.json";
+    data_name[5] = "./data/dumpData_t186_m486612_agg0.json";
+    d3.select("#screen").remove();
+    data_select.main(data_name[this.dataListSel]);
     console.log("dataChangeBtn")
 };
 sideSettingBar.prototype.dataUpdateBtn = function() {
@@ -117,7 +166,6 @@ sideSettingBar.prototype.CreateOptions = function() {
     this.dataListOptions[5] = "数据6";
     this.dataListSel = 0;
 };
-
 sideSettingBar.prototype.CreateElements = function() {
     var that = this;
     this.clusterSetting = this.Bar.append("div")
@@ -169,7 +217,6 @@ sideSettingBar.prototype.CreateElements = function() {
 sideSettingBar.prototype.AddTitle = function(t,g) {
     g.append("h4").text(t);
 };
-
 sideSettingBar.prototype.AddSelection = function(t,l,s,c,g,f) {
     var sel = g.append("p").text(t+"　：　");
     var but = sel.append("div")
@@ -201,7 +248,6 @@ sideSettingBar.prototype.AddSelection = function(t,l,s,c,g,f) {
             });
     }
 };
-
 sideSettingBar.prototype.AddButton = function(t,c,g,f) {
     g.append("button")
         .attr("type","button")
@@ -215,13 +261,11 @@ sideSettingBar.prototype.AddButton = function(t,c,g,f) {
 //     <button type="button" class="btn btn-default">Right</button>
 // </div>
 };
-
 sideSettingBar.prototype.AddButtonGroup = function(g) {
     return g.append("div")
         .attr("class", "btn-group")
         .attr("role", "group");
 };
-
 sideSettingBar.prototype.AddButtonToolBar = function(g) {
     return g.append("div")
         .attr("class", "btn-toolbar")

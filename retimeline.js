@@ -106,10 +106,8 @@ matchinfo = function (svg,field,data,width,height) {
                 d3.select(this).select("#mouse_field").remove();
             })
             .on("click",function () {
-                var sel1 = document.getElementById("sequenceSettingSelect0"),
-                    sel2 = document.getElementById("sequenceSettingSelect1");
-                var val1 = sel1.options[sel1.selectedIndex].value,
-                    val2 = sel2.options[sel2.selectedIndex].value;
+                var val1 = nb.sideBar.sequenceTimeOptions[nb.sideBar.sequenceTimeSel],
+                    val2 = nb.sideBar.sequenceStyleSel;
                 time=val1;
                 d3.select("#mainfield").select("#path_container").remove();
                 d3.select("#mainfield").select("#node_container").remove();
