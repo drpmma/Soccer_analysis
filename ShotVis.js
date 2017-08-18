@@ -95,8 +95,8 @@ ShotVis.prototype.drawPosition = function(){
     }
     resetNodePos(this.shotNum, this.resetX(this.shotNode.y), this.resetY(this.shotNode.x), 100);
     resetNodePos(this.endNum, endX, endY, 100);
-    repaintPath(this.shotNum - 1, 100, 1);
-    repaintPath(this.endNum - 1, 100, 2);
+    repaintPath(this.shotNum - 1, 1, 100);
+    repaintPath(this.endNum - 1, 2, 100);
 }
 
 ShotVis.prototype.drawSplitLine = function () {

@@ -63,8 +63,8 @@ CentreVis.prototype.drawPosition = function() {
         d3.select("#mainfield")
             .selectAll(".node").filter(function(d) {
                 if(d.index==node) {
-                    newTx = that.currentX + that.x_scale(d.x);
-                    newTy = that.currentY + that.y_scale(d.y);
+                    newTx = that.currentX + that.x_scale(d.x) + that.pad;
+                    newTy = that.currentY + that.y_scale(d.y) + that.pad;
                     resetNodePos(node, newTx, newTy, 100);
                     return d;
             }
@@ -74,12 +74,16 @@ CentreVis.prototype.drawPosition = function() {
         d3.select("#mainfield")
             .selectAll(".link").filter(function (d) {
                 if (d.source == link.source && d.target == link.target) {
-                    repaintPath(link.source, 100, 2);
+                    if(link.source - 1 >= 0) repaintPath(link.source - 1, 1, 100);
+
+                    repaintPath(link.source, 3, 100);
+
+                    if(link.target != seq.nodes.length-1) repaintPath(link.target, 1, 100);
                     return d;
                 }
             })
             .select("path")
-            .attr("style", "stroke-width:3")
+            .attr("style", "stroke-width:3; stroke:green")
             .attr("filter", "url(#shadow-pass)")
             // .attr("style", "stroke: green");
     });
@@ -117,6 +121,7 @@ CentreVis.prototype.getContextCentres = function (fromRight) {
 }
 
 CentreVis.prototype.drawContext = function(){
+    var that = this;
 
     var context_group = this.clusterGroup
         .append("g")
@@ -190,10 +195,10 @@ CentreVis.prototype.drawContext = function(){
         .append("rect")
         .attr("class", "heatmap_square")
         .attr("x", function(d){
-            return (d.index%nb_cols)*cell_width;
+            return (d.index%nb_cols)*cell_width + that.pad;
         })
         .attr("y", function(d){
-            return Math.floor(d.index/nb_cols)*cell_height;
+            return Math.floor(d.index/nb_cols)*cell_height + that.pad;
         })
         .style("stroke-width", 0)
         .style("fill-opacity", function(d){
@@ -230,8 +235,8 @@ CentreVis.prototype.drawFieldCircle = function(cx, cy, r, isFilled){
     var c = isFilled ? "fieldLines fieldPoints" : "fieldLines";
     this.clusterGroup.append("circle")
         .attr("class", c)
-        .attr("cx", this.x_scale(cx))
-        .attr("cy", this.y_scale(cy))
+        .attr("cx", this.x_scale(cx) + this.pad)
+        .attr("cy", this.y_scale(cy) + this.pad)
         .attr("r", r);
 };
 
@@ -250,8 +255,8 @@ CentreVis.prototype.drawFieldRect = function(cy, x0, x1, y0, y1, isFilled){
     var c = isFilled ? "fieldRect" : "fieldLines";
     this.clusterGroup.append("rect")
         .attr("class", c)
-        .attr("x", x0)
-        .attr("y", y)
+        .attr("x", x0 + this.pad)
+        .attr("y", y + this.pad)
         .attr("width", w)
         .attr("height", h);
 };

@@ -257,7 +257,7 @@ Cluster = function(start, end, type, num) {
         }
         if(start>=1) repaintPath(start-1, 1, 0);
         if(that.type == CT_Shoot) for(i = start; i < end; i++) repaintPath(i, 2, 0);
-        else if(that.type == CT_Centre) for(i = start; i < end; i++) repaintPath(i, 2, 0);
+        else if(that.type == CT_Centre) for(i = start; i < end; i++) repaintPath(i, 3, 0);
         else for(i = start; i < end; i++) repaintPath(i, 0, 0);
         if(end != seq.nodes.length-1) repaintPath(end, 1, 0);
     }
@@ -273,16 +273,16 @@ Cluster = function(start, end, type, num) {
         .on("mouseover", function(){d3.select(this).style("cursor", "move");
                                     if(that.isChosen == 0)
                                         d3.select(this).select("#clusterrect"+that.num)
-                                            .attr("style","stroke:blue; fill:whitesmoke; stroke-width:1.5;")})
+                                            .attr("style","stroke:steelblue; fill:white; stroke-width:3;")})
         .on("mouseout", function(){if(that.isChosen == 0)
                                         d3.select(this).select("#clusterrect"+that.num)
-                                            .attr("style","stroke:black; fill:whitesmoke; stroke-width:1;")})
+                                            .attr("style","stroke:black; fill:white; stroke-width:1;")})
         .on("click", function(){cm.chooseCluster(that.num)})
         .call(drag)
         .append("rect")
         .attr("id","clusterrect" + this.num)
         .attr("x",0).attr("y",0).attr("width",0).attr("height",0)
-        .attr("style","stroke:black; fill:whitesmoke; stroke-width:1;")
+        .attr("style","stroke:black; fill:white; stroke-width:1;")
         .attr("opacity", 0);
     this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num);
 
@@ -779,7 +779,7 @@ Cluster.prototype.chosen = function() {
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(200)
-        .attr("style", "stroke:red; fill:whitesmoke; stroke-width:2;");
+        .attr("style", "stroke:darkred; fill:white; stroke-width:3;");
 };
 
 Cluster.prototype.dechosen = function() {
@@ -787,7 +787,7 @@ Cluster.prototype.dechosen = function() {
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(200)
-        .attr("style", "stroke:black; fill:whitesmoke; stroke-width:1;");
+        .attr("style", "stroke:black; fill:white; stroke-width:1;");
 };
 
 function resetNodePos(id, x, y, duration, delay) {
@@ -864,6 +864,7 @@ function repaintPath(id, style, duration, delay) {
                 case 0: stroke = "gray"; stroke_width = "1px"; break;
                 case 1: stroke_width = "2px"; break;
                 case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
+                case 3: stroke = "green"; stroke_width = "3px"; break;
             }
             return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
         })
@@ -890,7 +891,8 @@ function repaintPath(id, style, duration, delay) {
                             {x: x_target, y: y_target}, {x: x_target, y: y_target}]);
                     }
                 }
-                case 2:{
+                case 2:
+                case 3:{
                     return line([{x: x_source, y: y_source}, {x: x_target, y: y_target}]);
                 }
                 case 0: {
