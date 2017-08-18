@@ -13,10 +13,62 @@ sideSettingBar = function() {
     this.CreateElements();
 };
 
+sideSettingBar.prototype.clusterTimeSelect = function(k) {
+    console.log("clusterTimeSelect"+k);
+    this.clusterTimeSel = k;
+};
+sideSettingBar.prototype.clusterStyleSelect = function(k) {
+    console.log("clusterStyleSelect"+k);
+    this.clusterStyleSel = k;
+};
+sideSettingBar.prototype.nodeTimeSelect = function(k) {
+    console.log("nodeTimeSelect"+k);
+    this.nodeTimeSel = k;
+};
+sideSettingBar.prototype.playerStyleSelect = function(k) {
+    console.log("playerStyleSelect"+k);
+    this.playerStyleSel = k;
+};
+sideSettingBar.prototype.EnCnSelect = function(k) {
+    console.log("EnCnSelect"+k);
+    this.EnCnSel = k;
+};
+sideSettingBar.prototype.sequenceTimeSelect = function(k) {
+    console.log("sequenceTimeSelect"+k);
+    this.sequenceTimeSel = k;
+};
+sideSettingBar.prototype.sequenceStyleSelect = function(k) {
+    console.log("sequenceStyleSelect"+k);
+    this.sequenceStyleSel = k;
+};
+sideSettingBar.prototype.dataListSelect = function(k) {
+    console.log("dataListSelect"+k);
+    this.dataListSel = k;
+};
+sideSettingBar.prototype.clusterizeBtn = function() {
+    console.log("clusterizeBtn");
+};
+sideSettingBar.prototype.clusterChangeBtn = function() {
+    console.log("clusterChangeBtn")
+};
+sideSettingBar.prototype.declusterizeBtn = function() {
+    console.log("declusterizeBtn")
+};
+sideSettingBar.prototype.sequenceChangeBtn = function() {
+    console.log("sequenceChangeBtn")
+};
+sideSettingBar.prototype.dataChangeBtn = function() {
+    console.log("dataChangeBtn")
+};
+sideSettingBar.prototype.dataUpdateBtn = function() {
+    console.log("dataUpdateBtn")
+};
+
 sideSettingBar.prototype.CreateOptions = function() {
     var i;
     this.clusterTimeOptions = new Array();
     for(i = 0; i < 20; i++) this.clusterTimeOptions[i] = i*100;
+    this.clusterTimeSel = 5;
 
     this.clusterStyleOptions = new Array();
     this.clusterStyleOptions[0] = "普通";
@@ -24,20 +76,25 @@ sideSettingBar.prototype.CreateOptions = function() {
     this.clusterStyleOptions[2] = "蜂巢";
     this.clusterStyleOptions[3] = "矩阵";
     this.clusterStyleOptions[4] = "文字云";
+    this.clusterStyleSel = 0;
 
     this.nodeTimeOptions = new Array();
     for(i = 0; i < 20; i++) this.nodeTimeOptions[i] = i*100;
+    this.nodeTimeSel = 2;
 
     this.playerStyleOptions = new Array();
     this.playerStyleOptions[0] = "圆";
     this.playerStyleOptions[1] = "球衣";
+    this.playerStyleSel = 0;
 
     this.EnCnOptions = new Array();
     this.EnCnOptions[0] = "中文";
     this.EnCnOptions[1] = "英文";
+    this.EnCnSel = 0;
 
     this.sequenceTimeOptions = new Array();
     for(i = 0; i < 20; i++) this.sequenceTimeOptions[i] = i*100;
+    this.sequenceTimeSel = 5;
 
     this.sequenceStyleOptions = new Array();
     this.sequenceStyleOptions[0] = "点图";
@@ -49,29 +106,32 @@ sideSettingBar.prototype.CreateOptions = function() {
     this.sequenceStyleOptions[6] = "时间对齐";
     this.sequenceStyleOptions[7] = "距离对齐";
     this.sequenceStyleOptions[8] = "饼图";
+    this.sequenceStyleSel = 0;
 
-    this.dataList = new Array();
-    this.dataList[0] = "数据1";
-    this.dataList[1] = "数据2";
-    this.dataList[2] = "数据3";
-    this.dataList[3] = "数据4";
-    this.dataList[4] = "数据5";
-    this.dataList[5] = "数据6";
+    this.dataListOptions = new Array();
+    this.dataListOptions[0] = "数据1";
+    this.dataListOptions[1] = "数据2";
+    this.dataListOptions[2] = "数据3";
+    this.dataListOptions[3] = "数据4";
+    this.dataListOptions[4] = "数据5";
+    this.dataListOptions[5] = "数据6";
+    this.dataListSel = 0;
 };
 
 sideSettingBar.prototype.CreateElements = function() {
+    var that = this;
     this.clusterSetting = this.Bar.append("div")
         .attr("class", "col-md-3")
         .append("div")
         .attr("id", "clusterSetting")
         .attr("class", "bs-callout bs-callout-cluster");
     this.AddTitle("聚团设置",this.clusterSetting);
-    this.AddSelection("聚团时间",this.clusterTimeOptions,"default",this.clusterSetting);
-    this.AddSelection("聚团方式",this.clusterStyleOptions,"default",this.clusterSetting);
+    this.AddSelection("聚团时间",this.clusterTimeOptions,this.clusterTimeSel,"default",this.clusterSetting,function(k){that.clusterTimeSelect(k)});
+    this.AddSelection("聚团方式",this.clusterStyleOptions,this.clusterStyleSel,"default",this.clusterSetting,function(k){that.clusterStyleSelect(k)});
     var temp = this.AddButtonToolBar(this.clusterSetting);
-    this.AddButton("聚团","default",this.AddButtonGroup(temp));
-    this.AddButton("改变样式","default",this.AddButtonGroup(temp));
-    this.AddButton("取消聚团","default",this.AddButtonGroup(temp));
+    this.AddButton("聚团","default",this.AddButtonGroup(temp),function(){that.clusterizeBtn()});
+    this.AddButton("改变样式","default",this.AddButtonGroup(temp),function(){that.clusterChangeBtn()});
+    this.AddButton("取消聚团","default",this.AddButtonGroup(temp),function(){that.declusterizeBtn()});
 
     this.showSetting = this.Bar.append("div")
         .attr("class", "col-md-3")
@@ -79,9 +139,9 @@ sideSettingBar.prototype.CreateElements = function() {
         .attr("id", "showSetting")
         .attr("class", "bs-callout bs-callout-show");
     this.AddTitle("显示设置",this.showSetting);
-    this.AddSelection("飞点时间",this.nodeTimeOptions,"default",this.showSetting);
-    this.AddSelection("球员样式",this.playerStyleOptions,"default",this.showSetting);
-    this.AddSelection("中英文选择",this.EnCnOptions,"default",this.showSetting)
+    this.AddSelection("飞点时间",this.nodeTimeOptions,this.nodeTimeSel,"default",this.showSetting,function(k){that.nodeTimeSelect(k)});
+    this.AddSelection("球员样式",this.playerStyleOptions,this.playerStyleSel,"default",this.showSetting,function(k){that.playerStyleSelect(k)});
+    this.AddSelection("中英文选择",this.EnCnOptions,this.EnCnSel,"default",this.showSetting,function(k){that.EnCnSelect(k)});
 
     this.sequenceSetting = this.Bar.append("div")
         .attr("class", "col-md-3")
@@ -89,10 +149,10 @@ sideSettingBar.prototype.CreateElements = function() {
         .attr("id", "sequenceSetting")
         .attr("class", "bs-callout bs-callout-sequence");
     this.AddTitle("序列设置",this.sequenceSetting);
-    this.AddSelection("变换时间",this.sequenceTimeOptions,"default",this.sequenceSetting);
-    this.AddSelection("序列样式",this.sequenceStyleOptions,"default",this.sequenceSetting);
+    this.AddSelection("变换时间",this.sequenceTimeOptions,this.sequenceTimeSel,"default",this.sequenceSetting,function(k){that.sequenceTimeSelect(k)});
+    this.AddSelection("序列样式",this.sequenceStyleOptions,this.sequenceStyleSel,"default",this.sequenceSetting,function(k){that.sequenceStyleSelect(k)});
     temp = this.AddButtonToolBar(this.sequenceSetting);
-    this.AddButton("变换序列样式","default",this.AddButtonGroup(temp));
+    this.AddButton("变换序列样式","default",this.AddButtonGroup(temp),function(){that.sequenceChangeBtn()});
 
     this.dataSetting = this.Bar.append("div")
         .attr("class", "col-md-3")
@@ -100,25 +160,25 @@ sideSettingBar.prototype.CreateElements = function() {
         .attr("id", "dataSetting")
         .attr("class", "bs-callout bs-callout-data");
     this.AddTitle("数据设置",this.dataSetting);
-    this.AddSelection("数据选择",this.dataList,"default",this.dataSetting);
+    this.AddSelection("数据选择",this.dataListOptions,this.dataListSel,"default",this.dataSetting,function(k){that.dataListSelect(k)});
     temp = this.AddButtonToolBar(this.dataSetting);
-    this.AddButton("更换数据","default",this.AddButtonGroup(temp));
-    this.AddButton("导入数据","default",this.AddButtonGroup(temp));
+    this.AddButton("更换数据","default",this.AddButtonGroup(temp),function(){that.dataChangeBtn()});
+    this.AddButton("导入数据","default",this.AddButtonGroup(temp),function(){that.dataUpdateBtn()});
 };
 
 sideSettingBar.prototype.AddTitle = function(t,g) {
-    g.append("h5").text(t);
+    g.append("h4").text(t);
 };
 
-sideSettingBar.prototype.AddSelection = function(t,l,c,g) {
-    console.log(t,l,c,g);
+sideSettingBar.prototype.AddSelection = function(t,l,s,c,g,f) {
     var sel = g.append("p").text(t+"　：　");
     var but = sel.append("div")
         .attr("class","btn-group dropup");
     but.append("button")
         .attr("type","button")
         .attr("class","btn btn-"+c)
-        .text(t);
+        .attr("data-toggle","dropdown")
+        .text(l[s]);
     but.append("button")
         .attr("type","button")
         .attr("class","btn btn-"+c+"dropdown-toggle")
@@ -129,18 +189,25 @@ sideSettingBar.prototype.AddSelection = function(t,l,c,g) {
         .attr("class","caret");
     var li = but.append("ul")
         .attr("class","dropdown-menu");
-    for(var i = 0; i < l.length; i++)
+    for(var i = 0; i < l.length; i++) {
         li.append("li")
             .append("a")
-            .attr("href","#")
-            .text(l[i]);
+            .attr("href", "#")
+            .attr("num",i)
+            .text(l[i])
+            .on("click", function() {
+                but.select("button").text(l[this.getAttribute("num")]);
+                if(f != undefined) f(this.getAttribute("num"));
+            });
+    }
 };
 
-sideSettingBar.prototype.AddButton = function(t,c,g) {
+sideSettingBar.prototype.AddButton = function(t,c,g,f) {
     g.append("button")
         .attr("type","button")
         .attr("class","btn btn-"+c)//default primary success info warning danger link
-        .text(t);
+        .text(t)
+        .on("click",f);
 
 // <div class="btn-group" role="group" aria-label="...">
 //     <button type="button" class="btn btn-default">Left</button>
@@ -155,8 +222,7 @@ sideSettingBar.prototype.AddButtonGroup = function(g) {
         .attr("role", "group");
 };
 
-sideSettingBar.prototype.AddButtonToolBar = function(g)
-{
+sideSettingBar.prototype.AddButtonToolBar = function(g) {
     return g.append("div")
         .attr("class", "btn-toolbar")
         .attr("role", "toolbar");

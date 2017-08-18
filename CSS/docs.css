@@ -872,7 +872,7 @@ h1[id] {
 }
 
 .bs-callout {
-    padding: 1px 20px;
+    padding: 10px 20px 10px 10px;
     margin: 15px 0;
     border: 1px solid #eee;
     border-left-width: 5px;
@@ -900,7 +900,7 @@ h1[id] {
     border-left-color: #ce4844
 }
 
-.bs-callout-cluster h5 {
+.bs-callout-cluster h4 {
     color: #ce4844
 }
 
@@ -912,7 +912,7 @@ h1[id] {
     border-left-color: #ce4844
 }
 
-.bs-callout-show h5 {
+.bs-callout-show h4 {
     color: #ce4844
 }
 
@@ -924,7 +924,7 @@ h1[id] {
     border-left-color: #ce4844
 }
 
-.bs-callout-sequence h5 {
+.bs-callout-sequence h4 {
     color: #ce4844
 }
 
@@ -936,7 +936,7 @@ h1[id] {
     border-left-color: #ce4844
 }
 
-.bs-callout-data h5 {
+.bs-callout-data h4 {
     color: #ce4844
 }
 
