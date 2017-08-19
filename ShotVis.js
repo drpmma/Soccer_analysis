@@ -28,7 +28,6 @@ ShotVis = function (sequence, clusterGroup, width, height, pad, shotNum, endNum,
     this.drawHalfField();
     this.drawSplitLine();
     this.drawPost();
-    this.drawPosition();
 
     this.drawShots();
 
@@ -82,7 +81,7 @@ ShotVis.prototype.drawHalfField = function () {
 
 }
 
-ShotVis.prototype.drawPosition = function(){
+ShotVis.prototype.drawPosition = function(duration){
     var endX, endY;
     var shot_dest = getShotDestination(this.sequence.links[this.sequence.links.length - 1]);
     if(shot_dest.type == SHOT_DEST_TYPE_MOUTH){
@@ -93,10 +92,10 @@ ShotVis.prototype.drawPosition = function(){
         endX = this.resetX(this.endNode.y);
         endY = this.resetY(this.endNode.x);
     }
-    resetNodePos(this.shotNum, this.resetX(this.shotNode.y), this.resetY(this.shotNode.x), 100);
-    resetNodePos(this.endNum, endX, endY, 100);
-    repaintPath(this.shotNum - 1, 1, 100);
-    repaintPath(this.endNum - 1, 2, 100);
+    resetNodePos(this.shotNum, this.resetX(this.shotNode.y), this.resetY(this.shotNode.x), duration, 2 * duration);
+    resetNodePos(this.endNum, endX, endY, duration, 2 * duration);
+    repaintPath(this.shotNum - 1, 1, duration, 2 * duration);
+    repaintPath(this.endNum - 1, 2, duration, 2 * duration);
 }
 
 ShotVis.prototype.drawSplitLine = function () {
