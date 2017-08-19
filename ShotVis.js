@@ -92,8 +92,8 @@ ShotVis.prototype.drawPosition = function(duration){
         endX = this.resetX(this.endNode.y);
         endY = this.resetY(this.endNode.x);
     }
-    resetNodePos(this.shotNum, this.resetX(this.shotNode.y), this.resetY(this.shotNode.x), duration, 2 * duration);
-    resetNodePos(this.endNum, endX, endY, duration, 2 * duration);
+    resetNodePos(this.shotNum, this.resetX(this.shotNode.y), this.resetY(this.shotNode.x), duration, duration);
+    resetNodePos(this.endNum, endX, endY, duration, duration);
     repaintPath(this.shotNum - 1, 1, duration, 2 * duration);
     repaintPath(this.endNum - 1, 2, duration, 2 * duration);
 }
