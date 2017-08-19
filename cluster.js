@@ -400,7 +400,8 @@ Cluster.prototype.nodeLinkAll = function() {
         .duration(this.changeDuration)
         .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
         .attr("width",currentwid)
-        .attr("height",currenthei);
+        .attr("height",currenthei)
+        .attr("opacity",0);
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(this.changeDuration)
@@ -425,14 +426,18 @@ Cluster.prototype.nodeLinkAll = function() {
         {
             x = tempf.x_scale(tempp.pos[j].x)+currentx+pad;
             y = tempf.y_scale(tempp.pos[j].y)+currenty+pad;
-            resetNodePos(i, x, y, this.changeDuration);
-            resetNodeSize(i, tempf.r_scale(5), this.changeDuration);
-            showNodeText(i, this.changeDuration);
+            resetNodePos(i, x, y, this.changeDuration, this.changeDuration);
+            resetNodeSize(i, tempf.r_scale(5), this.changeDuration, this.changeDuration);
+            showNodeText(i, this.changeDuration, this.changeDuration);
         }
     }
-    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration);
-    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration*2);
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
 
     this.type = CT_Node_Link_All;
     this.cleared = 0;
@@ -454,7 +459,8 @@ Cluster.prototype.hivePlot = function() {
         .duration(this.changeDuration)
         .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
         .attr("width",currentwid)
-        .attr("height",currenthei);
+        .attr("height",currenthei)
+        .attr("opacity", 0);
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(this.changeDuration)
@@ -491,13 +497,17 @@ Cluster.prototype.hivePlot = function() {
     for(i = this.start; i <= this.end; i++)
     {
         var coor = coor_change(2*this.playerIndex[i-this.start]*Math.PI/num, r_center+(i-this.start)*r_step);
-        resetNodePos(i, coor.x+currentwid/2+currentx, coor.y+currenthei/2+currenty, this.changeDuration);
-        resetNodeSize(i, r_point, this.changeDuration);
-        hideNodeText(i, this.changeDuration);
+        resetNodePos(i, coor.x+currentwid/2+currentx, coor.y+currenthei/2+currenty, this.changeDuration, this.changeDuration);
+        resetNodeSize(i, r_point, this.changeDuration, this.changeDuration);
+        hideNodeText(i, this.changeDuration, this.changeDuration);
     }
-    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration);
-    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration*2);
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
 
     function coor_change(radian, radius) {
         coor = {x: radius * Math.cos(radian), y: radius * Math.sin(radian)};
@@ -534,7 +544,8 @@ Cluster.prototype.tagCloud = function() {
         .duration(this.changeDuration)
         .attr("transform", "translate(" + currentx + "," + currenty + ")").attr("x", currentx).attr("y", currenty)
         .attr("width", currentwid)
-        .attr("height", currenthei);
+        .attr("height", currenthei)
+        .attr("opacity", 0);
     this.cg.select("#clusterrect" + this.num)
         .transition()
         .duration(this.changeDuration)
@@ -583,9 +594,9 @@ Cluster.prototype.tagCloud = function() {
             for(j = 0; j < players.length; j++)
             if(that.sequence.nodes[i].pid == players[j].pid)
             {
-                resetNodePos(i, currentx+currentwid/2+players[j].x+players[j].x0, currenty+currenthei/2+players[j].y+players[j].y0/2, that.changeDuration);
-                resetNodeSize(i, size, that.changeDuration);
-                hideNodeText(i, that.changeDuration)
+                resetNodePos(i, currentx+currentwid/2+players[j].x+players[j].x0, currenty+currenthei/2+players[j].y+players[j].y0/2, that.changeDuration,that.changeDuration);
+                resetNodeSize(i, size, that.changeDuration,that.changeDuration);
+                hideNodeText(i, that.changeDuration,that.changeDuration)
             }
         }
     }
@@ -597,9 +608,13 @@ Cluster.prototype.tagCloud = function() {
     }
     else
     {
-        if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration);
-        for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration)
-        if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration);
+        if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration,this.changeDuration*2);
+        for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration,this.changeDuration*2)
+        if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration,this.changeDuration*2);
+
+        this.cg.select("#cluster" + this.num)
+            .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+            .attr("opacity", 1);
 
         this.type = CT_Tag_Cloud;
         this.cleared = 0;
@@ -620,7 +635,8 @@ Cluster.prototype.matrixVis = function() {
         .duration(this.changeDuration)
         .attr("transform", "translate("+currentx+","+currenty+")").attr("x", currentx).attr("y",currenty)
         .attr("width",currentwid)
-        .attr("height",currenthei);
+        .attr("height",currenthei)
+        .attr("opacity",0);
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(this.changeDuration)
@@ -681,13 +697,17 @@ Cluster.prototype.matrixVis = function() {
     {
         for(j = 0; j < num; j++)
             if(this.sequence.nodes[i].pid == this.player[j].pid) break;
-        resetNodePos(i, j*size+pad+currentx+size/2, j*size+pad+currenty+size/2, this.changeDuration);
-        resetNodeSize(i,size/2,this.changeDuration);
-        hideNodeText(i, this.changeDuration);
+        resetNodePos(i, j*size+pad+currentx+size/2, j*size+pad+currenty+size/2, this.changeDuration,this.changeDuration);
+        resetNodeSize(i,size/2,this.changeDuration,this.changeDuration);
+        hideNodeText(i, this.changeDuration,this.changeDuration);
     }
-    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration);
-    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration,this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration,this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration,this.changeDuration*2);
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity",1);
 
     function chooseColorByTimes(times) {
         if(times>=3) level = 2;
@@ -721,7 +741,8 @@ Cluster.prototype.shoot = function() {
         .duration(this.changeDuration)
         .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
         .attr("width",currentwid)
-        .attr("height",currenthei);
+        .attr("height",currenthei)
+        .attr("opacity", 0);
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(this.changeDuration)
@@ -736,6 +757,11 @@ Cluster.prototype.shoot = function() {
         .attr("height",currenthei);
 
     this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, this.start, this.end, currentx, currenty);
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+
     this.type = CT_Shoot;
     this.cleared = 0;
 };
@@ -752,7 +778,8 @@ Cluster.prototype.centre = function (params) {
         .duration(this.changeDuration)
         .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
         .attr("width",currentwid)
-        .attr("height",currenthei);
+        .attr("height",currenthei)
+        .attr("opacity", 0);
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(this.changeDuration)
@@ -767,7 +794,14 @@ Cluster.prototype.centre = function (params) {
         .attr("height",currenthei);
 
     this.centreVis = new CentreVis(this.sequence, clusterGroup, wid, hei, pad, currentx, currenty, centreParams);
-}
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+
+    this.type = CT_Centre;
+    this.cleared = 0;
+};
 
 Cluster.prototype.setDuration = function(duration) {
     this.changeDuration = duration;
