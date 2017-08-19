@@ -18,7 +18,6 @@ CentreVis = function(sequence, clusterGroup, width, height, pad, currentX, curre
     this.createField();
     this.getContextData();
 
-    this.drawPosition();
     this.drawContext();
 }
 
@@ -55,7 +54,7 @@ CentreVis.prototype.createField = function () {
 
 }
 
-CentreVis.prototype.drawPosition = function() {
+CentreVis.prototype.drawPosition = function(duration) {
     var that = this;
     var newTx,newTy;
 
@@ -65,7 +64,7 @@ CentreVis.prototype.drawPosition = function() {
                 if(d.index==node) {
                     newTx = that.currentX + that.x_scale(d.x) + that.pad;
                     newTy = that.currentY + that.y_scale(d.y) + that.pad;
-                    resetNodePos(node, newTx, newTy, 100);
+                    resetNodePos(node, newTx, newTy, duration);
                     return d;
             }
         });
@@ -74,18 +73,17 @@ CentreVis.prototype.drawPosition = function() {
         d3.select("#mainfield")
             .selectAll(".link").filter(function (d) {
                 if (d.source == link.source && d.target == link.target) {
-                    if(link.source - 1 >= 0) repaintPath(link.source - 1, 1, 100);
+                    if(link.source - 1 >= 0) repaintPath(link.source - 1, 1, duration * 2);
 
-                    repaintPath(link.source, 3, 100);
+                    repaintPath(link.source, 3, duration * 2);
 
-                    if(link.target != seq.nodes.length-1) repaintPath(link.target, 1, 100);
+                    if(link.target != seq.nodes.length-1) repaintPath(link.target, 1, duration * 2);
                     return d;
                 }
             })
             .select("path")
             .attr("style", "stroke-width:3; stroke:green")
-            .attr("filter", "url(#shadow-pass)")
-            // .attr("style", "stroke: green");
+            .attr("filter", "url(#shadow-pass)");
     });
 }
 

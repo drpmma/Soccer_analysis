@@ -757,7 +757,7 @@ Cluster.prototype.shoot = function() {
         .attr("height",currenthei);
 
     this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, this.start, this.end, currentx, currenty);
-
+    this.shotVis.drawPosition(this.changeDuration);
     this.cg.select("#cluster"+this.num)
         .transition().delay(this.changeDuration*2).duration(this.changeDuration)
         .attr("opacity", 1);
@@ -795,6 +795,7 @@ Cluster.prototype.centre = function (params) {
 
     this.centreVis = new CentreVis(this.sequence, clusterGroup, wid, hei, pad, currentx, currenty, centreParams);
 
+    this.centreVis.drawPosition(this.changeDuration);
     this.cg.select("#cluster"+this.num)
         .transition().delay(this.changeDuration*2).duration(this.changeDuration)
         .attr("opacity", 1);
