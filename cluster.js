@@ -848,69 +848,134 @@ function showNodeText(id, duration, delay) {
 
 function repaintPath(id, style, duration, delay) {
     if(delay == undefined) delay = 0;
-    d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
-        .attr("opacity",1)
-        .transition().duration(duration)
-        .attr("opacity",0);
-    d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
-        .transition().delay(duration)
-        .attr("style", function() {
-            var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
-                stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
-            switch(style)
-            {
-                case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
-                case 0: stroke = "gray"; stroke_width = "1px"; break;
-                case 1: stroke_width = "2px"; break;
-                case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
-                case 3: stroke = "green"; stroke_width = "3px"; break;
-            }
-            return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
-        })
-        .attr("d", function() {
-            // source and target are duplicated for straight lines
-            var x_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("x")),
-                y_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("y")),
-                x_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("x")),
-                y_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("y"));
-            switch (style) {
-                case -1: {
-                    if (isLongPass(seq.links[id], seq.nodes[id])) {
+    if(duration != 0)
+    {
+        d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
+            .attr("opacity",1)
+            .transition().duration(duration)
+            .attr("opacity",0);
+        d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
+            .transition().delay(duration)
+            .attr("style", function() {
+                var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
+                    stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
+                switch(style)
+                {
+                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
+                    case 0: stroke = "gray"; stroke_width = "1px"; break;
+                    case 1: stroke_width = "2px"; break;
+                    case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
+                    case 3: stroke = "green"; stroke_width = "3px"; break;
+                }
+                return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
+            })
+            .attr("d", function() {
+                // source and target are duplicated for straight lines
+                var x_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("x")),
+                    y_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("y")),
+                    x_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("x")),
+                    y_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("y"));
+                switch (style) {
+                    case -1: {
+                        if (isLongPass(seq.links[id], seq.nodes[id])) {
+                            return line(getArc(
+                                x_source,
+                                y_source,
+                                x_target,
+                                y_target,
+                                10
+                            ));
+                        }
+                        else {
+                            return line([
+                                {x: x_source, y: y_source}, {x: x_source, y: y_source},
+                                {x: x_target, y: y_target}, {x: x_target, y: y_target}]);
+                        }
+                    }
+                    case 2:
+                    case 3:{
+                        return line([{x: x_source, y: y_source}, {x: x_target, y: y_target}]);
+                    }
+                    case 0: {
                         return line(getArc(
                             x_source,
                             y_source,
                             x_target,
                             y_target,
-                            10
+                            2
                         ));
                     }
-                    else {
-                        return line([
-                            {x: x_source, y: y_source}, {x: x_source, y: y_source},
-                            {x: x_target, y: y_target}, {x: x_target, y: y_target}]);
+                    case 1: {
+                        return "M" + x_source + " " + y_source +
+                            "C" + x_target + " " + y_source +
+                            " " + x_source + " " + y_target +
+                            " " + x_target + " " + y_target;
                     }
                 }
-                case 2:
-                case 3:{
-                    return line([{x: x_source, y: y_source}, {x: x_target, y: y_target}]);
+            })
+            .transition().delay(delay-duration).duration(duration)
+            .attr("opacity",1);
+    }
+    else
+    {
+        d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
+            .transition().duration(0)
+            .attr("style", function() {
+                var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
+                    stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
+                switch(style)
+                {
+                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
+                    case 0: stroke = "gray"; stroke_width = "1px"; break;
+                    case 1: stroke_width = "2px"; break;
+                    case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
+                    case 3: stroke = "green"; stroke_width = "3px"; break;
                 }
-                case 0: {
-                    return line(getArc(
-                        x_source,
-                        y_source,
-                        x_target,
-                        y_target,
-                        2
-                    ));
+                return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
+            })
+            .attr("d", function() {
+                // source and target are duplicated for straight lines
+                var x_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("x")),
+                    y_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("y")),
+                    x_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("x")),
+                    y_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("y"));
+                switch (style) {
+                    case -1: {
+                        if (isLongPass(seq.links[id], seq.nodes[id])) {
+                            return line(getArc(
+                                x_source,
+                                y_source,
+                                x_target,
+                                y_target,
+                                10
+                            ));
+                        }
+                        else {
+                            return line([
+                                {x: x_source, y: y_source}, {x: x_source, y: y_source},
+                                {x: x_target, y: y_target}, {x: x_target, y: y_target}]);
+                        }
+                    }
+                    case 2:
+                    case 3:{
+                        return line([{x: x_source, y: y_source}, {x: x_target, y: y_target}]);
+                    }
+                    case 0: {
+                        return line(getArc(
+                            x_source,
+                            y_source,
+                            x_target,
+                            y_target,
+                            2
+                        ));
+                    }
+                    case 1: {
+                        return "M" + x_source + " " + y_source +
+                            "C" + x_target + " " + y_source +
+                            " " + x_source + " " + y_target +
+                            " " + x_target + " " + y_target;
+                    }
                 }
-                case 1: {
-                    return "M" + x_source + " " + y_source +
-                        "C" + x_target + " " + y_source +
-                        " " + x_source + " " + y_target +
-                        " " + x_target + " " + y_target;
-                }
-            }
-        })
-        .transition().delay(delay-duration).duration(duration)
-        .attr("opacity",1);
+            });
+    }
 }
