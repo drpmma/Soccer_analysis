@@ -265,6 +265,7 @@ Sequence.prototype.computeNodeLinks = function(){
 
 Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransition, fieldID)
 {
+    this.r = r;
     var that = this;
     var durationTime = 0;
     if(isTransition == 1)

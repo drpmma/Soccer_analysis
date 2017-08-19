@@ -93,11 +93,7 @@ matchinfo = function (svg,field,data,width,height) {
                 id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
                 d3.select(this).select("#arc_g").attr("fill","gray").attr("fill-opacity","0.5")
                 if(that.onTransition[id] === 0) {
-                    g_mouse_field=d3.select(this).append("g")
-                        .attr("id","mouse_field")
-                    var click_field = new Field(g_mouse_field, x - 0.04 * width, 0.14 * height, 0.08 * width, 0.08 * height, "click", 0, 0, 1)
-                    var phase_click = new Sequence(click_field.fieldGroup, data[id]);
-                    phase_click.draw_node("node", 2, "black", 0);
+                    that.repaint(d3.select(this), id, x);
                 }
             })
             .on("mouseleave",function () {
@@ -116,16 +112,14 @@ matchinfo = function (svg,field,data,width,height) {
                     d3.select(this).selectAll("#mouse_field").remove();
             })
             .on("click",function () {
-                var val1 = nb.sideBar.sequenceTimeOptions[nb.sideBar.sequenceTimeSel],
+                var val1 = nb.sideBar.nodeTimeOptions[nb.sideBar.nodeTimeSel],
                     val2 = nb.sideBar.sequenceStyleSel;
                 time=val1;
                 id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
+                x=d3.select(this).select("circle")
+                    .attr("cx");
                 d3.selectAll("#mouse_field").remove();
-                g_mouse_field=d3.select(this).append("g")
-                    .attr("id","mouse_field")
-                var click_field = new Field(g_mouse_field, x - 0.04 * width, 0.14 * height, 0.08 * width, 0.08 * height, "click", 0, 0, 1)
-                var phase_click = new Sequence(click_field.fieldGroup, data[id]);
-                phase_click.draw_node("node", 2, "black", 0);
+                that.repaint(d3.select(this), id, x);
                 d3.select("#mainfield").select("#path_container").remove();
                 d3.select("#mainfield").select("#node_container").remove();
                 if(cm != undefined) cm.clearAll();
@@ -151,6 +145,16 @@ matchinfo = function (svg,field,data,width,height) {
     }
     this.viewtransform(0,0);
 }
+
+matchinfo.prototype.repaint = function (selection, id, x) {
+    g_mouse_field=selection.append("g")
+        .attr("id","mouse_field");
+    var click_field = new Field(g_mouse_field, x - 0.04 * this.width, 0.14 * this.height,
+        0.08 * this.width, 0.08 * this.height, "click", 0, 0, 1)
+    var phase_click = new Sequence(click_field.fieldGroup, this.data[id]);
+    phase_click.draw_node("node", 2, "black", 0);
+}
+
 matchinfo.prototype.donut =function () {
     width=this.width;
     height=this.height;
