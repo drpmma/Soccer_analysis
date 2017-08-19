@@ -1,18 +1,11 @@
-Sequence = function (field, sequence, r, color, f) {
+Sequence = function (field, sequence) {
     this.field = field;
     this.sequence = sequence;
     this.width = field.attr("width");
     this.height = field.attr("height");
-    this.r = r;
-    this.color = color;
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
     this.computeNodeLinks();
-    if(f==1)
-    {
-        this.draw_path("link", 0);
-        this.draw_node("node", r, color);
-    }
 }
 
 Sequence.prototype.computeNodeLinks = function(){
@@ -270,9 +263,12 @@ Sequence.prototype.computeNodeLinks = function(){
     for(i = 0; i<this.nodes.length;i++) this.nodes[i].index = i;
 };
 
-Sequence.prototype.draw_node = function (group, r, color, isTranstion)
+Sequence.prototype.draw_node = function (group, r, color, isTransition)
 {
     var that = this;
+    var durationTime = 0;
+    if(isTransition == 1)
+        durationTime = time;
     this.node_container = this.field.append("g")
         .attr("id", "node_container");
     this.node_container.selectAll("g").data(this.nodes).enter()
@@ -292,8 +288,8 @@ Sequence.prototype.draw_node = function (group, r, color, isTranstion)
         .attr("x",0)
         .attr("y",0)
         .attr("r",0)
-        .transition().delay(function (d, i) {return time * i;})
-        .duration(time)
+        .transition().delay(function (d, i) {return durationTime * i;})
+        .duration(durationTime)
         .attr("r", r)
         .attr("stroke", "black")
         .attr("stroke-width", "1px;")
@@ -309,10 +305,9 @@ Sequence.prototype.draw_node = function (group, r, color, isTranstion)
             .attr("opacity", 0)
             .transition()
             .delay(function (d, i) {
-                console.log("d:", d, "i:", i);
-                return i * time;
+                return i * durationTime;
             })
-            .duration(time)
+            .duration(durationTime)
             .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
             .attr("opacity", 1)
             .text(function (d, i) {
@@ -322,7 +317,10 @@ Sequence.prototype.draw_node = function (group, r, color, isTranstion)
     return this.node_container;
 }
 
-Sequence.prototype.draw_path = function (group, gray) {
+Sequence.prototype.draw_path = function (group, gray, isTransition) {
+    var durationTime = 0;
+    if(isTransition == 1)
+        durationTime = time;
     var that = this;
     this.path_container = this.field.append("g")
         .attr("id", "path_container");
@@ -357,9 +355,9 @@ Sequence.prototype.draw_path = function (group, gray) {
         })
         .transition()
         .delay(function (d, i) {
-            return time * i;
+            return durationTime * i;
         })
-        .duration(time)
+        .duration(durationTime)
         .attr("id", function (d, i) {
             return group + i;
         })

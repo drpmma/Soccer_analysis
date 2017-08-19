@@ -89,7 +89,8 @@ matchinfo = function (svg,field,data,width,height) {
                 g_mouse_field=d3.select(this).append("g")
                     .attr("id","mouse_field")
                 var click_field= new Field(g_mouse_field,x-0.04*width,0.14*height,0.08*width,0.08*height,"click",0,0,1)
-                var phase_click=new Sequence(click_field.fieldGroup,data[parseInt(id.substring(15))],3,"black",1);
+                var phase_click=new Sequence(click_field.fieldGroup,data[parseInt(id.substring(15))]);
+                phase_click.draw_node("node", 2, "black", 0);
             })
             .on("mouseleave",function () {
                 d3.select(this).select("circle")
@@ -113,8 +114,9 @@ matchinfo = function (svg,field,data,width,height) {
                 d3.select("#mainfield").select("#node_container").remove();
                 id=d3.select(this).select("circle").attr("id")
                 if(cm != undefined) cm.clearAll();
-                seq = new Sequence(field.fieldGroup, data[parseInt(id.substring(15))],10,"white",1);
-                // cm = new ClusterManager(field, seq);
+                seq = new Sequence(field.fieldGroup, data[parseInt(id.substring(15))]);
+                seq.draw_path("link", 0, 1);
+                seq.draw_node("node", 10, "white", 1);
             })
         g.append("circle")
             .attr("id",function()
@@ -204,7 +206,7 @@ matchinfo.prototype.proj = function (X) {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         var datax= [0,0,0,0,0,0,0,0,0,0];
         var datay= [0,0,0,0,0,0,0,0,0,0];
         for(var j=0;j<phase_small.nodes.length;j++)
@@ -281,7 +283,7 @@ matchinfo.prototype.distancealign =function () {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
         var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,0);
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         min=phase_small.nodes[0].x;
         for(var j=0;j<phase_small.nodes.length;j++)
         {
@@ -322,7 +324,7 @@ matchinfo.prototype.timealign =function () {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
         var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,0);
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         console.log(phase_small.nodes);
         var len=phase_small.nodes.length;
         var max=(phase_small.nodes[len-1].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[len-1].time.sec-phase_small.nodes[0].time.sec
@@ -371,7 +373,7 @@ matchinfo.prototype.point =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_node("node",2,"black");
     }
 }
@@ -391,7 +393,7 @@ matchinfo.prototype.mark =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_node("node",2,"black");
         phase_small.draw_path("link",1)
     }
@@ -412,7 +414,7 @@ matchinfo.prototype.point_link =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_node("node",2,"black");
         phase_small.draw_path("link",0)
     }
@@ -433,7 +435,7 @@ matchinfo.prototype.worm =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_path("link",1)
     }
 }

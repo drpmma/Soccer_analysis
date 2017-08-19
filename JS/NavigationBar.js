@@ -143,7 +143,7 @@ sideSettingBar.prototype.CreateOptions = function() {
 
     this.sequenceTimeOptions = new Array();
     for(i = 0; i < 20; i++) this.sequenceTimeOptions[i] = i*100;
-    this.sequenceTimeSel = 5;
+    this.sequenceTimeSel = 2;
 
     this.sequenceStyleOptions = new Array();
     this.sequenceStyleOptions[0] = "点图";
