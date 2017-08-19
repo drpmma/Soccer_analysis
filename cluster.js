@@ -284,7 +284,7 @@ Cluster = function(start, end, type, num) {
         .attr("x",0).attr("y",0).attr("width",0).attr("height",0)
         .attr("style","stroke:black; fill:white; stroke-width:1;")
         .attr("opacity", 0);
-    this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num);
+    this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num).attr("opacity",0);
 
     switch (type) {
         case CT_Node_Link:
@@ -326,7 +326,7 @@ Cluster.prototype.Clear = function() {
     this.cg.select("#subClusterGroup"+this.num)
         .remove();
 
-    this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num);
+    this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num).attr("opacity","0");
     for(var i = this.start; i <= this.end; i++)
     {
         resetNodePos(i, +this.x_scale(seq.nodes[i].x), +this.y_scale(seq.nodes[i].y), this.changeDuration, this.changeDuration);
@@ -438,6 +438,9 @@ Cluster.prototype.nodeLinkAll = function() {
     this.cg.select("#cluster"+this.num)
         .transition().delay(this.changeDuration*2).duration(this.changeDuration)
         .attr("opacity", 1);
+    this.cg.select("#subClusterGroup"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
 
     this.type = CT_Node_Link_All;
     this.cleared = 0;
@@ -506,6 +509,9 @@ Cluster.prototype.hivePlot = function() {
     if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration*2);
 
     this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+    this.cg.select("#subClusterGroup"+this.num)
         .transition().delay(this.changeDuration*2).duration(this.changeDuration)
         .attr("opacity", 1);
 
@@ -588,7 +594,9 @@ Cluster.prototype.tagCloud = function() {
             .attr("transform", function(d) {
                 return "translate(" + [d.x, d.y] + ")rotate(0)";
             })
-            .text(function(d) { return d.text; });
+            .text(function(d) { return d.text; })
+            .on("mouseover", function(){d3.select(this).style("cursor","pointer");})
+            .on("click", function(d){pm.reChoose(d.pid)});
         for(i = that.start; i <= that.end; i++)
         {
             for(j = 0; j < players.length; j++)
@@ -615,6 +623,9 @@ Cluster.prototype.tagCloud = function() {
         this.cg.select("#cluster" + this.num)
             .transition().delay(this.changeDuration*2).duration(this.changeDuration)
             .attr("opacity", 1);
+        this.cg.select("#subClusterGroup"+this.num)
+            .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+            .attr("opacity", 1);
 
         this.type = CT_Tag_Cloud;
         this.cleared = 0;
@@ -624,7 +635,7 @@ Cluster.prototype.tagCloud = function() {
 Cluster.prototype.matrixVis = function() {
     var num = this.playerNum;
     var that = this;
-    var size = 10, pad = 0;
+    var size = 15, pad = 0;
     var currentwid = num*size+2*pad;
     var currenthei = num*size+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -708,6 +719,9 @@ Cluster.prototype.matrixVis = function() {
     this.cg.select("#cluster"+this.num)
         .transition().delay(this.changeDuration*2).duration(this.changeDuration)
         .attr("opacity",1);
+    this.cg.select("#subClusterGroup"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
 
     function chooseColorByTimes(times) {
         if(times>=3) level = 2;
@@ -761,6 +775,9 @@ Cluster.prototype.shoot = function() {
     this.cg.select("#cluster"+this.num)
         .transition().delay(this.changeDuration*2).duration(this.changeDuration)
         .attr("opacity", 1);
+    this.cg.select("#subClusterGroup"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
 
     this.type = CT_Shoot;
     this.cleared = 0;
@@ -796,6 +813,9 @@ Cluster.prototype.centre = function (params) {
     this.centreVis = new CentreVis(this.sequence, clusterGroup, wid, hei, pad, currentx, currenty, centreParams);
 
     this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+    this.cg.select("#subClusterGroup"+this.num)
         .transition().delay(this.changeDuration*2).duration(this.changeDuration)
         .attr("opacity", 1);
 
