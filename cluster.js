@@ -753,7 +753,7 @@ Cluster.prototype.matrixVis = function() {
 };
 
 Cluster.prototype.shoot = function() {
-    var wid = +this.y_scale(40), hei = +this.x_scale(40), pad = 2;
+    var wid = +this.y_scale(35), hei = +this.x_scale(27.5), pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -793,7 +793,7 @@ Cluster.prototype.shoot = function() {
 };
 
 Cluster.prototype.centre = function (params) {
-    var wid = +this.y_scale(30), hei = +this.x_scale(30), pad = 2;
+    var wid = +this.y_scale(20), hei = +this.x_scale(20), pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
