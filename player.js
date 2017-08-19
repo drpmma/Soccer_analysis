@@ -101,7 +101,7 @@ PlayersManager.prototype.findNameByPid = function(pid) {
     for (var i = 0; i < data.players.length; i++)
         if(data.players[i].pid == pid) break;
     if(i == data.players.length) return undefined;
-    else return data.players[i].first_name+" "+data.players[i].last_name;
+    else return data.players[i].first_name;
 };
 
 Players = function(field, data) {

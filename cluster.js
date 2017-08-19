@@ -134,6 +134,7 @@ ClusterManager.prototype.chooseCluster = function(num) {
 
 Cluster = function(start, end, type, num) {
     console.log(start,end);
+    var that = this;
     this.cg = cm.clusterGroup;
     this.start = start;
     this.end = end;
@@ -147,6 +148,11 @@ Cluster = function(start, end, type, num) {
 
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0,this.cg.attr("width")]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0,this.cg.attr("height")]).clamp(true);
+    this.r_scale = function(r) {
+        var wid = that.x_scale(r), hei = that.y_scale(r);
+        if(wid<hei) return wid;
+        else return hei;
+    };
 
     //calculate data
     this.playerNum = 0;
@@ -389,7 +395,7 @@ Cluster.prototype.nodeLink = function() {
 };
 
 Cluster.prototype.nodeLinkAll = function() {
-    var wid = 200, hei = 154, pad = 2;
+    var wid = +this.x_scale(17), hei = +this.y_scale(20), pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -427,7 +433,10 @@ Cluster.prototype.nodeLinkAll = function() {
             x = tempf.x_scale(tempp.pos[j].x)+currentx+pad;
             y = tempf.y_scale(tempp.pos[j].y)+currenty+pad;
             resetNodePos(i, x, y, this.changeDuration, this.changeDuration);
-            resetNodeSize(i, tempf.r_scale(5), this.changeDuration, this.changeDuration);
+            if (this.sequence.nodes[i].pid == this.sequence.nodes[this.start].pid ||
+                this.sequence.nodes[i].pid == this.sequence.nodes[this.end].pid)
+                resetNodeSize(i, tempf.r_scale(9), this.changeDuration, this.changeDuration);
+            else resetNodeSize(i, tempf.r_scale(7), this.changeDuration, this.changeDuration);
             showNodeText(i, this.changeDuration, this.changeDuration);
         }
     }
@@ -448,10 +457,10 @@ Cluster.prototype.nodeLinkAll = function() {
 
 Cluster.prototype.hivePlot = function() {
     var num = this.playerNum;
-    var r_step = 6;
-    var r_point = 2;
-    var r_node = 10;
-    var r_center = 5;
+    var r_step = +this.r_scale(1);
+    var r_point = +this.r_scale(0.4);
+    var r_node = +this.r_scale(1.2);
+    var r_center = +this.r_scale(1);
     var currentwid = 2*(r_center+num*r_step+2*r_node);
     var currenthei = 2*(r_center+num*r_step+2*r_node);
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -539,8 +548,8 @@ Cluster.prototype.tagCloud = function() {
         })
     }
 
-    var currentwid = Math.max(200,d3.sum(players,function(d){return 2*d.size}));
-    var currenthei = Math.max(200,d3.sum(players,function(d){return 2*d.size}));
+    var currentwid = Math.max(+this.x_scale(10),d3.sum(players,function(d){return 2*d.size}));
+    var currenthei = Math.max(+this.x_scale(10),d3.sum(players,function(d){return 2*d.size}));
     var currentx = (+this.cg.select("#cluster" + this.num).attr("x")) + this.cg.select("#cluster" + this.num).attr("width") / 2 - currentwid / 2;
     var currenty = (+this.cg.select("#cluster" + this.num).attr("y")) + this.cg.select("#cluster" + this.num).attr("height") / 2 - currenthei / 2;
     var size = 2;
@@ -635,7 +644,7 @@ Cluster.prototype.tagCloud = function() {
 Cluster.prototype.matrixVis = function() {
     var num = this.playerNum;
     var that = this;
-    var size = 15, pad = 0;
+    var size = +this.r_scale(3), pad = 0;
     var currentwid = num*size+2*pad;
     var currenthei = num*size+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -744,7 +753,7 @@ Cluster.prototype.matrixVis = function() {
 };
 
 Cluster.prototype.shoot = function() {
-    var wid = 210, hei = 320, pad = 2;
+    var wid = +this.y_scale(40), hei = +this.x_scale(40), pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -784,7 +793,7 @@ Cluster.prototype.shoot = function() {
 };
 
 Cluster.prototype.centre = function (params) {
-    var wid = 100, hei = 200, pad = 2;
+    var wid = +this.y_scale(30), hei = +this.x_scale(30), pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
