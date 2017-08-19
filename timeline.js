@@ -68,6 +68,12 @@ matchinfo = function (svg,field,data,width,height) {
     this.data=data;
     this.width=width;
     this.height=height;
+
+    this.onTransition = new Array(data.length);
+    for(var i = 0; i < this.onTransition.length; i++)
+        this.onTransition[i] = 0;
+
+    var that = this;
     
     this.g_sequence=svg.append("g")
         .attr("id","Sequence")
@@ -84,40 +90,48 @@ matchinfo = function (svg,field,data,width,height) {
                 d3.select(this).select("#align_g").attr("fill","gray").attr("fill-opacity","0.5")
                 x=d3.select(this).select("circle")
                     .attr("cx");
-                id=d3.select(this).select("circle").attr("id")
+                id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
                 d3.select(this).select("#arc_g").attr("fill","gray").attr("fill-opacity","0.5")
-                g_mouse_field=d3.select(this).append("g")
-                    .attr("id","mouse_field")
-                var click_field= new Field(g_mouse_field,x-0.04*width,0.14*height,0.08*width,0.08*height,"click",0,0,1)
-                var phase_click=new Sequence(click_field.fieldGroup,data[parseInt(id.substring(15))]);
-                phase_click.draw_node("node", 2, "black", 0);
+                if(that.onTransition[id] === 0) {
+                    g_mouse_field=d3.select(this).append("g")
+                        .attr("id","mouse_field")
+                    var click_field = new Field(g_mouse_field, x - 0.04 * width, 0.14 * height, 0.08 * width, 0.08 * height, "click", 0, 0, 1)
+                    var phase_click = new Sequence(click_field.fieldGroup, data[id]);
+                    phase_click.draw_node("node", 2, "black", 0);
+                }
             })
             .on("mouseleave",function () {
                 d3.select(this).select("circle")
                     .attr("r",0.008*height);
                 d3.select(this).select("#rect_g").attr("fill-opacity","0")
                 d3.select(this).select("#align_g").attr("fill","white").attr("fill-opacity","1")
-                id=d3.select(this).select("circle").attr("id")
+                id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
                 var color=d3.scaleLinear()
                     .domain([0,20])
                     .range(["red","blue"])
                 d3.select(this).select("#arc_g").attr("fill",function () {
-                    return color(parseInt(id.substring(15)))
+                    return color(id)
                 }).attr("fill-opacity","1")
-                if(onTransition === 0)
-                    d3.select(this).select("#mouse_field").remove();
+                if(that.onTransition[id] === 0)
+                    d3.select(this).selectAll("#mouse_field").remove();
             })
             .on("click",function () {
                 var val1 = nb.sideBar.sequenceTimeOptions[nb.sideBar.sequenceTimeSel],
                     val2 = nb.sideBar.sequenceStyleSel;
                 time=val1;
+                id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
+                d3.selectAll("#mouse_field").remove();
+                g_mouse_field=d3.select(this).append("g")
+                    .attr("id","mouse_field")
+                var click_field = new Field(g_mouse_field, x - 0.04 * width, 0.14 * height, 0.08 * width, 0.08 * height, "click", 0, 0, 1)
+                var phase_click = new Sequence(click_field.fieldGroup, data[id]);
+                phase_click.draw_node("node", 2, "black", 0);
                 d3.select("#mainfield").select("#path_container").remove();
                 d3.select("#mainfield").select("#node_container").remove();
-                id=d3.select(this).select("circle").attr("id")
                 if(cm != undefined) cm.clearAll();
-                seq = new Sequence(field.fieldGroup, data[parseInt(id.substring(15))]);
+                seq = new Sequence(field.fieldGroup, data[id]);
                 seq.draw_path("link", 0, 1);
-                seq.draw_node("node", 10, "white", 1);
+                seq.draw_node("node", 10, "white", 1, that.onTransition, id);
             })
         g.append("circle")
             .attr("id",function()

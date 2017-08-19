@@ -263,9 +263,8 @@ Sequence.prototype.computeNodeLinks = function(){
     for(i = 0; i<this.nodes.length;i++) this.nodes[i].index = i;
 };
 
-Sequence.prototype.draw_node = function (group, r, color, isTransition)
+Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransition, fieldID)
 {
-    onTransition = 0;
     var that = this;
     var durationTime = 0;
     if(isTransition == 1)
@@ -298,14 +297,15 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition)
             if (color=="white") return "white"
             return getEventColor(d.eid);
         })
-        .on("start", function () {
-            if(isTransition === 1)
-                onTransition = 1;
+        .on("start", function (d, i) {
+            if(isTransition === 1 && i === 0) {
+                onTransition[fieldID] = 1;
+            }
         })
         .on("end", function (d, i) {
             if(isTransition === 1)
                 if(that.nodes.length - 1 === i) {
-                    onTransition = 0;
+                    onTransition[fieldID] = 0;
                     d3.select("#mouse_field").remove();
                 }
         });
@@ -367,7 +367,7 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
         })
         .transition()
         .delay(function (d, i) {
-            return durationTime * i;
+            return durationTime * (i + 1);
         })
         .duration(durationTime)
         .attr("id", function (d, i) {
