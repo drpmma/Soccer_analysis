@@ -104,7 +104,8 @@ matchinfo = function (svg,field,data,width,height) {
                 d3.select(this).select("#arc_g").attr("fill",function () {
                     return color(parseInt(id.substring(15)))
                 }).attr("fill-opacity","1")
-                d3.select(this).select("#mouse_field").remove();
+                if(onTransition === 0)
+                    d3.select(this).select("#mouse_field").remove();
             })
             .on("click",function () {
                 var val1 = nb.sideBar.sequenceTimeOptions[nb.sideBar.sequenceTimeSel],
