@@ -289,8 +289,6 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
         .attr("x",0)
         .attr("y",0)
         .attr("r",0)
-        .transition().delay(function (d, i) {return durationTime * i;})
-        .duration(durationTime)
         .attr("r", r)
         .attr("stroke", "black")
         .attr("stroke-width", "1px;")
@@ -298,6 +296,10 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
             if (color=="white") return "white"
             return getEventColor(d.eid);
         })
+        // .attr("opacity", 0)
+        // .transition().delay(function (d, i) {return durationTime * i;})
+        // .duration(durationTime)
+        // .attr("opacity", 1)
         .on("start", function (d, i) {
             if(isTransition === 1 && i === 0) {
                 onTransition[fieldID] = 1;
@@ -315,17 +317,26 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
             .selectAll(".node")
             .append("text")
             .attr("x",0).attr("y",0)
-            .attr("opacity", 0)
-            .transition()
-            .delay(function (d, i) {
-                return i * durationTime;
-            })
-            .duration(durationTime)
             .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
-            .attr("opacity", 1)
             .text(function (d, i) {
                 return pm.findJerseyByPid(that.nodes[i].pid)
             });
+            // .attr("opacity", 0)
+            // .transition()
+            // .delay(function (d, i) {
+            //     return i * durationTime;
+            // })
+            // .duration(durationTime)
+            // .attr("opacity", 1);
+    this.node_container
+        .selectAll(".node")
+        .attr("opacity", 0)
+        .transition()
+        .delay(function (d, i) {
+            return i * durationTime;
+        })
+        .duration(durationTime)
+        .attr("opacity", 1);
 
     return this.node_container;
 }
@@ -366,11 +377,6 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
                     {x:x_source, y:y_source}, {x:x_source, y:y_source}]);
             }
         })
-        .transition()
-        .delay(function (d, i) {
-            return durationTime * (i + 1);
-        })
-        .duration(durationTime)
         .attr("id", function (d, i) {
             return group + i;
         })
@@ -442,7 +448,14 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
                     {x:x_source, y:y_source}, {x:x_source, y:y_source},
                     {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
             }
-        });
+        })
+        .attr("opacity", 0)
+        .transition()
+        .delay(function (d, i) {
+            return durationTime * (i + 1);
+        })
+        .duration(durationTime)
+        .attr("opacity", 1);
     return this.path_container;
 }
 
