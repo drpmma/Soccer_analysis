@@ -30,7 +30,7 @@ dataselect.prototype.main=function (value) {
         createDefs();
         mainfield = new Field(svg, 0.2*width, 0.01*height, 0.62*width, 0.65*height, "mainfield", 0, 0,1);
         infos = new Infos(svg, 0.007*width, 0.37*height, 0.15*width, 0.6*height, data.players);
-        pm = new PlayersManager();
+        pm = new PlayersManager(data.players);
         var time_line=new timeline(svg,width,height);
         f3= new matchinfo(svg,mainfield,data.sequences,width,height);
         var f2 = new Field(svg, 0.007*width, 0.01*height, 0.15*width, 0.35*height, "playerfield", 1, 1,1);
