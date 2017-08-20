@@ -300,6 +300,37 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
         // .transition().delay(function (d, i) {return durationTime * i;})
         // .duration(durationTime)
         // .attr("opacity", 1)
+
+
+    this.node_container
+        .selectAll(".node")
+        .append("text")
+        .attr("x",0).attr("y",0)
+        .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
+        .text(function (d, i) {
+            return pm.findJerseyByPid(that.nodes[i].pid)
+        })
+        .attr("opacity", 0);
+
+    this.node_container
+        .selectAll(".node")
+        .select("text")
+        .transition()
+        .delay(function () {
+            return that.nodes.length * durationTime;
+        })
+        .duration(1000)
+        .attr("opacity", 1);
+
+    this.node_container
+        .selectAll(".node")
+        .attr("opacity", 0)
+        .transition()
+        .delay(function (d, i) {
+            return i * durationTime;
+        })
+        .duration(durationTime)
+        .attr("opacity", 1)
         .on("start", function (d, i) {
             if(isTransition === 1 && i === 0) {
                 onTransition[fieldID] = 1;
@@ -309,34 +340,20 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
             if(isTransition === 1)
                 if(that.nodes.length - 1 === i) {
                     onTransition[fieldID] = 0;
-                    d3.select("#mouse_field").remove();
+                    d3.select("#mouse_field")
+                        .transition()
+                        .duration(500).remove();
                 }
         });
 
-        this.node_container
-            .selectAll(".node")
-            .append("text")
-            .attr("x",0).attr("y",0)
-            .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
-            .text(function (d, i) {
-                return pm.findJerseyByPid(that.nodes[i].pid)
-            });
-            // .attr("opacity", 0)
-            // .transition()
-            // .delay(function (d, i) {
-            //     return i * durationTime;
-            // })
-            // .duration(durationTime)
-            // .attr("opacity", 1);
-    this.node_container
-        .selectAll(".node")
-        .attr("opacity", 0)
-        .transition()
-        .delay(function (d, i) {
-            return i * durationTime;
-        })
-        .duration(durationTime)
-        .attr("opacity", 1);
+    if(isTransition === 1)
+        d3.select("#mouse_field")
+            .transition()
+            .delay(function () {
+                return that.nodes.length * durationTime;
+            })
+            .duration(500)
+            .remove();
 
     return this.node_container;
 }

@@ -53,6 +53,7 @@ sideSettingBar.prototype.dataListSelect = function(k) {
 sideSettingBar.prototype.clusterizeBtn = function() {
     if(cm != undefined) cm.clearAll();
     d3.select("#mainfield").selectAll(".node").attr("opacity", 1);
+    d3.select("#mainfield").selectAll("text").attr("opacity", 1);
     cm = new ClusterManager(mainfield, seq);
     cm.setDuration(this.clusterTimeOptions[this.clusterTimeSel]);
     var type;
