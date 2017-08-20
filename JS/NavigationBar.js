@@ -2,7 +2,7 @@ sideSettingBar = function() {
     this.soh = 1;
     this.Bar = d3.select("body").insert("div", "#svg_div")
         .attr("id", "settingBar")
-        .attr("class", "navbar navbar-default navbar-fixed-bottom collapse")
+        .attr("class", "navbar navbar-default navbar-fixed-bottom collapse in")
         .attr("style", "margin-bottom:0")
         .append("div")
         .attr("class", "container-fluid")
