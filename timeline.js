@@ -4,7 +4,7 @@
 var x_smallfield=0.84
 var x_timeline = 0.2
 var x_width = 0.1
-var y_timeline = 0.03
+var y_timeline = 0.69
 var y_height = 0.02
 var width_smallfield=0.065
 var height_smallfield=0.07
@@ -182,7 +182,7 @@ matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequenc
 matchinfo.prototype.repaint = function (selection, id, x) {
     g_mouse_field = selection.append("g")
         .attr("id","mouse_field");
-    var phase_field = new Field(g_mouse_field, x - 0.04 * this.width, (y_timeline+0.02) * this.height,
+    var phase_field = new Field(g_mouse_field, x - 0.04 * this.width, (y_timeline-0.1) * this.height,
         0.08 * this.width, 0.08 * this.height, "click", 0, 0, 1)
     var phase_seq = new Sequence(phase_field.fieldGroup, this.data[id]);
     phase_seq.draw_node("node", 2, "black", 0);
