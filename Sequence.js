@@ -317,7 +317,7 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
         .select("text")
         .transition()
         .delay(function () {
-            return that.nodes.length * durationTime;
+            return that.nodes.length * durationTime + 500;
         })
         .duration(1000)
         .attr("opacity", 1);
