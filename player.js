@@ -145,21 +145,12 @@ PlayersManager.prototype.findPositionByPid = function(pid) {
 Players = function(field, data) {
     this.size = field.r_scale(5);
 
-    this.pos = new Array();
     for (i = 0; i < data.length; i++)
     {
         var pos = pm.findPositionByPid(data[i].pid);
         var x = pos.x, y = pos.y;
-        if(field.direct == 0)
-        {
-            pm.addPlayer(field, 100-y, x, this.size, data[i].pid, data[i]);
-            this.pos.push({pid: data[i].pid, x: 100-y, y: x});
-        }
-        else
-        {
-            pm.addPlayer(field, x, y, this.size, data[i].pid, data[i]);
-            this.pos.push({pid: data[i].pid, x: x, y: y});
-        }
+        if(field.direct == 0) pm.addPlayer(field, 100-y, x, this.size, data[i].pid, data[i]);
+        else pm.addPlayer(field, x, y, this.size, data[i].pid, data[i]);
     }
 };
 
