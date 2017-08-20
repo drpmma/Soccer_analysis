@@ -68,6 +68,12 @@ matchinfo = function (svg,field,data,width,height) {
     this.data=data;
     this.width=width;
     this.height=height;
+
+    this.onTransition = new Array(data.length);
+    for(var i = 0; i < this.onTransition.length; i++)
+        this.onTransition[i] = 0;
+
+    var that = this;
     
     this.g_sequence=svg.append("g")
         .attr("id","Sequence")
@@ -84,38 +90,49 @@ matchinfo = function (svg,field,data,width,height) {
                 d3.select(this).select("#align_g").attr("fill","gray").attr("fill-opacity","0.5")
                 x=d3.select(this).select("circle")
                     .attr("cx");
-                id=d3.select(this).select("circle").attr("id")
+                id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
                 d3.select(this).select("#arc_g").attr("fill","gray").attr("fill-opacity","0.5")
-                g_mouse_field=d3.select(this).append("g")
-                    .attr("id","mouse_field")
-                var click_field= new Field(g_mouse_field,x-0.04*width,0.14*height,0.08*width,0.08*height,"click",0,0,1)
-                var phase_click=new Sequence(click_field.fieldGroup,data[parseInt(id.substring(15))],3,"black",1);
+                if(that.onTransition[id] === 0) {
+                    that.repaint(d3.select(this), id, x);
+                }
             })
             .on("mouseleave",function () {
                 d3.select(this).select("circle")
                     .attr("r",0.008*height);
                 d3.select(this).select("#rect_g").attr("fill-opacity","0")
                 d3.select(this).select("#align_g").attr("fill","white").attr("fill-opacity","1")
-                id=d3.select(this).select("circle").attr("id")
+                id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
                 var color=d3.scaleLinear()
                     .domain([0,20])
                     .range(["red","blue"])
                 d3.select(this).select("#arc_g").attr("fill",function () {
-                    return color(parseInt(id.substring(15)))
+                    return color(id)
                 }).attr("fill-opacity","1")
-                d3.select(this).select("#mouse_field").remove();
+                if(that.onTransition[id] === 0)
+                    d3.select(this).selectAll("#mouse_field").remove();
             })
             .on("click",function () {
-                var val1 = nb.sideBar.sequenceTimeOptions[nb.sideBar.sequenceTimeSel],
+                var val1 = nb.sideBar.nodeTimeOptions[nb.sideBar.nodeTimeSel],
                     val2 = nb.sideBar.sequenceStyleSel;
                 time=val1;
+                id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
+                x=d3.select(this).select("circle")
+                    .attr("cx");
+
+                d3.selectAll("#mouse_field").remove();
+                var phase = that.repaint(d3.select(this), id, x);
+
                 d3.select("#mainfield").select("#path_container").remove();
                 d3.select("#mainfield").select("#node_container").remove();
-                id=d3.select(this).select("circle").attr("id")
+
                 if(cm != undefined) cm.clearAll();
-                seq = new Sequence(field.fieldGroup, data[parseInt(id.substring(15))],10,"white",1);
-                // cm = new ClusterManager(field, seq);
-            })
+
+                that.nodeMoveAnimation(phase.field, field, phase.seq, id);
+
+                seq = new Sequence(field.fieldGroup, data[id]);
+                seq.draw_path("link", 0, 1);
+                seq.draw_node("node", 10, "white", 1, that.onTransition, id);
+            });
         g.append("circle")
             .attr("id",function()
             {
@@ -134,6 +151,43 @@ matchinfo = function (svg,field,data,width,height) {
     }
     this.viewtransform(0,0);
 }
+
+matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequence, id) {
+    // d3.select("#g_sequence" + id + 1)
+    //     .select("mouse_field")
+    //     .selectAll(".node")
+    //     .attr("transform", function(d, i){moveNode(d)});
+    //
+    function moveNode(d) {
+        console.log("a");
+        coorX = desField.x + desField.x_scale(d.x) - oriField.x;
+        coorY = desField.y + desField.y_scale(d.y) - oriField.y;
+        return "translate(" + [coorX, coorY] + ")";
+    }
+    desSequence.node_container.selectAll("g")
+        .transition()
+        .duration(100)
+        .transition()
+        .delay(function (d, i) {
+            return time * i;
+        })
+        .duration(function (d, i) {
+            return time;
+        })
+        .attr("transform", function(d){return moveNode(d)});
+}
+
+matchinfo.prototype.repaint = function (selection, id, x) {
+    g_mouse_field = selection.append("g")
+        .attr("id","mouse_field");
+    var phase_field = new Field(g_mouse_field, x - 0.04 * this.width, 0.14 * this.height,
+        0.08 * this.width, 0.08 * this.height, "click", 0, 0, 1)
+    var phase_seq = new Sequence(phase_field.fieldGroup, this.data[id]);
+    phase_seq.draw_node("node", 2, "black", 0);
+
+    return {field:phase_field, seq:phase_seq};
+}
+
 matchinfo.prototype.donut =function () {
     width=this.width;
     height=this.height;
@@ -204,7 +258,7 @@ matchinfo.prototype.proj = function (X) {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         var datax= [0,0,0,0,0,0,0,0,0,0];
         var datay= [0,0,0,0,0,0,0,0,0,0];
         for(var j=0;j<phase_small.nodes.length;j++)
@@ -281,7 +335,7 @@ matchinfo.prototype.distancealign =function () {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
         var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,0);
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         min=phase_small.nodes[0].x;
         for(var j=0;j<phase_small.nodes.length;j++)
         {
@@ -322,7 +376,7 @@ matchinfo.prototype.timealign =function () {
         var name = "#g_sequence" + (num + 1);
         var g_sequence = d3.select("#Sequence").select(name)
         var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,0);
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         console.log(phase_small.nodes);
         var len=phase_small.nodes.length;
         var max=(phase_small.nodes[len-1].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[len-1].time.sec-phase_small.nodes[0].time.sec
@@ -371,7 +425,7 @@ matchinfo.prototype.point =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_node("node",2,"black");
     }
 }
@@ -391,7 +445,7 @@ matchinfo.prototype.mark =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_node("node",2,"black");
         phase_small.draw_path("link",1)
     }
@@ -412,7 +466,7 @@ matchinfo.prototype.point_link =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_node("node",2,"black");
         phase_small.draw_path("link",0)
     }
@@ -433,7 +487,7 @@ matchinfo.prototype.worm =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num],3,"black",0);
+        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_path("link",1)
     }
 }

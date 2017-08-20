@@ -1,18 +1,11 @@
-Sequence = function (field, sequence, r, color, f) {
+Sequence = function (field, sequence) {
     this.field = field;
     this.sequence = sequence;
     this.width = field.attr("width");
     this.height = field.attr("height");
-    this.r=r;
-    this.color=color;
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
     this.computeNodeLinks();
-    if(f==1)
-    {
-        this.draw_path("link",0);
-        this.draw_node("node", r ,color);
-    }
 }
 
 Sequence.prototype.computeNodeLinks = function(){
@@ -270,9 +263,13 @@ Sequence.prototype.computeNodeLinks = function(){
     for(i = 0; i<this.nodes.length;i++) this.nodes[i].index = i;
 };
 
-Sequence.prototype.draw_node = function (group, r,color)
+Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransition, fieldID)
 {
+    this.r = r;
     var that = this;
+    var durationTime = 0;
+    if(isTransition == 1)
+        durationTime = time;
     this.node_container = this.field.append("g")
         .attr("id", "node_container");
     this.node_container.selectAll("g").data(this.nodes).enter()
@@ -292,31 +289,79 @@ Sequence.prototype.draw_node = function (group, r,color)
         .attr("x",0)
         .attr("y",0)
         .attr("r",0)
-        .transition().duration(time)
         .attr("r", r)
         .attr("stroke", "black")
         .attr("stroke-width", "1px;")
         .attr("fill", function (d) {
             if (color=="white") return "white"
             return getEventColor(d.eid);
+        })
+        // .attr("opacity", 0)
+        // .transition().delay(function (d, i) {return durationTime * i;})
+        // .duration(durationTime)
+        // .attr("opacity", 1)
+
+
+    this.node_container
+        .selectAll(".node")
+        .append("text")
+        .attr("x",0).attr("y",0)
+        .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
+        .text(function (d, i) {
+            return pm.findJerseyByPid(that.nodes[i].pid)
+        })
+        .attr("opacity", 0);
+
+    this.node_container
+        .selectAll(".node")
+        .select("text")
+        .transition()
+        .delay(function () {
+            return that.nodes.length * durationTime + 500;
+        })
+        .duration(1000)
+        .attr("opacity", 1);
+
+    this.node_container
+        .selectAll(".node")
+        .attr("opacity", 0)
+        .transition()
+        .delay(function (d, i) {
+            return i * durationTime;
+        })
+        .duration(durationTime)
+        .attr("opacity", 1)
+        .on("start", function (d, i) {
+            if(isTransition === 1 && i === 0) {
+                onTransition[fieldID] = 1;
+            }
+        })
+        .on("end", function (d, i) {
+            if(isTransition === 1)
+                if(that.nodes.length - 1 === i) {
+                    onTransition[fieldID] = 0;
+                    d3.select("#mouse_field")
+                        .transition()
+                        .duration(500).remove();
+                }
         });
 
-    for(var i = 0; i < this.nodes.length; i++)
-    {
-        this.node_container
-            .select("#"+group + i)
-            .append("text")
-            .attr("x",0).attr("y",0)
-            .attr("opacity", 0)
-            .transition().duration(time)
-            .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
-            .attr("opacity", 1)
-            .text(pm.findJerseyByPid(this.nodes[i].pid));
-    }
+    if(isTransition === 1)
+        d3.select("#mouse_field")
+            .transition()
+            .delay(function () {
+                return that.nodes.length * durationTime;
+            })
+            .duration(500)
+            .remove();
+
     return this.node_container;
 }
 
-Sequence.prototype.draw_path = function (group,gray) {
+Sequence.prototype.draw_path = function (group, gray, isTransition) {
+    var durationTime = 0;
+    if(isTransition == 1)
+        durationTime = time;
     var that = this;
     this.path_container = this.field.append("g")
         .attr("id", "path_container");
@@ -349,7 +394,6 @@ Sequence.prototype.draw_path = function (group,gray) {
                     {x:x_source, y:y_source}, {x:x_source, y:y_source}]);
             }
         })
-        .transition().duration(time)
         .attr("id", function (d, i) {
             return group + i;
         })
@@ -421,7 +465,14 @@ Sequence.prototype.draw_path = function (group,gray) {
                     {x:x_source, y:y_source}, {x:x_source, y:y_source},
                     {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
             }
-        });
+        })
+        .attr("opacity", 0)
+        .transition()
+        .delay(function (d, i) {
+            return durationTime * (i + 1);
+        })
+        .duration(durationTime)
+        .attr("opacity", 1);
     return this.path_container;
 }
 
