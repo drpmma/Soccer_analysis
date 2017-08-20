@@ -36,7 +36,7 @@ Infos = function(svg, x, y, width, height, data) {
         .attr("y", 1)
         .attr("width", this.width-2)
         .attr("height", this.height-2)
-        .attr("style", "fill:none; stroke:black; stroke-width: 0.1%");
+        .attr("style", "fill:none; stroke:grey; stroke-width: 0.1%");
     this.infosGroup.append("g")
         .attr("id", "name")
         .attr("transform", "translate(" + (+this.lft) + "," + (+this.up)  + ")")
@@ -186,7 +186,7 @@ Info = function(g, num, max, title) {
     this.infoGroup.append("text") //title
         .attr("x", 0)
         .attr("y", g.hg*0.85)
-        .attr("style", "font-size:"+(g.hg*0.8)+"px")
+        .attr("style", "font-size:"+(g.hg*0.8)+"px; font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif")
         .text(this.valueTitle);
 
     this.infoGroup.append("rect") //frame

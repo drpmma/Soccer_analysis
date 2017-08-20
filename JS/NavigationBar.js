@@ -2,7 +2,7 @@ sideSettingBar = function() {
     this.soh = 1;
     this.Bar = d3.select("body").insert("div", "#svg_div")
         .attr("id", "settingBar")
-        .attr("class", "navbar navbar-inverse navbar-fixed-bottom collapse")
+        .attr("class", "navbar navbar-default navbar-fixed-bottom collapse")
         .attr("style", "margin-bottom:0")
         .append("div")
         .attr("class", "container-fluid")
@@ -281,7 +281,7 @@ navigationBar = function() {
         .attr("style", "margin-bottom:0");
 
     this.headBar = d3.select("body").insert("nav","#svg_div")
-        .attr("class", "navbar navbar-inverse navbar-fixed-top")
+        .attr("class", "navbar navbar-default navbar-fixed-top")
         .attr("style", "margin-bottom:0")
         .append("div")
         .attr("class", "container-fluid")

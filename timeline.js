@@ -3,7 +3,9 @@
  */
 var x_smallfield=0.84
 var x_timeline = 0.2
-var y_timeline = 0.13
+var x_width = 0.1
+var y_timeline = 0.03
+var y_height = 0.02
 var width_smallfield=0.065
 var height_smallfield=0.07
 
@@ -24,37 +26,37 @@ timeline= function (svg,width,height) {
     this.g_timeline=svg.append("g")
         .attr("id","timeline");
     this.g_timeline.append("line")
-        .attr("x1",0.2*width)
-        .attr("y1",0.13*height)
-        .attr("x2",0.82*width)
-        .attr("y2",0.13*height)
+        .attr("x1",x_timeline*width)
+        .attr("y1",y_timeline*height)
+        .attr("x2",(x_timeline+x_width*6.2)*width)
+        .attr("y2",y_timeline*height)
         .attr("stroke","black")
         .attr("stroke-width","1.5px")
     this.g_timeline.append("line")
-        .attr("x1",0.2*width)
-        .attr("y1",0.15*height)
-        .attr("x2",0.82*width)
-        .attr("y2",0.15*height)
+        .attr("x1",x_timeline*width)
+        .attr("y1",(y_timeline+y_height)*height)
+        .attr("x2",(x_timeline+x_width*6.2)*width)
+        .attr("y2",(y_timeline+y_height)*height)
         .attr("stroke","black")
         .attr("stroke-width","1.5px")
     this.g_timeline.append("line")
-        .attr("x1", 0.82* width)
-        .attr("y1", 0.13 * height)
-        .attr("x2", 0.82* width)
-        .attr("y2", 0.15 * height)
+        .attr("x1", (x_timeline+x_width*6.2)* width)
+        .attr("y1", y_timeline * height)
+        .attr("x2", (x_timeline+x_width*6.2)* width)
+        .attr("y2", (y_timeline+y_height) * height)
         .attr("stroke", "black")
         .attr("stroke-width", "1px")
     for(var i=0;i<7;i++) {
         this.g_timeline.append("line")
-            .attr("x1", (0.2 + i * 0.1) * width)
-            .attr("y1", 0.13 * height)
-            .attr("x2", (0.2 + i * 0.1) * width)
-            .attr("y2", 0.15 * height)
+            .attr("x1", (x_timeline + i * x_width) * width)
+            .attr("y1", y_timeline * height)
+            .attr("x2", (x_timeline + i * x_width) * width)
+            .attr("y2", (y_timeline+y_height) * height)
             .attr("stroke", "black")
             .attr("stroke-width", "1px")
         this.g_timeline.append('text')
-            .attr("x",(0.2 + i * 0.1) * width)
-            .attr('y',0.17*height)
+            .attr("x",(x_timeline + i * x_width) * width)
+            .attr('y',(y_timeline+y_height*2)*height)
             .attr('fill',"black")
             .attr('font-size',"100%")
             .attr('text-align',"center" )
@@ -139,9 +141,9 @@ matchinfo = function (svg,field,data,width,height) {
                 return "circle_timeline"+i
             })
             .attr("cx",function () {
-                return (0.2+(data[i].endTime.min*1.0/90)*0.6)*width;
+                return (x_timeline+(data[i].endTime.min*1.0/90)*x_width*6)*width;
             })
-            .attr("cy",0.14*height)
+            .attr("cy",(y_timeline+0.01)*height)
             .attr("r",0.008*height)
             .attr("fill",function () {
                 var len=data[i].actions.length -1;
@@ -180,7 +182,7 @@ matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequenc
 matchinfo.prototype.repaint = function (selection, id, x) {
     g_mouse_field = selection.append("g")
         .attr("id","mouse_field");
-    var phase_field = new Field(g_mouse_field, x - 0.04 * this.width, 0.14 * this.height,
+    var phase_field = new Field(g_mouse_field, x - 0.04 * this.width, (y_timeline+0.02) * this.height,
         0.08 * this.width, 0.08 * this.height, "click", 0, 0, 1)
     var phase_seq = new Sequence(phase_field.fieldGroup, this.data[id]);
     phase_seq.draw_node("node", 2, "black", 0);

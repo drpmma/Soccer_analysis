@@ -876,7 +876,10 @@ h1[id] {
     margin: 15px 0;
     border: 1px solid #eee;
     border-left-width: 5px;
-    border-radius: 3px
+    border-radius: 3px;
+    border-top-color: #aaa;
+    border-right-color: #aaa;
+    border-bottom-color: #aaa;
 }
 
 .bs-callout h4 {
@@ -905,7 +908,7 @@ h1[id] {
 }
 
 .bs-callout-cluster p {
-    color: #ccc
+    color: #444
 }
 
 .bs-callout-show {
@@ -917,7 +920,7 @@ h1[id] {
 }
 
 .bs-callout-show p {
-    color: #ccc
+    color: #444
 }
 
 .bs-callout-sequence {
@@ -929,7 +932,7 @@ h1[id] {
 }
 
 .bs-callout-sequence p {
-    color: #ccc
+    color: #444
 }
 
 .bs-callout-data {
@@ -941,7 +944,7 @@ h1[id] {
 }
 
 .bs-callout-data p {
-    color: #ccc
+    color: #444
 }
 
 .bs-callout-danger {
