@@ -1,10 +1,10 @@
 /**
  * Created by zf on 2017/7/27.
  */
-var x_smallfield=0.84
-var x_timeline = 0.2
+var x_smallfield=0.813
+var x_timeline = 0.16
 var x_width = 0.1
-var y_timeline = 0.69
+var y_timeline = 0.72
 var y_height = 0.02
 var width_smallfield=0.065
 var height_smallfield=0.07
@@ -28,21 +28,21 @@ timeline= function (svg,width,height) {
     this.g_timeline.append("line")
         .attr("x1",x_timeline*width)
         .attr("y1",y_timeline*height)
-        .attr("x2",(x_timeline+x_width*6.2)*width)
+        .attr("x2",(x_timeline+x_width*6.5)*width)
         .attr("y2",y_timeline*height)
         .attr("stroke","black")
         .attr("stroke-width","1.5px")
     this.g_timeline.append("line")
         .attr("x1",x_timeline*width)
         .attr("y1",(y_timeline+y_height)*height)
-        .attr("x2",(x_timeline+x_width*6.2)*width)
+        .attr("x2",(x_timeline+x_width*6.5)*width)
         .attr("y2",(y_timeline+y_height)*height)
         .attr("stroke","black")
         .attr("stroke-width","1.5px")
     this.g_timeline.append("line")
-        .attr("x1", (x_timeline+x_width*6.2)* width)
+        .attr("x1", (x_timeline+x_width*6.5)* width)
         .attr("y1", y_timeline * height)
-        .attr("x2", (x_timeline+x_width*6.2)* width)
+        .attr("x2", (x_timeline+x_width*6.5)* width)
         .attr("y2", (y_timeline+y_height) * height)
         .attr("stroke", "black")
         .attr("stroke-width", "1px")
@@ -154,12 +154,7 @@ matchinfo = function (svg,field,data,width,height) {
     this.viewtransform(0,0);
 }
 
-matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequence, id) {
-    // d3.select("#g_sequence" + id + 1)
-    //     .select("mouse_field")
-    //     .selectAll(".node")
-    //     .attr("transform", function(d, i){moveNode(d)});
-    //
+matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequence) {
     function moveNode(d) {
         console.log("a");
         coorX = desField.x + desField.x_scale(d.x) - oriField.x;
@@ -173,7 +168,7 @@ matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequenc
         .delay(function (d, i) {
             return time * i;
         })
-        .duration(function (d, i) {
+        .duration(function () {
             return time;
         })
         .attr("transform", function(d){return moveNode(d)});
@@ -183,7 +178,7 @@ matchinfo.prototype.repaint = function (selection, id, x) {
     g_mouse_field = selection.append("g")
         .attr("id","mouse_field");
     var phase_field = new Field(g_mouse_field, x - 0.04 * this.width, (y_timeline-0.1) * this.height,
-        0.08 * this.width, 0.08 * this.height, "click", 0, 0, 1)
+        width_smallfield * this.width, height_smallfield * this.height, "click", 0, 0, 1)
     var phase_seq = new Sequence(phase_field.fieldGroup, this.data[id]);
     phase_seq.draw_node("node", 2, "black", 0);
 
@@ -239,7 +234,6 @@ matchinfo.prototype.donut =function () {
                 return "translate("+arc.centroid(angele_data[num])+")"
             })
             .attr("text-anchor","middle")
-
 
     }
 }
