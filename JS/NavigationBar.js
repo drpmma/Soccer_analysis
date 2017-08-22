@@ -95,6 +95,13 @@ sideSettingBar.prototype.declusterizeBtn = function() {
     else console.log("Error: There is nothing to be deleted.");
     console.log("declusterizeBtn")
 };
+sideSettingBar.prototype.clusterLayoutBtn = function() {
+    if(cm != undefined)
+    {
+        cm.relayout(0);
+    }
+    else console.log("Error: There is nothing to relayout.");
+};
 sideSettingBar.prototype.sequenceChangeBtn = function() {
     f3.viewtransform(this.sequenceStyleSel,this.sequenceTimeOptions[this.sequenceTimeSel]);
     console.log("sequenceChangeBtn")
@@ -182,6 +189,7 @@ sideSettingBar.prototype.CreateElements = function() {
     this.AddButton("聚团","default",this.AddButtonGroup(temp),function(){that.clusterizeBtn()});
     this.AddButton("改变样式","default",this.AddButtonGroup(temp),function(){that.clusterChangeBtn()});
     this.AddButton("取消聚团","default",this.AddButtonGroup(temp),function(){that.declusterizeBtn()});
+    this.AddButton("聚团布场","default",this.AddButtonGroup(temp),function(){that.clusterLayoutBtn()});
 
     this.showSetting = this.Bar.append("div")
         .attr("class", "col-md-3")

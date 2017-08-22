@@ -3,6 +3,7 @@ ClusterManager = function(field, sequence) {
     this.sequence = sequence;
     this.changeDuration = 400;
     this.chosen = -1;
+    this.layoutStyle = 0;
 
     this.clusterGroup = this.field.fieldGroup.insert("g","#path_container")
         .attr("id", "clusterGroup")
@@ -19,6 +20,8 @@ ClusterManager = function(field, sequence) {
 
     this.clusterNum = 0;
     this.clusters = new Array();
+    this.clustersOriginGeometry = new Array();
+    this.clustersGeometry = new Array();
 };
 
 var centreParams = 0;
@@ -93,6 +96,8 @@ ClusterManager.prototype.addCluster = function(start, end, type) {
     this.clusterNum++;
     this.clusters[this.clusterNum-1] = new Cluster(start, end, type, this.clusterNum-1,
                                                  this.sequence, this.originData, this.changeDuration);
+    this.clustersOriginGeometry[this.clusterNum-1] = this.clusters[this.clusterNum-1].getGeometry();
+    console.log(this.clustersOriginGeometry[this.clusterNum-1]);
 };
 
 ClusterManager.prototype.setDuration = function(duration) {
@@ -130,6 +135,113 @@ ClusterManager.prototype.chooseCluster = function(num) {
     if(this.chosen != -1) this.clusters[this.chosen].dechosen();
     this.chosen = num;
     this.clusters[num].chosen();
+};
+
+ClusterManager.prototype.relayout = function(style) {
+    this.layoutStyle = (+this.layoutStyle + 1) % 3;
+                                                    // 0：推进布场（前中后）
+                                                    // 1：切入机会（左中右）
+                                                    // 2：胜利号角（角度扩散）
+    for(var i = 0; i < this.clusterNum; i++) this.clustersGeometry[i] = this.clusters[i].getGeometry();
+    switch(this.layoutStyle)
+    {
+        case 0: this.relayout_tj();break;
+        case 1: this.relayout_qr();break;
+        case 2: this.relayout_hj();break;
+    }
+};
+ClusterManager.prototype.relayout_tj = function() {
+    var limit = new Array(2);
+    limit[0] = 30; limit[1] = 70;
+
+    var list = new Array((+limit.length+1));
+    for(var i = 0; i < list.length; i++) list[i] = new Array();
+    for(i = 0; i < this.clusterNum; i++)
+    {
+        for(var j = 0; j < limit.length; j++)
+            if(this.clustersOriginGeometry[i].x < limit[j]*this.field.width/100) break;
+        list[j].push({id:i, pos:this.clustersOriginGeometry[i].y, occupy:this.clustersGeometry[i].height});
+    }
+
+    for(i = 0; i < list.length; i++) this.relayout_sort(0, list[i], this.field.height);
+    for(i = 0; i < list.length; i++)
+    {
+        var temp_x;
+        if(i == 0) temp_x = limit[0]*this.field.width/200;
+        else if(i == list.length-1) temp_x = (limit[i-1]+100)*this.field.width/200;
+        else temp_x = (limit[i-1]+limit[i])*this.field.width/200;
+        for(j = 0; j < list[i].length; j++)
+        {
+            this.clustersGeometry[list[i][j].id].x = temp_x;
+            this.clustersGeometry[list[i][j].id].y = list[i][j].pos;
+        }
+    }
+
+    this.relayout_layout();
+};
+ClusterManager.prototype.relayout_qr = function() {
+    var limit = new Array(2);
+    limit[0] = 33; limit[1] = 66;
+
+    var list = new Array();
+    for(var i = 0; i < this.clusterNum; i++)
+        list.push({id:i, pos:this.clustersOriginGeometry[i].x, occupy:this.clustersGeometry[i].width});
+
+    this.relayout_sort(0, list, this.field.width);
+    for(i = 0; i < list.length; i++)
+    {
+        var temp_y;
+        for(var j = 0; j < limit.length; j++)
+            if(limit[j]*this.field.height/100 > this.clustersOriginGeometry[i].y) break;
+        if(j == 0) temp_y = limit[0]*this.field.height/200;
+        else if(j == limit.length) temp_y = (limit[j-1]+100)*this.field.height/200;
+        else temp_y = (limit[j-1]+limit[j])*this.field.height/200;
+
+        this.clustersGeometry[list[i].id].x = list[i].pos;
+        this.clustersGeometry[list[i].id].y = temp_y;
+    }
+
+    this.relayout_layout();
+};
+ClusterManager.prototype.relayout_hj = function() {
+    var angle = Math.atan(this.field.height/this.field.width/4);
+
+    var list = new Array();
+    for(var i = 0; i < this.clusterNum; i++)
+        list.push({id:i, pos:this.clustersOriginGeometry[i].x, occupy:this.clustersGeometry[i].width});
+
+    this.relayout_sort(0, list, this.field.width);
+    for(i = 0; i < list.length; i++)
+    {
+        var temp_y;
+        if(i == 0) temp_y = this.field.height/2;
+        else
+        {
+            temp_y = (list[i].pos - list[0].pos) * Math.tan(angle);
+            if(i%2 == 0) temp_y = this.field.height/2 + temp_y;
+            else temp_y = this.field.height/2 - temp_y;
+        }
+
+        this.clustersGeometry[list[i].id].x = list[i].pos;
+        this.clustersGeometry[list[i].id].y = temp_y;
+    }
+
+    this.relayout_layout();
+};
+ClusterManager.prototype.relayout_sort = function(start, list, end) {
+    var occupy_all = 0;
+    for(var i = 0; i < list.length; i++) occupy_all = occupy_all + (+list[i].occupy);
+    var occupied_all = 0, occupied;
+    for(i = 0; i < list.length; i++)
+    {
+        occupied = list[i].occupy / occupy_all * (end - start);
+        list[i].pos = start + occupied_all + occupied/2;
+        occupied_all = occupied_all + occupied;
+    }
+};
+ClusterManager.prototype.relayout_layout = function() {
+    for(var i = 0; i < this.clusterNum; i++)
+        this.clusters[i].resetPos(this.clustersGeometry[i].x,this.clustersGeometry[i].y,this.changeDuration,i*this.changeDuration);
 };
 
 Cluster = function(start, end, type, num) {
@@ -269,7 +381,6 @@ Cluster = function(start, end, type, num) {
     }
 
     //rect
-    var that = this;
     this.cg.append("g")
         .attr("id", "cluster" + this.num)
         .attr("transform", "translate("+currentx+","+currenty+")").attr("x",currentx).attr("y",currenty)
@@ -915,6 +1026,39 @@ Cluster.prototype.dechosen = function() {
         .transition()
         .duration(200)
         .attr("style", "stroke:black; fill:white; stroke-width:1;");
+};
+
+Cluster.prototype.getGeometry = function() {
+    var temp = this.cg.select("#cluster"+this.num);
+    return {
+        x: +temp.attr("x"),
+        y: +temp.attr("y"),
+        width: +temp.attr("width"),
+        height: +temp.attr("height")
+    };
+};
+
+Cluster.prototype.resetPos = function(x, y, duration, delay) {
+    var temp = this.cg.select("#cluster"+this.num);
+    var wid = +temp.attr("width"), hei = +temp.attr("height");
+    var dx = x-wid/2-temp.attr("x"), dy = y-hei/2-temp.attr("y");
+    temp.attr("x",x-wid/2).attr("y",y-hei/2)
+        .transition().delay(delay).duration(duration)
+        .attr("transform","translate("+(x-wid/2)+","+(y-hei/2)+")");
+
+    for(var i = this.start; i <= this.end; i++)
+    {
+        var node_x = d3.select("#node_container").select("#node"+i).attr("x"),
+            node_y = d3.select("#node_container").select("#node"+i).attr("y");
+        node_x = (+node_x)+(+dx);
+        node_y = (+node_y)+(+dy);
+        resetNodePos(i, node_x, node_y, duration, delay);
+    }
+    if(this.start>=1) repaintPath(this.start-1, 1, duration, delay);
+    if(this.type == CT_Shoot) for(i = this.start; i < this.end; i++) repaintPath(i, 2, duration, delay);
+    else if(this.type == CT_Centre) for(i = this.start; i < this.end; i++) repaintPath(i, 3, duration, delay);
+    else for(i = this.start; i < this.end; i++) repaintPath(i, 0, duration, delay);
+    if(this.end != seq.nodes.length-1) repaintPath(this.end, 1, duration, delay);
 };
 
 function resetNodePos(id, x, y, duration, delay) {
