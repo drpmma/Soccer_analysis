@@ -155,24 +155,36 @@ ClusterManager.prototype.relayout_tj = function() {
     limit[0] = 30; limit[1] = 70;
 
     var list = new Array((+limit.length+1));
-    for(var i = 0; i < list.length; i++) list[i] = new Array();
+    var sub_list = new Array((+limit.length+1));
+    for(var i = 0; i < list.length; i++)
+    {
+        list[i] = new Array();
+        sub_list[i] = new Array();
+    }
     for(i = 0; i < this.clusterNum; i++)
     {
         for(var j = 0; j < limit.length; j++)
             if(this.clustersOriginGeometry[i].x < limit[j]*this.field.width/100) break;
         list[j].push({id:i, pos:this.clustersOriginGeometry[i].y, occupy:this.clustersGeometry[i].height});
+        sub_list[j].push({id:i, pos:this.clustersOriginGeometry[i].x, occupy:this.clustersGeometry[i].width});
     }
 
     for(i = 0; i < list.length; i++) this.relayout_sort(0, list[i], this.field.height);
     for(i = 0; i < list.length; i++)
     {
-        var temp_x;
-        if(i == 0) temp_x = limit[0]*this.field.width/200;
-        else if(i == list.length-1) temp_x = (limit[i-1]+100)*this.field.width/200;
-        else temp_x = (limit[i-1]+limit[i])*this.field.width/200;
+        var start, end;
+        if(i == 0) start = 0;
+        else start = limit[i-1]*this.field.width/100;
+        if(i == list.length-1) end = this.field.width;
+        else end = limit[i]*this.field.width/100;
+
+        this.relayout_sort(start, sub_list[i], end);
+    }
+    for(i = 0; i < list.length; i++)
+    {
         for(j = 0; j < list[i].length; j++)
         {
-            this.clustersGeometry[list[i][j].id].x = temp_x;
+            this.clustersGeometry[list[i][j].id].x = sub_list[i][j].pos;
             this.clustersGeometry[list[i][j].id].y = list[i][j].pos;
         }
     }
