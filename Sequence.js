@@ -270,6 +270,8 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
     var durationTime = 0;
     if(isTransition == 1)
         durationTime = time;
+    if(isTransition == 2)
+        durationTime =view_time*0.5;
     this.node_container = this.field.append("g")
         .attr("id", "node_container");
     this.node_container.selectAll("g").data(this.nodes).enter()
@@ -327,6 +329,7 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
         .attr("opacity", 0)
         .transition()
         .delay(function (d, i) {
+            if(isTransition ==2) return durationTime*4;
             return i * durationTime;
         })
         .duration(durationTime)
@@ -350,6 +353,7 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
         d3.select("#mouse_field")
             .transition()
             .delay(function () {
+                if(isTransition == 2) return 2*durationTime;
                 return that.nodes.length * durationTime;
             })
             .duration(500)
@@ -359,9 +363,12 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
 }
 
 Sequence.prototype.draw_path = function (group, gray, isTransition) {
+    console.log("view_time",view_time);
     var durationTime = 0;
     if(isTransition == 1)
         durationTime = time;
+    if(isTransition == 2)
+        durationTime =view_time*0.5;
     var that = this;
     this.path_container = this.field.append("g")
         .attr("id", "path_container");
@@ -469,6 +476,7 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
         .attr("opacity", 0)
         .transition()
         .delay(function (d, i) {
+            if(isTransition==2) return durationTime*4;
             return durationTime * (i + 1);
         })
         .duration(durationTime)
