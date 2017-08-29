@@ -153,7 +153,7 @@ matchinfo = function (svg,field,data,width,height) {
                 //     .attr("height",height_smallfield*height)
                 //     .attr("width",width_smallfield*width)
                 //     .attr("fill","red").attr("fill-opacity","0.5")
-                // d3.selectAll("#mouse_field").remove();
+                d3.selectAll("#mouse_field").remove();
                 var phase = that.repaint(d3.select(this), id, x);
 
                 d3.select("#mainfield").select("#path_container").remove();
