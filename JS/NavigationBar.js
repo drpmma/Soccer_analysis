@@ -184,7 +184,7 @@ sideSettingBar.prototype.CreateElements = function() {
         .attr("class", "bs-callout bs-callout-cluster");
     this.AddTitle("聚团设置",this.clusterSetting);
     this.AddSelection("聚团时间",this.clusterTimeOptions,this.clusterTimeSel,"default",this.clusterSetting,function(k){that.clusterTimeSelect(k)});
-    this.AddSelection("聚团方式",this.clusterStyleOptions,this.clusterStyleSel,"default",this.clusterSetting,function(k){that.clusterStyleSelect(k)});
+    this.AddSelection("聚团样式",this.clusterStyleOptions,this.clusterStyleSel,"default",this.clusterSetting,function(k){that.clusterStyleSelect(k)});
     var temp = this.AddButtonToolBar(this.clusterSetting);
     this.AddButton("聚团","default",this.AddButtonGroup(temp),function(){that.clusterizeBtn()});
     this.AddButton("改变样式","default",this.AddButtonGroup(temp),function(){that.clusterChangeBtn()});

@@ -3,6 +3,7 @@ Helps = function() {
     this.showSettingHelp();
     this.sequenceSettingHelp();
     this.dataSettingHelp();
+    this.universalHelp();
 };
 Helps.prototype.clusterSettingHelp = function() {
     var params = {
@@ -17,8 +18,8 @@ Helps.prototype.clusterSettingHelp = function() {
         content:function(){
             return  "<div style='width:260px;'>" +
                     "<ul>" +
-                        "<li>聚团操作可以将短时间短距离内的运动聚合到一起</li>" +
-                        "<li>聚团方式包含普通、全场、蜂巢、矩阵、文字云五种</li>" +
+                        "<li>聚团操作可以将短时间短距离内的运动聚合到一起，包括一般聚团、角球禁区聚团和射门聚团</li>" +
+                        "<li>一般聚团样式包含普通、全场、蜂巢、矩阵、文字云五种，可供切换</li>" +
                         "<li>聚团布场包含推进布场、切入布场、螺旋布场</li>" +
                     "</ul>" +
                     "</div>";
@@ -35,7 +36,7 @@ Helps.prototype.showSettingHelp = function(){
         right:20,
         id:"showSettingHelp",
         title:"显示帮助",
-        place:"left",
+        place:"top",
         content:function(){
             return  "<div style='width:260px;'>" +
                 "<ul>" +
@@ -57,7 +58,7 @@ Helps.prototype.sequenceSettingHelp = function(){
         right:20,
         id:"sequenceSettingHelp",
         title:"序列帮助",
-        place:"right",
+        place:"top",
         content:function(){
             return  "<div style='width:260px;'>" +
                 "<ul>" +
@@ -78,7 +79,7 @@ Helps.prototype.dataSettingHelp = function(){
         right:20,
         id:"dataSettingHelp",
         title:"数据帮助",
-        place:"bottom",
+        place:"top",
         content:function(){
             return  "<div style='width:260px;'>" +
                 "<ul>" +
@@ -90,6 +91,47 @@ Helps.prototype.dataSettingHelp = function(){
     };
     new Help(params);
 };
+Helps.prototype.universalHelp = function(){
+    var params = {
+        div:d3.select("#svg_div"),
+        top:5,
+        bottom:undefined,
+        left:undefined,
+        right:5,
+        id:"universalHelp",
+        title:"全局帮助",
+        place:"bottom",
+        content:function(){
+            return  "<div style='width:260px;'>" +
+                "<ul>" +
+                    "<li>可以点击左上角的“足球可视化系统”查看详细系统介绍（开发中）</li>" +
+                    "<li>点击队伍名可以切换队伍视角（开发中）</li>" +
+                    "<li>点击设置可以展开/收起控制台</li>" +
+                    "<li>将鼠标放至<a><img src='./img/help.png'></a>上可以查看提示</li>" +
+                    "<br>" +
+                    "<li>左方是球员信息区，主要展示球员的位置、比赛数据信息</li>" +
+                    "<li>中间为主展示区，用于放大分析某个阶段的战况</li>" +
+                    "<li>右方为阶段列表，将比赛分为一个个阶段，用各种视图去展示</li>" +
+                    "<br>" +
+                    "<li>特殊颜色说明：<br>" +
+                        "<div style='position:relative;top:5px;width:15px;height:10px;background:red;stroke:none;border-radius:3px;float:left'></div>" +
+                        "<p style='margin-bottom:0'>　射偏</p>" +
+                        "<div style='position:relative;top:5px;width:15px;height:10px;background:pink;stroke:none;border-radius:3px;float:left'></div>" +
+                        "<p style='margin-bottom:0'>　射中门框/角球</p>" +
+                        "<div style='position:relative;top:5px;width:15px;height:10px;background:blue;stroke:none;border-radius:3px;float:left'></div>" +
+                        "<p style='margin-bottom:0'>　射门被扑救</p>" +
+                        "<div style='position:relative;top:5px;width:15px;height:10px;background:green;stroke:none;border-radius:3px;float:left'></div>" +
+                        "<p style='margin-bottom:0'>　成功射门</p>" +
+                        "<div style='position:relative;top:5px;width:15px;height:10px;background:orange;stroke:none;border-radius:3px;float:left'></div>" +
+                        "<p style='margin-bottom:0'>　遗失射门机会</p>" +
+                    "</li>" +
+                "</ul>" +
+                "</div>";
+        }
+    };
+    new Help(params);
+};
+
 
 Help = function(params) {
     var div = params.div,
