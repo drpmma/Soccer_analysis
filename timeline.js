@@ -1690,6 +1690,7 @@ matchinfo.prototype.viewtransform = function (type,time) {
     // }
     if(oldtype!=type)
     {
+        // console.log("oldtype",oldtype)
         switch (+type)
         {
             case 0:this.clear(type,oldtype);this.point();break;

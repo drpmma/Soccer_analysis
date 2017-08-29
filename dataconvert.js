@@ -20,6 +20,11 @@ dataselect.prototype.main=function (value) {
     d3.queue().defer(d3.json, value).await(main);
     function main(error, jsondata) {
         if (error) throw error;
+        time=0;
+        view_time=0;
+        view_transform=0;
+        oldtype=-1;
+        click=-1;
         console.log(jsondata);
         var width, height;
         data = new Data(jsondata);
