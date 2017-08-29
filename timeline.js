@@ -658,13 +658,20 @@ matchinfo.prototype.clear = function (type,oldtype) {
         var name1 = "#smallfield" + num
         var g_sequence=d3.select(name)
         var name2 ="#g_arc"+num
+        var name3 = "#align_g"+num
         var arc_g = d3.select("#Sequence").select(name).select(name2)
         var rect_g = d3.select("#Sequence").select(name).selectAll("#rect_g")
-        var align_g = d3.select("#Sequence").select(name).selectAll("#align_g")
+        var align_g = d3.select("#Sequence").select(name).select(name3)
         var g_proj = d3.select("#Sequence").select(name).selectAll("#g_proj")
         var field = d3.select("#Sequence").select(name).select(name1)
         var nodes = d3.select("#Sequence").select(name).select(name1).select("#node_container");
         var paths = d3.select("#Sequence").select(name).select(name1).select("#path_container")
+        var name4 = "#rect_g_click"+num
+        var name5 = "#arc_g_click"+num
+        var name6 ="#align_g_click"+num
+        d3.select("#Sequence").select(name).select(name4).attr("fill-opacity",0).attr("fill","gray").attr("id","rect_g")
+        d3.select("#Sequence").select(name).select(name5).attr("fill-opacity",0).attr("fill","gray").attr("id","arc_g")
+        d3.select("#Sequence").select(name).select(name6).attr("fill-opacity",0).attr("fill","gray").attr("id","align_g")
         if (oldtype < 4 && oldtype >= 0) {
             if(paths != null)
             {
