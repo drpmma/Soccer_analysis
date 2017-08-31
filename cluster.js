@@ -10,6 +10,11 @@ ClusterManager = function(field, sequence) {
         .attr("transform", "translate(0,0)")
         .attr("width", this.field.fieldGroup.attr("width"))
         .attr("height", this.field.fieldGroup.attr("height"));
+    this.clusterLimit = this.clusterGroup.append("g")
+        .attr("id","clusterLayoutLimit")
+        .attr("transform", "translate(0,0)")
+        .attr("width", this.field.fieldGroup.attr("width"))
+        .attr("height", this.field.fieldGroup.attr("height"));
 
     this.originData = new Array(sequence.nodes.length);
     for(var i = 0; i < this.originData.length; i++)
@@ -153,10 +158,18 @@ ClusterManager.prototype.relayout = function(style) {
 ClusterManager.prototype.relayout_tj = function() {
     var limit = new Array(2);
     limit[0] = 30; limit[1] = 70;
+    this.clusterLimit.selectAll("path").remove();
+    for(var i=0;i<limit.length;i++)
+    {
+        this.clusterLimit.append("path")
+            .attr("d","M"+this.field.width*limit[i]/100+" "+0+
+                      "L"+this.field.width*limit[i]/100+" "+this.field.height)
+            .attr("class","clusterLimit");
+    }
 
     var list = new Array((+limit.length+1));
     var sub_list = new Array((+limit.length+1));
-    for(var i = 0; i < list.length; i++)
+    for(i = 0; i < list.length; i++)
     {
         list[i] = new Array();
         sub_list[i] = new Array();
@@ -194,9 +207,17 @@ ClusterManager.prototype.relayout_tj = function() {
 ClusterManager.prototype.relayout_qr = function() {
     var limit = new Array(2);
     limit[0] = 33; limit[1] = 66;
+    this.clusterLimit.selectAll("path").remove();
+    for(var i=0;i<limit.length;i++)
+    {
+        this.clusterLimit.append("path")
+            .attr("d","M"+0+" "+this.field.height*limit[i]/100+
+                "L"+this.field.width+" "+this.field.height*limit[i]/100)
+            .attr("class","clusterLimit");
+    }
 
     var list = new Array();
-    for(var i = 0; i < this.clusterNum; i++)
+    for(i = 0; i < this.clusterNum; i++)
         list.push({id:i, pos:this.clustersOriginGeometry[i].x, occupy:this.clustersGeometry[i].width});
 
     this.relayout_sort(0, list, this.field.width);
@@ -217,6 +238,7 @@ ClusterManager.prototype.relayout_qr = function() {
 };
 ClusterManager.prototype.relayout_hj = function() {
     var angle = Math.atan(this.field.height/this.field.width/4);
+    this.clusterLimit.selectAll("path").remove();
 
     var list = new Array();
     for(var i = 0; i < this.clusterNum; i++)
@@ -236,6 +258,13 @@ ClusterManager.prototype.relayout_hj = function() {
 
         this.clustersGeometry[list[i].id].x = list[i].pos;
         this.clustersGeometry[list[i].id].y = temp_y;
+    }
+    for(i=0;i<2;i++)
+    {
+        this.clusterLimit.append("path")
+            .attr("d","M"+list[0].pos+" "+this.field.height/2+
+                "L"+this.field.width+" "+(this.field.height/2-(i*2-1)*(this.field.width-list[0].pos)*Math.tan(angle)))
+            .attr("class","clusterLimit");
     }
 
     this.relayout_layout();

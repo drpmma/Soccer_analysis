@@ -22,9 +22,9 @@ sideSettingBar.prototype.clusterStyleSelect = function(k) {
     this.clusterStyleSel = k;
 };
 sideSettingBar.prototype.clusterLayoutSelect = function(k) {
+    this.clusterLayoutSel = k;
     if(cm != undefined)
     {
-        this.clusterLayoutSel = k;
         cm.relayout(k);
     }
     else console.log("Error: There is nothing to relayout.");
