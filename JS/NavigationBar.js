@@ -21,6 +21,14 @@ sideSettingBar.prototype.clusterStyleSelect = function(k) {
     console.log("clusterStyleSelect"+k);
     this.clusterStyleSel = k;
 };
+sideSettingBar.prototype.clusterLayoutSelect = function(k) {
+    if(cm != undefined)
+    {
+        this.clusterLayoutSel = k;
+        cm.relayout(k);
+    }
+    else console.log("Error: There is nothing to relayout.");
+};
 sideSettingBar.prototype.nodeTimeSelect = function(k) {
     console.log("nodeTimeSelect"+k);
     this.nodeTimeSel = k;
@@ -95,13 +103,6 @@ sideSettingBar.prototype.declusterizeBtn = function() {
     else console.log("Error: There is nothing to be deleted.");
     console.log("declusterizeBtn")
 };
-sideSettingBar.prototype.clusterLayoutBtn = function() {
-    if(cm != undefined)
-    {
-        cm.relayout(0);
-    }
-    else console.log("Error: There is nothing to relayout.");
-};
 sideSettingBar.prototype.sequenceChangeBtn = function() {
     f3.viewtransform(this.sequenceStyleSel,this.sequenceTimeOptions[this.sequenceTimeSel]);
     console.log("sequenceChangeBtn")
@@ -135,6 +136,12 @@ sideSettingBar.prototype.CreateOptions = function() {
     this.clusterStyleOptions[3] = "矩阵";
     this.clusterStyleOptions[4] = "文字云";
     this.clusterStyleSel = 0;
+
+    this.clusterLayoutOptions = new Array();
+    this.clusterLayoutOptions[0] = "推进布场";
+    this.clusterLayoutOptions[1] = "切入布场";
+    this.clusterLayoutOptions[2] = "顺序布场";
+    this.clusterLayoutSel = 0;
 
     this.nodeTimeOptions = new Array();
     for(i = 0; i < 20; i++) this.nodeTimeOptions[i] = i*100;
@@ -185,11 +192,11 @@ sideSettingBar.prototype.CreateElements = function() {
     this.AddTitle("聚团设置",this.clusterSetting);
     this.AddSelection("聚团时间",this.clusterTimeOptions,this.clusterTimeSel,"default",this.clusterSetting,function(k){that.clusterTimeSelect(k)});
     this.AddSelection("聚团样式",this.clusterStyleOptions,this.clusterStyleSel,"default",this.clusterSetting,function(k){that.clusterStyleSelect(k)});
+    this.AddSelection("聚团布场",this.clusterLayoutOptions,this.clusterLayoutSel,"default",this.clusterSetting,function(k){that.clusterLayoutSelect(k)});
     var temp = this.AddButtonToolBar(this.clusterSetting);
     this.AddButton("聚团","default",this.AddButtonGroup(temp),function(){that.clusterizeBtn()});
     this.AddButton("改变样式","default",this.AddButtonGroup(temp),function(){that.clusterChangeBtn()});
     this.AddButton("取消聚团","default",this.AddButtonGroup(temp),function(){that.declusterizeBtn()});
-    this.AddButton("聚团布场","default",this.AddButtonGroup(temp),function(){that.clusterLayoutBtn()});
 
     this.showSetting = this.Bar.append("div")
         .attr("class", "col-md-3")

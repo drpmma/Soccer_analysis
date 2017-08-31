@@ -138,7 +138,7 @@ ClusterManager.prototype.chooseCluster = function(num) {
 };
 
 ClusterManager.prototype.relayout = function(style) {
-    this.layoutStyle = (+this.layoutStyle + 1) % 3;
+    this.layoutStyle = +style;
                                                     // 0：推进布场（前中后）
                                                     // 1：切入机会（左中右）
                                                     // 2：胜利号角（角度扩散）
