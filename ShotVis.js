@@ -1,13 +1,13 @@
-ShotVis = function (Sequence, clusterGroup, width, height, pad, panelHeight, shotNum, endNum, currentX, currentY) {
-    this.Sequence = Sequence;
+ShotVis = function (sequence, clusterGroup, width, height, pad, shotNum, endNum, currentX, currentY) {
+    this.sequence = sequence;
     this.clusterGroup = clusterGroup;
     this.width = width;
     this.height = height;
     this.pad = pad;
-    this.panelHeight = panelHeight;
-    this.shotNode = this.Sequence.nodes[shotNum];
+    this.panelHeight = height / 4;
+    this.shotNode = this.sequence.nodes[shotNum];
     this.shotNum = shotNum;
-    this.endNode = this.Sequence.nodes[endNum];
+    this.endNode = this.sequence.nodes[endNum];
     this.endNum = endNum;
     this.currentX = currentX;
     this.currentY = currentY;
@@ -28,9 +28,10 @@ ShotVis = function (Sequence, clusterGroup, width, height, pad, panelHeight, sho
     this.drawHalfField();
     this.drawSplitLine();
     this.drawPost();
-    this.drawPosition();
 
     this.drawShots();
+
+    this.modeSetting();
     this.drawStats();
     this.drawModes();
     this.clickFilterMode();
@@ -40,15 +41,15 @@ ShotVis = function (Sequence, clusterGroup, width, height, pad, panelHeight, sho
 ShotVis.prototype.createBrush = function () {
     this.brush = false;
 
-    this.xBrushField = d3.scaleLinear().range([0, this.fieldWidth]);
-    this.yBrushField = d3.scaleLinear().range([this.fieldHeight, 0]);
-    this.xBrushShotsField = d3.scaleLinear().domain([50,100]).range([0,1]);
-    this.yBrushShotsField = d3.scaleLinear().domain([0,100]).range([0,1]);
-
-    this.xBrushMouth = d3.scaleLinear().range([0, this.width]);
-    this.yBrushMouth = d3.scaleLinear().range([0, this.distanceHeight]);
-    this.xBrushShotsMouth = d3.scaleLinear().domain([0,100]).range([0,1]);
-    this.yBrushShotsMouth = d3.scaleLinear().domain([34.6,65.4]).range([0,1]);
+    // this.xBrushField = d3.scaleLinear().range([0, this.fieldWidth]);
+    // this.yBrushField = d3.scaleLinear().range([this.fieldHeight, 0]);
+    // this.xBrushShotsField = d3.scaleLinear().domain([50,100]).range([0,1]);
+    // this.yBrushShotsField = d3.scaleLinear().domain([0,100]).range([0,1]);
+    //
+    // this.xBrushMouth = d3.scaleLinear().range([0, this.width]);
+    // this.yBrushMouth = d3.scaleLinear().range([0, this.distanceHeight]);
+    // this.xBrushShotsMouth = d3.scaleLinear().domain([0,100]).range([0,1]);
+    // this.yBrushShotsMouth = d3.scaleLinear().domain([34.6,65.4]).range([0,1]);
 
     this.brushedShotsField = null;
     this.brushedShotsMouth = null;
@@ -58,8 +59,8 @@ ShotVis.prototype.createBrush = function () {
 ShotVis.prototype.drawHalfField = function () {
     var that = this;
 
-    this.fieldWidth = 210;
-    this.fieldHeight = 180;
+    this.fieldWidth = this.width;
+    this.fieldHeight = 0.5 * this.height;
 
     this.field = new Field(this.clusterGroup, this.pad, this.pad + this.height - this.fieldHeight - this.panelHeight,
         this.fieldWidth, this.fieldHeight, "clusterField", 0, 0, 0);
@@ -80,11 +81,9 @@ ShotVis.prototype.drawHalfField = function () {
 
 }
 
-ShotVis.prototype.drawPosition = function(){
-    var that = this;
-
+ShotVis.prototype.drawPosition = function(duration){
     var endX, endY;
-    var shot_dest = getShotDestination(this.Sequence.links[this.Sequence.links.length - 1]);
+    var shot_dest = getShotDestination(this.sequence.links[this.sequence.links.length - 1]);
     if(shot_dest.type == SHOT_DEST_TYPE_MOUTH){
         endX = this.setPostX(shot_dest.y);
         endY = this.setPostY(shot_dest.z);
@@ -93,15 +92,15 @@ ShotVis.prototype.drawPosition = function(){
         endX = this.resetX(this.endNode.y);
         endY = this.resetY(this.endNode.x);
     }
-    resetNodePos(this.shotNum, this.resetX(this.shotNode.y), this.resetY(this.shotNode.x), 100);
-    resetNodePos(this.endNum, endX, endY, 100);
-    repaintPath(this.shotNum - 1, 100, 1);
-    repaintPath(this.endNum - 1, 100, 2);
+    resetNodePos(this.shotNum, this.resetX(this.shotNode.y), this.resetY(this.shotNode.x), duration, duration);
+    resetNodePos(this.endNum, endX, endY, duration, duration);
+    repaintPath(this.shotNum - 1, 1, duration, 2 * duration);
+    repaintPath(this.endNum - 1, 2, duration, 2 * duration);
 }
 
 ShotVis.prototype.drawSplitLine = function () {
     var that = this;
-    this.splitWidth = 10;
+    this.splitWidth = this.height / 30;
     this.distanceHeight = that.height - that.fieldHeight - that.splitWidth - that.panelHeight;
     this.clusterGroup.append("g")
         .attr("id", "splitLine")
@@ -113,6 +112,7 @@ ShotVis.prototype.drawSplitLine = function () {
         .append("rect")
         .attr("x", this.pad)
         .attr("y", 0)
+        .attr("rx", this.pad)
         .attr("width", this.fieldWidth)
         .attr("height", this.splitWidth);
 }
@@ -248,6 +248,13 @@ ShotVis.prototype.getMouth = function(d){
     else return null;
 };
 
+ShotVis.prototype.modeSetting = function () {
+    this.barWidth = this.width / 20;
+    this.settingPad = this.height / 40;
+    this.settingMove = this.width / 4;
+    this.fontSize = this.barWidth;
+}
+
 ShotVis.prototype.drawStats = function () {
     var that = this;
 
@@ -267,6 +274,7 @@ ShotVis.prototype.drawStats = function () {
     this.statsPanel.append("rect")
         .attr("width", this.fieldWidth)
         .attr("height", this.panelHeight)
+        .attr("rx", 2 * this.pad)
         .style("stroke-width", 0)
         .style("fill", "grey");
 
@@ -275,19 +283,21 @@ ShotVis.prototype.drawStats = function () {
         .enter()
         .append("g")
         .attr("class", "visuShotsStats")
-        .attr("transform", function(d,i){return "translate(" + [(+50*i), 0] + ")";});
+        .attr("transform", function(d,i){
+            return "translate(" + [(that.settingMove * i), 0] + ")";
+        });
 
     this.statsBarScale = d3.scaleLinear()
         .domain([0, d3.max(this.stats, function(d){return d.nb})])
-        .range([0, that.panelHeight / 3]);
-    var barWidth = 10;
+        .range([0, this.panelHeight / 3]);
 
     this.statsGroups.append("rect")
         .attr("class", function(d){return "shot_bar_"+d.type;})
-        .attr("x", 8)
-        .attr("y", function(d){return (that.panelHeight / 3 - that.statsBarScale(d.nb))})//this.panelHeight)
-        .attr("width", barWidth)
+        .attr("x", this.barWidth / 2)
+        .attr("y", function(d){return (that.panelHeight / 3 + that.settingPad - that.statsBarScale(d.nb))})//this.panelHeight)
+        .attr("width", this.barWidth)
         .attr("height", function(d){return that.statsBarScale(d.nb);})
+        .attr("rx", this.pad)
         .attr("fill", function (d) {
             return that.getShotColor(d.type);
         });
@@ -298,9 +308,9 @@ ShotVis.prototype.drawStats = function () {
         .text(function(d){return d.nb + "("+ ( totalShots != 0 ? parseInt((d.nb/totalShots)*100) : 0 )+"%)"})
         .attr("text-anchor", "start")
         .attr("class", "stats_text")
-        .attr("font-size", 10)
-        .attr("x", barWidth + 10)
-        .attr("y", 16)
+        .attr("font-size", this.fontSize)
+        .attr("x", 2 * this.barWidth)
+        .attr("y", this.height / 10)
         .attr("fill", "white");
 
     this.totalShotsGroup = this.clusterGroup.selectAll(".visuShotsTotalShots")
@@ -313,56 +323,52 @@ ShotVis.prototype.drawStats = function () {
     this.totalShotsGroup.append("rect")
         .style("stroke", "black")
         .style("fill", "white")
-        .attr("width", 20)
-        .attr("height", 16);
+        .attr("rx", this.pad)
+        .attr("width", 2 * this.barWidth)
+        .attr("height", this.height / 18);
 
     this.totalShotsGroup.append("text")
         .text(function(d){return d})
         .attr("text-anchor", "middle")
         .attr("class","stats_text")
-        .style("font-size", 15)
+        .style("font-size", this.height / 20)
         .style("fill", "black")
-        .attr("x", 10)
-        .attr("y", 13);
+        .attr("x", this.barWidth)
+        .attr("y", this.height / 21);
 }
 
 ShotVis.prototype.drawModes = function () {
     var that = this;
 
-    this.filterModesPanel = this.clusterGroup.append("svg:g")
+    this.filterModesPanel = this.clusterGroup.append("g")
         .attr("class","filterModes")
-        .attr("transform", "translate(" + [0, this.height - this.panelHeight] + ")");
-
-    // this.filterModesPanel.append("rect")
-    //     .attr("width", this.fieldWidth)
-    //     .attr("height", this.panelHeight)
-    //     .style("stroke-width", 0)
-    //     .style("fill", "grey");
+        .attr("transform", "translate(" + [this.pad, this.height - this.panelHeight] + ")");
 
     this.filterModes = this.filterModesPanel.selectAll("g.visuShotsModes")
         .data(this.filterModesArray)
         .enter()
         .append("g")
         .attr("class", "visuShotsFilterModes")
-        .attr("transform", function(d,i){return "translate(" + [(50*i), 22] + ")";})
+        .attr("transform", function(d, i){return "translate(" + [(that.settingMove * i), 4.5 * that.settingPad] + ")";})
         .on("click", clickFilterMode)
         .on("mouseover", overFilterMode);
 
     this.filterModes
         .append("rect")
-        .attr("x", 10)
-        .attr("y", 5)
-        .attr("width", 10)
-        .attr("height", 10);
+        .attr("x", this.barWidth / 2)
+        .attr("y", this.settingPad)
+        .attr("rx", this.pad)
+        .attr("width", this.barWidth)
+        .attr("height", this.barWidth);
 
     this.filterModes
         .append("text")
         .attr("class", "filters_text")
         .text(function(d){return that.getShotName(d.name)})
         .attr("text-anchor", "start")
-        .attr("x", 25)
-        .attr("y", 12)
-        .attr("font-size", 10);
+        .attr("x", 2 * this.barWidth)
+        .attr("y", this.height / 20)
+        .attr("font-size", this.fontSize);
 
     function clickFilterMode(d){
         catchEvent();
@@ -376,44 +382,45 @@ ShotVis.prototype.drawModes = function () {
 
     this.visuModesPanel = this.clusterGroup.append("g")
         .attr("class","visualModes")
-        .attr("transform", "translate("+ [0, (this.height-this.panelHeight + 20)] +")");
+        .attr("transform", "translate("+ [this.pad, this.height - this.panelHeight] +")");
 
     this.visuModes = this.visuModesPanel.selectAll("g.visuShotsVisuModes")
         .data(this.visuModesArray)
         .enter()
         .append("g")
         .attr("class", "visuShotsVisuModes")
-        .attr("transform", function(d,i){return "translate(" + [50*i, 25] + ")";})
+        .attr("transform", function(d,i){return "translate(" + [that.settingMove * i, 8 * that.settingPad] + ")";})
         .on("click", clickVisuMode)
         .on("mouseover", overVisuMode);
 
     this.visuModes
         .append("rect")
-        .attr("x", 10)
+        .attr("x", this.barWidth / 2)
         .attr("y", 0)
-        .attr("width", 10)
-        .attr("height", 10);
+        .attr("rx", this.pad)
+        .attr("width", this.barWidth)
+        .attr("height", this.barWidth);
 
     this.visuModes
         .append("text")
         .text(function(d){return that.getModeName(d)})
         .attr("class", "modes_text")
         .attr("text-anchor", "start")
-        .attr("x", 25)
-        .attr("y", 8)
-        .attr("font-size", 10);
+        .attr("x", 2 * this.barWidth)
+        .attr("y", this.height / 40)
+        .attr("font-size", this.fontSize);
 
     var sliderParams = {
-        width:40,
-        height:10,
-        padding:1,
+        width: this.settingMove * 0.8,
+        height: this.barWidth,
+        padding: this.pad,
         parent: this.visuModesPanel,
         sliderClass:"visuShotsSlider",
-        x:110,
-        y:25,
+        x: this.settingMove * 2,
+        y: this.height / 5,
         rootSVG: that.clusterGroup,
         parentVisu: this,
-        slider_range: [0,50]
+        slider_range: [0, 50]
     };
     this.sliderSpray = new SimpleSlider(sliderParams);
     var min_spray_radius = 15;
@@ -437,25 +444,27 @@ ShotVis.prototype.drawModes = function () {
     // the "brush" mode
     this.brushing = this.visuModesPanel
         .append("g")
-        .attr("transform", "translate("+(160)+","+25+")")
+        .attr("transform", "translate(" + [that.settingMove * 3, 8 * this.settingPad] + ")")
         .attr("class", "visuShotsBrushing")
         .on("click", clickBrushing)
         .on("mouseover", overBrushing);
 
     this.brushing
         .append("rect")
-        .attr("x", 0)
+        .attr("x", this.barWidth / 2)
         .attr("y", 0)
-        .attr("width", 10)
-        .attr("height", 10);
+        .attr("rx", this.pad)
+        .attr("width", this.barWidth)
+        .attr("height", this.barWidth);
 
     this.brushing
         .append("text")
         .text("筛选")
         .attr("class", "modes_text")
         .attr("text-anchor", "start")
-        .attr("x", 17)
-        .attr("y", 8);
+        .attr("x", 2 * this.barWidth)
+        .attr("y", this.height / 40)
+        .style("font-size", this.fontSize);
 
     function clickBrushing(){
         catchEvent();
@@ -554,7 +563,7 @@ ShotVis.prototype.filterShots = function(){
     this.statsGroups
         .select("rect")
         .transition().duration(600)
-        .attr("y", function(d){return (that.panelHeight / 3-that.statsBarScale(d.nb))})
+        .attr("y", function(d){return (that.panelHeight / 3 + that.settingPad - that.statsBarScale(d.nb))})
         .attr("height", function(d){return that.statsBarScale(d.nb);});
 
     this.statsGroups
@@ -773,6 +782,7 @@ SimpleSlider.prototype.init = function(params){
         .attr("class", "layer")
         .attr("x", 0)
         .attr("y", 0)
+        .attr("rx", params.padding)
         .attr("width", params.width)
         .attr("height", params.height);
 

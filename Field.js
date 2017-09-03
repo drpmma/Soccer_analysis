@@ -86,7 +86,16 @@ Field.prototype.draw_rect = function(x, y, width, height) {
         .attr("height", this.hei_scale(height))
         .attr("fill", "white")
         .attr("stroke", "black")
-        .style("stroke-width","1px");
+        .style("stroke-width","1px")
+        .attr("opacity","0")
+        .transition().delay(function () {
+            if(view_transform) return 2.5*view_time;
+            else return 0;
+        }).duration(function () {
+            if(view_transform) return 0.5*view_time;
+            else return 0;
+        })
+        .attr("opacity","1");
     return rect;
 }
 
@@ -98,7 +107,16 @@ Field.prototype.draw_circle = function(x, y, r) {
         .attr("r", this.r_scale(r))
         .attr("fill", "white")
         .attr("stroke", "black")
-        .style("stroke-width","1px");
+        .style("stroke-width","1px")
+        .attr("opacity","0")
+        .transition().delay(function () {
+        if(view_transform) return 2.5*view_time;
+        else return 0;
+    }).duration(function () {
+        if(view_transform) return 0.5*view_time;
+        else return 0;
+    })
+        .attr("opacity","1");
 }
 
 Field.prototype.draw_line = function (x1, y1, x2, y2) {
@@ -109,5 +127,14 @@ Field.prototype.draw_line = function (x1, y1, x2, y2) {
         .attr("x2", this.x_scale(x2))
         .attr("y2", this.y_scale(y2))
         .attr("stroke", "black")
-        .style("stroke-width","1px");
+        .style("stroke-width","1px")
+        .attr("opacity","0")
+        .transition().delay(function () {
+        if(view_transform) return 2.5*view_time;
+        else return 0;
+    }).duration(function () {
+        if(view_transform) return 0.5*view_time;
+        else return 0;
+    })
+        .attr("opacity","1");
 }

@@ -1,19 +1,11 @@
-Sequence = function (field, sequence, r, color, f) {
+Sequence = function (field, sequence) {
     this.field = field;
     this.sequence = sequence;
     this.width = field.attr("width");
     this.height = field.attr("height");
-    this.r=r;
-    this.color=color;
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0, this.width]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0, this.height]).clamp(true);
     this.computeNodeLinks();
-    console.log("nodes", this.nodes);
-    if(f==1)
-    {
-        this.draw_path("link",0);
-        this.draw_node("node", r ,color);
-    }
 }
 
 Sequence.prototype.computeNodeLinks = function(){
@@ -180,11 +172,106 @@ Sequence.prototype.computeNodeLinks = function(){
             nodeIndex++;
         }
     }
+    var i = 0;
+    while(i < this.nodes.length) {
+        var link = this.links[i];
+        var nodes = this.nodes;
+        var passCat;
+        if(link == undefined) break;
+        if(link.eid == E_PASS && (passCat = getPassCategory(link, nodes[i])) != SUB_CHAIN_TYPE_PASS_STANDARD){
+            if(passCat == SUB_CHAIN_TYPE_PASS_CENTRE || passCat == SUB_CHAIN_TYPE_PASS_CORNER) {
+                nodes.splice(i+1,0,{
+                    index: i+1,
+                    unique_id: nodes[i+1].unique_id,
+                    additional: nodes[i+1].additional,
+                    after_run: nodes[i+1].after_run,
+                    eid: nodes[i+1].eid,
+                    pid: nodes[i+1].pid,
+                    time: nodes[i+1].time,
+                    x: nodes[i+1].x,
+                    y: nodes[i+1].y
+                });
+                this.links.splice(i+1,0,{
+                    source: i+1,
+                    target: i+2,
+                    eid: E_DUPLICATE
+                })
+                i=i+2;
+            }
+            else i++;
+        }
+        else
+        if(i != this.nodes.length -1) {
+            switch (this.links[i].eid) {
+                case E_PASS: case E_RUN:
+                var j = i;
+                while (j < this.links.length) {
+                    var that = this;
+                    var isPass = function(k)
+                    {
+                        return (that.links[k]!=undefined)&&(that.links[k].eid == E_PASS)&&(!isLongPass(that.links[k],that.nodes[k]));
+                    };
+                    if( (isPass(j))||
+                        (this.links[j].eid == E_RUN&&isPass(j+1)))
+                        j++;
+                    else break;
+                }
+                if(j - i >= 3) i = j;
+                else i = i+1;
+                break;
+                case E_SHOT_CHANCE_MISSED:
+                case E_SHOT_GOAL:
+                case E_SHOT_MISS:
+                case E_SHOT_POST:
+                case E_SHOT_SAVED:
+                    if (i == this.nodes.length - 2) {
+                        if(i!=0 && this.links[i-1].eid != E_DUPLICATE)
+                        {
+                            nodes.splice(i,0,{
+                                index: i,
+                                unique_id: nodes[i].unique_id,
+                                additional: nodes[i].additional,
+                                after_run: nodes[i].after_run,
+                                eid: nodes[i].eid,
+                                pid: nodes[i].pid,
+                                time: nodes[i].time,
+                                x: nodes[i].x,
+                                y: nodes[i].y
+                            });
+                            this.links.splice(i,0,{
+                                source: i,
+                                target: i+1,
+                                eid: E_DUPLICATE
+                            })
+                            i = i + 2;
+                        }
+                        else i++;
+                    }
+                    else i++;
+                    break;
+                default: i = i+1;
+            }
+        }
+        else i++;
+    }
+    for(i = 0; i< this.nodes.length-1;i++)
+    {
+        this.links[i].source = i;
+        this.links[i].target = i+1;
+    }
+    //console.log(this.nodes);
+    for(i = 0; i<this.nodes.length;i++) this.nodes[i].index = i;
 };
 
-Sequence.prototype.draw_node = function (group, r,color)
+Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransition, fieldID)
 {
+    this.r = r;
     var that = this;
+    var durationTime = 0;
+    if(isTransition == 1)
+        durationTime = time;
+    if(isTransition == 2)
+        durationTime =view_time*0.5;
     this.node_container = this.field.append("g")
         .attr("id", "node_container");
     this.node_container.selectAll("g").data(this.nodes).enter()
@@ -201,27 +288,87 @@ Sequence.prototype.draw_node = function (group, r,color)
         .on("mouseover", function(){d3.select(this).style("cursor", "pointer")})
         .on("click", function(d) {pm.reChoose(d.pid);})
         .append("circle")
+        .attr("x",0)
+        .attr("y",0)
+        .attr("r",0)
         .attr("r", r)
         .attr("stroke", "black")
         .attr("stroke-width", "1px;")
         .attr("fill", function (d) {
             if (color=="white") return "white"
             return getEventColor(d.eid);
+        })
+        // .attr("opacity", 0)
+        // .transition().delay(function (d, i) {return durationTime * i;})
+        // .duration(durationTime)
+        // .attr("opacity", 1)
+
+
+    this.node_container
+        .selectAll(".node")
+        .append("text")
+        .attr("x",0).attr("y",0)
+        .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
+        .text(function (d, i) {
+            return pm.findJerseyByPid(that.nodes[i].pid)
+        })
+        .attr("opacity", 0);
+
+    this.node_container
+        .selectAll(".node")
+        .select("text")
+        .transition()
+        .delay(function () {
+            return that.nodes.length * durationTime + 500;
+        })
+        .duration(1000)
+        .attr("opacity", 1);
+
+    this.node_container
+        .selectAll(".node")
+        .attr("opacity", 0)
+        .transition()
+        .delay(function (d, i) {
+            if(isTransition ==2) return durationTime*4;
+            return i * durationTime;
+        })
+        .duration(durationTime)
+        .attr("opacity", 1)
+        .on("start", function (d, i) {
+            if(isTransition === 1 && i === 0) {
+                onTransition[fieldID] = 1;
+            }
+        })
+        .on("end", function (d, i) {
+            if(isTransition === 1)
+                if(that.nodes.length - 1 === i) {
+                    onTransition[fieldID] = 0;
+                    d3.select("#mouse_field")
+                        .transition()
+                        .duration(500).remove();
+                }
         });
 
-    for(var i = 0; i < this.nodes.length; i++)
-    {
-        this.node_container
-            .select("#"+group + i)
-            .append("text")
-            .attr("x",0).attr("y",0)
-            .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;")
-            .text(pm.findJerseyByPid(this.nodes[i].pid));
-    }
+    if(isTransition === 1)
+        d3.select("#mouse_field")
+            .transition()
+            .delay(function () {
+                if(isTransition == 2) return 2*durationTime;
+                return that.nodes.length * durationTime;
+            })
+            .duration(500)
+            .remove();
+
     return this.node_container;
 }
 
-Sequence.prototype.draw_path = function (group,gray) {
+Sequence.prototype.draw_path = function (group, gray, isTransition) {
+    console.log("view_time",view_time);
+    var durationTime = 0;
+    if(isTransition == 1)
+        durationTime = time;
+    if(isTransition == 2)
+        durationTime =view_time*0.5;
     var that = this;
     this.path_container = this.field.append("g")
         .attr("id", "path_container");
@@ -231,6 +378,29 @@ Sequence.prototype.draw_path = function (group,gray) {
             return "link " + getEventName(d.eid);
         })
         .append("path")
+        .attr("stroke-width",0)
+        .attr("stroke","white")
+        .attr("d", function(d){
+            // source and target are duplicated for straight lines
+            var x_source = parseFloat(that.x_scale(that.nodes[d.source].x)),
+                y_source = parseFloat(that.y_scale(that.nodes[d.source].y)),
+                x_target = parseFloat(that.x_scale(that.nodes[d.target].x)),
+                y_target = parseFloat(that.y_scale(that.nodes[d.target].y));
+            if(isLongPass(d,that.nodes[d.source])){
+                return line(getArc(
+                    x_source,
+                    y_source,
+                    x_source,
+                    y_source,
+                    10
+                ));
+            }
+            else{
+                return line([
+                    {x:x_source, y:y_source}, {x:x_source, y:y_source},
+                    {x:x_source, y:y_source}, {x:x_source, y:y_source}]);
+            }
+        })
         .attr("id", function (d, i) {
             return group + i;
         })
@@ -302,7 +472,15 @@ Sequence.prototype.draw_path = function (group,gray) {
                     {x:x_source, y:y_source}, {x:x_source, y:y_source},
                     {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
             }
-        });
+        })
+        .attr("opacity", 0)
+        .transition()
+        .delay(function (d, i) {
+            if(isTransition==2) return durationTime*4;
+            return durationTime * (i + 1);
+        })
+        .duration(durationTime)
+        .attr("opacity", 1);
     return this.path_container;
 }
 
