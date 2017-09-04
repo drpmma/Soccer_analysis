@@ -5,6 +5,8 @@ Data = function (_data) {
     this.players = _data.players;
     this.computePlayersStats();
     this.sequences = _data.sequences;
+    console.log(_data);
+    StoreSequence(_data.sequences);
     _data.sequences.forEach(function(seq){
         seq.actions.forEach(function(action){
             if(action.eid == E_DEF_CLEARANCE) {
@@ -26,6 +28,15 @@ Data = function (_data) {
             }
         });
     });
+}
+
+var ConstAllSequences = [];
+function StoreSequence(AllSequences) {
+    ConstAllSequences = AllSequences;
+}
+
+function PassSequence() {
+    return ConstAllSequences;
 }
 
 Data.prototype.computePlayersStats = function(){

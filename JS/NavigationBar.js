@@ -46,6 +46,24 @@ sideSettingBar.prototype.EnCnSelect = function(k) {
     console.log("EnCnSelect"+k);
     this.EnCnSel = k;
 };
+
+sideSettingBar.prototype.AbstractMethodsSelect = function(k) {
+    console.log("AbstractSelect"+k);
+    this.abstractMethodSel = k;
+    ChangeClusterAlgorithmMode(k);
+};
+
+sideSettingBar.prototype.AbstractLayerSelect = function(k) {
+    console.log("AbstractLayerSelect"+k);
+    this.abstractLayerSel = k;
+    abstractDraw(10*k);
+};
+
+sideSettingBar.prototype.SingleOrAll = function() {
+    console.log("SingleOrAll");
+    ChangeAllFlag();
+};
+
 sideSettingBar.prototype.sequenceTimeSelect = function(k) {
     console.log("sequenceTimeSelect"+k);
     this.sequenceTimeSel = k;
@@ -147,6 +165,14 @@ sideSettingBar.prototype.CreateOptions = function() {
     for(i = 0; i < 20; i++) this.nodeTimeOptions[i] = i*100;
     this.nodeTimeSel = 2;
 
+    this.abstractLayers = new Array();
+    for(i = 0; i < 22; i++) this.abstractLayers[i] = i*10;
+    this.abstractLayerSel = 0;
+
+    this.abstractMethods = new Array();
+    this.abstractMethods = ["k-means","k-medoids"];
+    this.abstractMethodSel = 0;
+
     this.playerStyleOptions = new Array();
     this.playerStyleOptions[0] = "圆";
     this.playerStyleOptions[1] = "球衣";
@@ -207,6 +233,12 @@ sideSettingBar.prototype.CreateElements = function() {
     this.AddSelection("飞点时间",this.nodeTimeOptions,this.nodeTimeSel,"default",this.showSetting,function(k){that.nodeTimeSelect(k)});
     this.AddSelection("球员样式",this.playerStyleOptions,this.playerStyleSel,"default",this.showSetting,function(k){that.playerStyleSelect(k)});
     this.AddSelection("中英文选择",this.EnCnOptions,this.EnCnSel,"default",this.showSetting,function(k){that.EnCnSelect(k)});
+    this.AddSelection("抽象方法",this.abstractMethods,this.abstractMethodSel,"default",this.showSetting,function(k){that.AbstractMethodsSelect(k) });
+    this.AddSelection("抽象程度",this.abstractLayers,this.abstractLayerSel,"default",this.showSetting,function(k){that.AbstractLayerSelect(k)});
+    temp = this.AddButtonToolBar(this.showSetting);
+    this.AddButton("显示所有/单次进攻","default",this.AddButtonGroup(temp),function () {
+        that.SingleOrAll()
+    });
 
     this.sequenceSetting = this.Bar.append("div")
         .attr("class", "col-md-3")
