@@ -8,19 +8,20 @@
     <link rel="stylesheet" href="./CSS/docs.css" type="text/css" />
     <link rel="stylesheet" href="./CSS/helps.css" type="text/css" />
     <link rel="stylesheet" href="./CSS/cluster.css" type="text/css" />
-    <script type = "text/javascript" src = "d3.js"></script>
-    <script type = "text/javascript" src = "d3.layout.cloud.js"></script>
+    <link rel="stylesheet" href="./CSS/sideSettingBar.css" type="text/css" />
+    <script type = "text/javascript" src = "LIB/d3.js"></script>
+    <script type = "text/javascript" src = "LIB/d3.layout.cloud.js"></script>
     <link href="./CSS/bootstrap.css" rel="stylesheet">
     <script src="./LIB/jquery.min.js"></script>
     <script src="./LIB/bootstrap.min.js"></script>
-    <script type = "text/javascript" src = "./JS/NavigationBar.js"></script>
-    <script type = "text/javascript" src = "help.js"></script>
-    <script type = "text/javascript" src = "Data.js"></script>
-    <script type = "text/javascript" src = "Field.js"></script>
-    <script type = "text/javascript" src = "player.js"></script>
-    <script type = "text/javascript" src = "infos.js"></script>
-    <script type = "text/javascript" src = "dataconvert.js"></script>
-
+    <script type = "text/javascript" src = "JS/NavigationBar.js"></script>
+    <script type = "text/javascript" src = "JS/help.js"></script>
+    <script type = "text/javascript" src = "JS/Data.js"></script>
+    <script type = "text/javascript" src = "JS/Field.js"></script>
+    <script type = "text/javascript" src = "JS/player.js"></script>
+    <script type = "text/javascript" src = "JS/infos.js"></script>
+    <script type = "text/javascript" src = "JS/dataconvert.js"></script>
+    <script type = "text/javascript" src = "JS/model.js"></script>
 
     <link rel="stylesheet" href="./CSS/UnifrakturMaguntia.css">
     <link rel="stylesheet" href="./CSS/jqmath-0.4.0.css">
@@ -34,7 +35,34 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default" style="margin-bottom:0"></nav>
+    <!--导航栏-->
+    <nav class="navbar navbar-default" style="margin-bottom:0">
+        <div class="container-fluid">
+            <div class="row box">
+                <div class="col-md-3 navbar-header">
+                    <a class="navbar-brand" href="#">
+                        <img alt="brand" src="./img/soccer.ico"/>
+                    </a>
+                    <a class="navbar-brand" href="#">足球可视化系统</a>
+                </div>
+                <div class="col-md-5">
+                    <ul class="nav navbar-nav navbar-match">
+                        <li class="navigationTextTeam col-md-5">
+                            <a style="float:left" id="vir_nav_team0"></a>
+                            <a style="float:right" id="vir_nav_score0"></a>
+                        </li>
+                        <li class="disabled navigationTextVS col-md-2" id="vir_nav_vs"></li>
+                        <li class="navigationTextTeam col-md-5">
+                            <a style="float:left" id="vir_nav_score1"></a>
+                            <a style="float:right" id="vir_nav_team1"></a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="vir_navigationDate" class="col-md-3 navigationTextDate"></div>
+                <div class="col-md-1 navigationTextHelp" data-toggle="modal" data-target="#help_manual">帮助手册</div>
+            </div>
+        </div>
+    </nav>
     <nav class="navbar navbar-default navbar-fixed-top" style="margin-bottom:0">
         <div class="container-fluid">
             <div class="row box">
@@ -44,72 +72,67 @@
                     </a>
                     <a class="navbar-brand" href="#">足球可视化系统</a>
                 </div>
-                <div id="navigationMatch" class="col-md-6">
-                    <ul class="nav navbar-nav">
-                        <li class="navigationTextTeam col-md-5"><a>队伍1　　　　2</a></li>
-                        <li class="disabled navigationTextVS col-md-2"><a>VS</a></li>
-                        <li class="navigationTextTeam col-md-5"><a>3　　　　队伍2</a></li>
+                <div id="navigationMatch" class="col-md-5">
+                    <ul class="nav navbar-nav navbar-match">
+                        <li class="navigationTextTeam col-md-5">
+                            <a style="float:left" id="nav_team0"></a>
+                            <a style="float:right" id="nav_score0"></a>
+                        </li>
+                        <li class="disabled navigationTextVS col-md-2" id="nav_vs"></li>
+                        <li class="navigationTextTeam col-md-5">
+                            <a style="float:left" id="nav_score1"></a>
+                            <a style="float:right" id="nav_team1"></a>
+                        </li>
                     </ul>
                 </div>
-                <div id="navigationDate" class="col-md-2 navigationTextDate">比赛时间： 2017-10-10</div>
-                <div id="navigationHelp" class="col-md-1 navigationTextHelp">帮助手册</div>
+                <div id="navigationDate" class="col-md-3 navigationTextDate"></div>
+                <div id="navigationHelp" class="col-md-1 navigationTextHelp" data-toggle="modal" data-target="#help_manual">帮助手册</div>
             </div>
         </div>
     </nav>
 
+    <!--主体-->
     <div class="container-fluid mainwindow" style="margin:0;padding:0;">
         <div class="row box" style="margin:0;padding:0;height:100%;">
-            <div id="settingBar" class="navbar navbar-default navbar-setting col-md-3" status="show">
-                <div class="panel panel-default" style="margin: 10px 0 0 0;">
-                    <div class="panel-heading" id="showSetting">
+            <div id="settingBar" class="navbar navbar-default navbar-setting col-md-3">
+                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
+                    <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" href="#collapse_cluster">
-                                显示设置
-                            </a>
+                            <a data-toggle="collapse" href="#collapse_cluster">显示设置</a>
                         </h4>
                     </div>
                     <div id="collapse_cluster" class="panel-collapse collapse in">
-                        <div class="panel-body">abc
-                        </div>
+                        <div class="panel-body" id="showSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 10px 0 0 0;" id="clusterSetting">
+                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" href="#collapse_show">
-                                聚团设置
-                            </a>
+                            <a data-toggle="collapse" href="#collapse_show">聚团设置</a>
                         </h4>
                     </div>
                     <div id="collapse_show" class="panel-collapse collapse in">
-                        <div class="panel-body">cba
-                        </div>
+                        <div class="panel-body" id="clusterSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 10px 0 0 0;">
-                    <div class="panel-heading" id="sequenceSetting">
+                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
+                    <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_sequence">
-                                序列设置
-                            </a>
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_sequence">序列设置</a>
                         </h4>
                     </div>
                     <div id="collapse_sequence" class="panel-collapse collapse in">
-                        <div class="panel-body">abc
-                        </div>
+                        <div class="panel-body" id="sequenceSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 10px 0 0 0;">
-                    <div class="panel-heading" id="dataSetting">
+                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
+                    <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_data">
-                                数据设置
-                            </a>
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_data">数据设置</a>
                         </h4>
                     </div>
                     <div id="collapse_data" class="panel-collapse collapse in">
-                        <div class="panel-body">cba
-                        </div>
+                        <div class="panel-body" id="dataSetting"></div>
                     </div>
                 </div>
             </div>
@@ -117,10 +140,31 @@
             </div>
         </div>
     </div>
-    <!--<div id = "svg_div"></div>-->
+
+    <!--帮助手册-->
+    <div class="modal fade" id="help_manual" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        帮助手册
+                    </h4>
+                </div>
+                <div id="help_content" class="modal-body">
+                    在这里添加一些文本
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
     <script>
-        let navigation = new navigationBar()
-        let setting = new sideSettingBar()
+        let navigation = new navigationBar();
+        let sideSetting = new sideSettingBar();
 //        let helps = new Helps();
 //        let data;
 //        let infos;
@@ -138,6 +182,7 @@
 //        let data_select=new dataselect();
 //        width = document.getElementById("svg_div").getBoundingClientRect().width;
 //        height = document.getElementById("svg_div").getBoundingClientRect().height;
+        model();
     </script>
 
     <!--<script type="text/javascript" src="LIB/utils.js"></script>-->
@@ -171,6 +216,6 @@
     <!--<script type = "text/javascript" src = "ShotVis.js"></script>-->
     <!--<script type = "text/javascript" src = "CentreVis.js"></script>-->
     <!--<script type = "text/javascript" src = "dataconvert.js"></script>-->
-
+    <script type = "text/javascript" src = "JS/model.js"></script>
 </body>
-</html>    
+</html>

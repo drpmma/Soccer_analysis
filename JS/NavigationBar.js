@@ -1,13 +1,9 @@
 sideSettingBar = function() {
     this.soh = 1;
-    this.Bar = d3.select("body").insert("div", "#svg_div")
-        .attr("id", "settingBar")
-        .attr("class", "navbar navbar-default navbar-fixed-bottom collapse in")
-        .attr("style", "margin-bottom:0")
-        .append("div")
-        .attr("class", "container-fluid")
-        .append("div")
-        .attr("class", "row box");
+    this.showSetting = d3.select("#showSetting");
+    this.clusterSetting = d3.select("#clusterSetting");
+    this.sequenceSetting = d3.select("#sequenceSetting");
+    this.dataSetting = d3.select("#dataSetting");
 
     this.CreateOptions();
     this.CreateElements();
@@ -82,7 +78,7 @@ sideSettingBar.prototype.clusterizeBtn = function() {
     d3.select("#mainfield").selectAll("text").attr("opacity", 1);
     cm = new ClusterManager(mainfield, seq);
     cm.setDuration(this.clusterTimeOptions[this.clusterTimeSel]);
-    var type;
+    let type;
     switch(+this.clusterStyleSel)
     {
         case 0:type = CT_Node_Link;break;
@@ -98,7 +94,7 @@ sideSettingBar.prototype.clusterChangeBtn = function() {
     if(cm != undefined)
     {
         cm.setDuration(this.clusterTimeOptions[this.clusterTimeSel]);
-        var type;
+        let type;
         switch(+this.clusterStyleSel)
         {
             case 0:type = CT_Node_Link;break;
@@ -126,7 +122,7 @@ sideSettingBar.prototype.sequenceChangeBtn = function() {
     console.log("sequenceChangeBtn")
 };
 sideSettingBar.prototype.dataChangeBtn = function() {
-    var data_name = new Array();
+    let data_name = new Array();
     data_name[0] = "./data/dumpData_t178_m456391_agg0.json";
     data_name[1] = "./data/dumpData_t1_m483676_agg0.json";
     data_name[2] = "./data/dumpData_t120_m483683_agg0.json";
@@ -142,7 +138,7 @@ sideSettingBar.prototype.dataUpdateBtn = function() {
 };
 
 sideSettingBar.prototype.CreateOptions = function() {
-    var i;
+    let i;
     this.clusterTimeOptions = new Array();
     for(i = 0; i < 20; i++) this.clusterTimeOptions[i] = i*100;
     this.clusterTimeSel = 5;
@@ -209,27 +205,15 @@ sideSettingBar.prototype.CreateOptions = function() {
     this.dataListSel = 0;
 };
 sideSettingBar.prototype.CreateElements = function() {
-    var that = this;
-    this.clusterSetting = this.Bar.append("div")
-        .attr("class", "col-md-3")
-        .append("div")
-        .attr("id", "clusterSetting")
-        .attr("class", "bs-callout bs-callout-cluster");
-    this.AddTitle("聚团设置",this.clusterSetting);
+    let that = this;
     this.AddSelection("聚团时间",this.clusterTimeOptions,this.clusterTimeSel,"default",this.clusterSetting,function(k){that.clusterTimeSelect(k)});
     this.AddSelection("聚团样式",this.clusterStyleOptions,this.clusterStyleSel,"default",this.clusterSetting,function(k){that.clusterStyleSelect(k)});
     this.AddSelection("聚团布场",this.clusterLayoutOptions,this.clusterLayoutSel,"default",this.clusterSetting,function(k){that.clusterLayoutSelect(k)});
-    var temp = this.AddButtonToolBar(this.clusterSetting);
+    let temp = this.AddButtonToolBar(this.clusterSetting);
     this.AddButton("聚团","default",this.AddButtonGroup(temp),function(){that.clusterizeBtn()});
     this.AddButton("改变样式","default",this.AddButtonGroup(temp),function(){that.clusterChangeBtn()});
     this.AddButton("取消聚团","default",this.AddButtonGroup(temp),function(){that.declusterizeBtn()});
 
-    this.showSetting = this.Bar.append("div")
-        .attr("class", "col-md-3")
-        .append("div")
-        .attr("id", "showSetting")
-        .attr("class", "bs-callout bs-callout-show");
-    this.AddTitle("显示设置",this.showSetting);
     this.AddSelection("飞点时间",this.nodeTimeOptions,this.nodeTimeSel,"default",this.showSetting,function(k){that.nodeTimeSelect(k)});
     this.AddSelection("球员样式",this.playerStyleOptions,this.playerStyleSel,"default",this.showSetting,function(k){that.playerStyleSelect(k)});
     this.AddSelection("中英文选择",this.EnCnOptions,this.EnCnSel,"default",this.showSetting,function(k){that.EnCnSelect(k)});
@@ -240,23 +224,11 @@ sideSettingBar.prototype.CreateElements = function() {
         that.SingleOrAll()
     });
 
-    this.sequenceSetting = this.Bar.append("div")
-        .attr("class", "col-md-3")
-        .append("div")
-        .attr("id", "sequenceSetting")
-        .attr("class", "bs-callout bs-callout-sequence");
-    this.AddTitle("序列设置",this.sequenceSetting);
     this.AddSelection("变换时间",this.sequenceTimeOptions,this.sequenceTimeSel,"default",this.sequenceSetting,function(k){that.sequenceTimeSelect(k)});
     this.AddSelection("序列样式",this.sequenceStyleOptions,this.sequenceStyleSel,"default",this.sequenceSetting,function(k){that.sequenceStyleSelect(k)});
     temp = this.AddButtonToolBar(this.sequenceSetting);
     this.AddButton("变换序列样式","default",this.AddButtonGroup(temp),function(){that.sequenceChangeBtn()});
 
-    this.dataSetting = this.Bar.append("div")
-        .attr("class", "col-md-3")
-        .append("div")
-        .attr("id", "dataSetting")
-        .attr("class", "bs-callout bs-callout-data");
-    this.AddTitle("数据设置",this.dataSetting);
     this.AddSelection("数据选择",this.dataListOptions,this.dataListSel,"default",this.dataSetting,function(k){that.dataListSelect(k)});
     temp = this.AddButtonToolBar(this.dataSetting);
     this.AddButton("更换数据","default",this.AddButtonGroup(temp),function(){that.dataChangeBtn()});
@@ -267,9 +239,9 @@ sideSettingBar.prototype.AddTitle = function(t,g) {
     g.append("h4").text(t);
 };
 sideSettingBar.prototype.AddSelection = function(t,l,s,c,g,f) {
-    var sel = g.append("p").text(t+"　：　");
-    var but = sel.append("div")
-        .attr("class","btn-group dropup");
+    let sel = g.append("p").text(t+"　：　");
+    let but = sel.append("div")
+        .attr("class","btn-group");
     but.append("button")
         .attr("type","button")
         .attr("class","btn btn-"+c)
@@ -283,9 +255,9 @@ sideSettingBar.prototype.AddSelection = function(t,l,s,c,g,f) {
         .attr("aria-expanded",false)
         .append("span")
         .attr("class","caret");
-    var li = but.append("ul")
-        .attr("class","dropdown-menu");
-    for(var i = 0; i < l.length; i++) {
+    let li = but.append("ul")
+        .attr("class","dropdown-menu setting_list");
+    for(let i = 0; i < l.length; i++) {
         li.append("li")
             .append("a")
             .attr("href", "#")
@@ -322,27 +294,37 @@ sideSettingBar.prototype.AddButtonToolBar = function(g) {
 };
 
 navigationBar = function() {
-    
-};
-
-function launchNavigation() {
     $(function () {
         $('#navigationHead').click(function(){
             let stgbar = $('#settingBar');
             let mnwid = $('#svg_div');
-            if(stgbar.attr('status') === "show") {
+            if(sideSetting.soh === 1) {
                 stgbar.animate({left:'-25%'});
                 mnwid.animate({left:'0'});
-                stgbar.attr('status',"hide");
+                sideSetting.soh = 0;
             } else {
                 mnwid.animate({left: '25%'});
                 stgbar.animate({left:'0'});
-                stgbar.attr('status',"show");
+                sideSetting.soh = 1;
             }
         })
     });
-}
 
-function launchSettingBar() {
-
-}
+    $(function ()
+    { $("#identifier").modal({keyboard: true});
+    });
+};
+navigationBar.prototype.setTitle = function(team0, team1, score0, score1, year, month, day) {
+    $('#nav_team0')[0].innerHTML = team0;
+    $('#nav_score0')[0].innerHTML = score0;
+    $('#nav_vs')[0].innerHTML = "VS";
+    $('#nav_score1')[0].innerHTML = score1;
+    $('#nav_team1')[0].innerHTML = team1;
+    $('#navigationDate')[0].innerHTML = '比赛时间： '+year+'-'+month+'-'+day;
+    $('#vir_nav_team0')[0].innerHTML = team0;
+    $('#vir_nav_score0')[0].innerHTML = score0;
+    $('#vir_nav_vs')[0].innerHTML = "VS";
+    $('#vir_nav_score1')[0].innerHTML = score1;
+    $('#vir_nav_team1')[0].innerHTML = team1;
+    $('#vir_navigationDate')[0].innerHTML = '比赛时间： '+year+'-'+month+'-'+day;
+};
