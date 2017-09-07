@@ -5,12 +5,24 @@ html, body
     width: 100%;
 }
 
+body {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 #svg_div
 {
     position: absolute;
-    width: 100%;
-    height: 99.5%;
+    left: 25%;
+    height: 92%;
     background-color: whitesmoke;
+}
+
+.mainwindow {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 92%;
 }
 
 .visuShotsSlider line {

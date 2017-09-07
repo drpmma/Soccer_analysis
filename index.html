@@ -34,59 +34,143 @@
     </style>
 </head>
 <body>
-    <div id = "svg_div"></div>
+    <nav class="navbar navbar-default" style="margin-bottom:0"></nav>
+    <nav class="navbar navbar-default navbar-fixed-top" style="margin-bottom:0">
+        <div class="container-fluid">
+            <div class="row box">
+                <div id="navigationHead" class="col-md-3 navbar-header">
+                    <a class="navbar-brand" href="#">
+                        <img alt="brand" src="./img/soccer.ico"/>
+                    </a>
+                    <a class="navbar-brand" href="#">足球可视化系统</a>
+                </div>
+                <div id="navigationMatch" class="col-md-6">
+                    <ul class="nav navbar-nav">
+                        <li class="navigationTextTeam col-md-5"><a>队伍1　　　　2</a></li>
+                        <li class="disabled navigationTextVS col-md-2"><a>VS</a></li>
+                        <li class="navigationTextTeam col-md-5"><a>3　　　　队伍2</a></li>
+                    </ul>
+                </div>
+                <div id="navigationDate" class="col-md-2 navigationTextDate">比赛时间： 2017-10-10</div>
+                <div id="navigationHelp" class="col-md-1 navigationTextHelp">帮助手册</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mainwindow" style="margin:0;padding:0;">
+        <div class="row box" style="margin:0;padding:0;height:100%;">
+            <div id="settingBar" class="navbar navbar-default navbar-setting col-md-3" status="show">
+                <div class="panel panel-default" style="margin: 10px 0 0 0;">
+                    <div class="panel-heading" id="showSetting">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse_cluster">
+                                显示设置
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse_cluster" class="panel-collapse collapse in">
+                        <div class="panel-body">abc
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" style="margin: 10px 0 0 0;" id="clusterSetting">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse_show">
+                                聚团设置
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse_show" class="panel-collapse collapse in">
+                        <div class="panel-body">cba
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" style="margin: 10px 0 0 0;">
+                    <div class="panel-heading" id="sequenceSetting">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_sequence">
+                                序列设置
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse_sequence" class="panel-collapse collapse in">
+                        <div class="panel-body">abc
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" style="margin: 10px 0 0 0;">
+                    <div class="panel-heading" id="dataSetting">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_data">
+                                数据设置
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse_data" class="panel-collapse collapse in">
+                        <div class="panel-body">cba
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="svg_div" class="navbar navbar-default col-md-12" style="float:left">
+            </div>
+        </div>
+    </div>
+    <!--<div id = "svg_div"></div>-->
     <script>
-        var nb = new navigationBar();
-        var helps = new Helps();
-        var data;
-        var infos;
-        var pm;
-        var cm;
-        var setting;
-        var seq;
-        var mainfield;
-        var f3;
-        var time=0;
-        var view_time=0;
-        var view_transform=0;
-        var oldtype=-1;
-        var click=-1;
-        var data_select=new dataselect();
-        width = document.getElementById("svg_div").getBoundingClientRect().width;
-        height = document.getElementById("svg_div").getBoundingClientRect().height;
+        let navigation = new navigationBar()
+        let setting = new sideSettingBar()
+//        let helps = new Helps();
+//        let data;
+//        let infos;
+//        let pm;
+//        let cm;
+//        let setting;
+//        let seq;
+//        let mainfield;
+//        let f3;
+//        let time=0;
+//        let view_time=0;
+//        let view_transform=0;
+//        let oldtype=-1;
+//        let click=-1;
+//        let data_select=new dataselect();
+//        width = document.getElementById("svg_div").getBoundingClientRect().width;
+//        height = document.getElementById("svg_div").getBoundingClientRect().height;
     </script>
 
-    <script type="text/javascript" src="LIB/utils.js"></script>
-    <script src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
-    <script src="./LIB/jqmath-etc-0.4.0.min.js"></script>
-    <script src="./LIB/kmeans.min.js"></script>
-    <!--<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>-->
-    <script src="LIB/recurrent.js"></script>
-    <script src="LIB/kmedoids.js"></script>
-    <script src="LIB/paper-full.min.js"></script>
-    <script language="javascript" type="text/javascript" src="LIB/p5.min.js"></script>
-    <script>
-        (function(i,s,o,g,r,a,m){
-            i['GoogleAnalyticsObject']=r;
-            i[r]=i[r]||function(){
-                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();
-            a=s.createElement(o), m=s.getElementsByTagName(o)[0];
-            a.async=1;a.src=g;
-            m.parentNode.insertBefore(a,m)
-        })(window,document,'script','./LIB/analytics.js','ga');
+    <!--<script type="text/javascript" src="LIB/utils.js"></script>-->
+    <!--<script src="http://code.jquery.com/jquery-1.4.3.min.js"></script>-->
+    <!--<script src="./LIB/jqmath-etc-0.4.0.min.js"></script>-->
+    <!--<script src="./LIB/kmeans.min.js"></script>-->
+    <!--&lt;!&ndash;<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>&ndash;&gt;-->
+    <!--<script src="LIB/recurrent.js"></script>-->
+    <!--<script src="LIB/kmedoids.js"></script>-->
+    <!--<script src="LIB/paper-full.min.js"></script>-->
+    <!--<script language="javascript" type="text/javascript" src="LIB/p5.min.js"></script>-->
+    <!--<script>-->
+        <!--(function(i,s,o,g,r,a,m){-->
+            <!--i['GoogleAnalyticsObject']=r;-->
+            <!--i[r]=i[r]||function(){-->
+                        <!--(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();-->
+            <!--a=s.createElement(o), m=s.getElementsByTagName(o)[0];-->
+            <!--a.async=1;a.src=g;-->
+            <!--m.parentNode.insertBefore(a,m)-->
+        <!--})(window,document,'script','./LIB/analytics.js','ga');-->
 
-        ga('create', 'UA-61361005-1', 'auto');
-        ga('send', 'pageview');
+        <!--ga('create', 'UA-61361005-1', 'auto');-->
+        <!--ga('send', 'pageview');-->
 
-    </script>
-    <script src = "layerController.js"></script>
+    <!--</script>-->
+    <!--<script src = "layerController.js"></script>-->
 
-    <script type = "text/javascript" src = "Sequence.js"></script>
-    <script type = "text/javascript" src = "cluster.js"></script>
-    <script type = "text/javascript" src = "timeline.js"></script>
-    <script type = "text/javascript" src = "ShotVis.js"></script>
-    <script type = "text/javascript" src = "CentreVis.js"></script>
-    <script type = "text/javascript" src = "dataconvert.js"></script>
+    <!--<script type = "text/javascript" src = "Sequence.js"></script>-->
+    <!--<script type = "text/javascript" src = "cluster.js"></script>-->
+    <!--<script type = "text/javascript" src = "timeline.js"></script>-->
+    <!--<script type = "text/javascript" src = "ShotVis.js"></script>-->
+    <!--<script type = "text/javascript" src = "CentreVis.js"></script>-->
+    <!--<script type = "text/javascript" src = "dataconvert.js"></script>-->
 
 </body>
 </html>    

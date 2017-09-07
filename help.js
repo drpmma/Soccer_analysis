@@ -6,15 +6,15 @@ Helps = function() {
     this.universalHelp();
 };
 Helps.prototype.clusterSettingHelp = function() {
-    var params = {
+    let params = {
         div:d3.select("#clusterSetting"),
         top:20,
         bottom:undefined,
         left:undefined,
-        right:20,
+        right:30,
         id:"clusterSettingHelp",
         title:"聚团帮助",
-        place:"top",
+        place:"bottom",
         content:function(){
             return  "<div style='width:260px;'>" +
                     "<ul>" +
@@ -28,7 +28,7 @@ Helps.prototype.clusterSettingHelp = function() {
     new Help(params);
 };
 Helps.prototype.showSettingHelp = function(){
-    var params = {
+    let params = {
         div:d3.select("#showSetting"),
         top:20,
         bottom:undefined,
@@ -50,7 +50,7 @@ Helps.prototype.showSettingHelp = function(){
     new Help(params);
 };
 Helps.prototype.sequenceSettingHelp = function(){
-    var params = {
+    let params = {
         div:d3.select("#sequenceSetting"),
         top:20,
         bottom:undefined,
@@ -71,7 +71,7 @@ Helps.prototype.sequenceSettingHelp = function(){
     new Help(params);
 };
 Helps.prototype.dataSettingHelp = function(){
-    var params = {
+    let params = {
         div:d3.select("#dataSetting"),
         top:20,
         bottom:undefined,
@@ -92,7 +92,7 @@ Helps.prototype.dataSettingHelp = function(){
     new Help(params);
 };
 Helps.prototype.universalHelp = function(){
-    var params = {
+    let params = {
         div:d3.select("#svg_div"),
         top:5,
         bottom:undefined,
@@ -134,7 +134,7 @@ Helps.prototype.universalHelp = function(){
 
 
 Help = function(params) {
-    var div = params.div,
+    let div = params.div,
         top = params.top,
         bottom = params.bottom,
         left = params.left,
@@ -144,7 +144,7 @@ Help = function(params) {
         place = params.place,
         content = params.content;
     div.attr("position","relative");
-    var d = div.append("div")
+    let d = div.append("div")
         .style("position","absolute")
         .style("z-index","999")
         .style("top",top+"px")
@@ -168,14 +168,14 @@ Help = function(params) {
                 animation: true
             })
         .on("mouseenter", function () {
-                var _this = this;
+                let _this = this;
                 $(this).popover("show");
                 $(this).siblings(".popover").on("mouseleave", function () {
                     $(_this).popover('hide');
                 });
             })
         .on("mouseleave", function () {
-                var _this = this;
+                let _this = this;
                 setTimeout(function () {
                     if (!$(".popover:hover").length) {
                         $(_this).popover("hide")

@@ -21,7 +21,7 @@
     color: #444;
 }
 
-.navigationTextSetting {
+.navigationTextHelp {
     display: table-cell;
     cursor: pointer;
     height: 50px;
@@ -31,3 +31,9 @@
     font-size: 15px;
     color: #444;
 }
+
+.navbar-setting {
+    overflow: auto;
+    height: 100%;
+}
+
