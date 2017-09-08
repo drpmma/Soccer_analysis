@@ -27,7 +27,7 @@ html, body
     fill:white;
 }
 
-.brush .extent {
+.selection{
     stroke: orange;
     stroke-width:2;
     fill-opacity: .08;
@@ -47,7 +47,7 @@ html, body
 }
 
 .modes_text, .filters_text, .stats_text{
-    font-size: 9px;
+    /*font-size: 9px;*/
     font-family:'Trebuchet MS',Arial, Helvetica;
     fill:white;
     stroke-width:0;
@@ -57,98 +57,16 @@ html, body
     fill:red;
 }
 
-/*.titlerect{*/
-    /*stroke-width:1px;*/
-    /*stroke:rgb(0,0,8);*/
-/*}*/
-/*.timeline{*/
-    /*stroke: rgb(0,0,8);*/
-    /*stroke-width:2px;*/
-/*}*/
-/*.disline{*/
-    /*stroke: rgb(8,0,0);*/
-    /*stroke-width:2px;*/
-/*}*/
-
-/*#time_line*/
-/*{*/
-    /*position: absolute;*/
-    /*left: 1%;*/
-    /*top: 1%;*/
-    /*width: 98%;*/
-    /*height: 24%;*/
-    /*background-color: whitesmoke;*/
-/*}*/
-
-/*#game_title {*/
-    /*position: absolute;*/
-    /*left: 1%;*/
-    /*top: 25.5%;*/
-    /*width: 30%;*/
-    /*height: 16%;*/
-    /*background-color: whitesmoke;*/
-/*}*/
-
-/*#field*/
-/*{*/
-    /*position: absolute;*/
-    /*left: 31.5%;*/
-    /*top: 25.5%;*/
-    /*width: 58%;*/
-    /*height: 73.5%;*/
-    /*background-color: whitesmoke;*/
-/*}*/
-
-/*#setting*/
-/*{*/
-    /*position: absolute;*/
-    /*left: 90%;*/
-    /*top: 25.5%;*/
-    /*width: 9%;*/
-    /*height: 73.5%;*/
-    /*background-color: whitesmoke;*/
-/*}*/
-
-/*#player_value*/
-/*{*/
-    /*position: absolute;*/
-    /*left:16.5%;*/
-    /*bottom: 1%;*/
-    /*width: 14.5%;*/
-    /*height: 57%;*/
-    /*background-color: whitesmoke;*/
-/*}*/
-
-/*#player_info*/
-/*{*/
-    /*position: absolute;*/
-    /*left:1%;*/
-    /*bottom: 1%;*/
-    /*width: 15%;*/
-    /*height: 16.5%;*/
-    /*background-color: whitesmoke;*/
-/*}*/
-
-/*#player_pos*/
-/*{*/
-    /*position:absolute;*/
-    /*left: 1%;*/
-    /*bottom: 18%;*/
-    /*width: 15%;*/
-    /*height: 40%;*/
-    /*background-color: whitesmoke;*/
-/*}*/
-
 .fieldRect
 {
-    stroke-width: 3;
+    stroke-width: 1;
     fill: white;
     stroke: gray;
 }
 
 .fieldLines
 {
-    stroke-width: 3;
+    stroke-width: 1;
     fill: white;
     stroke: gray;
 }

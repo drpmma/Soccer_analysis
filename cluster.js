@@ -3,9 +3,15 @@ ClusterManager = function(field, sequence) {
     this.sequence = sequence;
     this.changeDuration = 400;
     this.chosen = -1;
+    this.layoutStyle = 0;
 
     this.clusterGroup = this.field.fieldGroup.insert("g","#path_container")
         .attr("id", "clusterGroup")
+        .attr("transform", "translate(0,0)")
+        .attr("width", this.field.fieldGroup.attr("width"))
+        .attr("height", this.field.fieldGroup.attr("height"));
+    this.clusterLimit = this.clusterGroup.append("g")
+        .attr("id","clusterLayoutLimit")
         .attr("transform", "translate(0,0)")
         .attr("width", this.field.fieldGroup.attr("width"))
         .attr("height", this.field.fieldGroup.attr("height"));
@@ -19,19 +25,57 @@ ClusterManager = function(field, sequence) {
 
     this.clusterNum = 0;
     this.clusters = new Array();
+    this.clustersOriginGeometry = new Array();
+    this.clustersGeometry = new Array();
 };
+
+var centreParams = 0;
 
 ClusterManager.prototype.clusterize = function(style) {
     var i = 0;
     while(i < this.sequence.nodes.length)
     {
-        if(i != this.sequence.nodes.length -1) {
+        var link = cm.sequence.links[i];
+        var nodes = cm.sequence.nodes;
+        var passCat;
+
+        if(link == undefined)
+            return;
+        if(link.eid == E_PASS && (passCat = getPassCategory(link, nodes[link.source])) != SUB_CHAIN_TYPE_PASS_STANDARD){
+            if(passCat == SUB_CHAIN_TYPE_PASS_CENTRE || passCat == SUB_CHAIN_TYPE_PASS_CORNER){
+                console.log("1");
+                centreParams = {
+                    type: passCat,
+                    entry: link.source,
+                    exit: link.target,
+                    links: [link],
+                    nodes: [link.source,link.target],
+                    time: link.time
+                };
+                console.log("centreParams:", centreParams);
+                this.addCluster(centreParams.entry, centreParams.exit, CT_Centre);
+                i=i+2;
+            }
+            else
+            {
+                console.log("2");
+                this.addCluster(i, i, CT_Node_Link);
+                i = i+1;
+            }
+        }
+        else
+            if(i != this.sequence.nodes.length -1) {
             switch (this.sequence.links[i].eid) {
                 case E_PASS: case E_RUN:
                     var j = i;
                     while (j < this.sequence.links.length) {
-                        if( ((this.sequence.links[j].eid == E_PASS)&&(!isLongPass(this.sequence.links[j],this.sequence.nodes[j])))||
-                            (this.sequence.links[j].eid == E_RUN))
+                        var that = this.sequence;
+                        var isPass = function(k)
+                        {
+                            return (that.links[k]!=undefined)&&(that.links[k].eid == E_PASS)&&(!isLongPass(that.links[k],that.nodes[k]));
+                        };
+                        if( (isPass(j))||
+                            (this.sequence.links[j].eid == E_RUN&&isPass(j+1)))
                             j++;
                         else break;
                     }
@@ -57,12 +101,14 @@ ClusterManager.prototype.addCluster = function(start, end, type) {
     this.clusterNum++;
     this.clusters[this.clusterNum-1] = new Cluster(start, end, type, this.clusterNum-1,
                                                  this.sequence, this.originData, this.changeDuration);
+    this.clustersOriginGeometry[this.clusterNum-1] = this.clusters[this.clusterNum-1].getGeometry();
+    console.log(this.clustersOriginGeometry[this.clusterNum-1]);
 };
 
 ClusterManager.prototype.setDuration = function(duration) {
     this.changeDuration = duration;
     for(var i = 0; i < this.clusterNum; i++) this.clusters[i].setDuration(duration);
-}
+};
 
 ClusterManager.prototype.clearAll = function() {
     for(var i = 0; i < this.clusterNum; i++) this.clusters[i].Clear();
@@ -96,7 +142,152 @@ ClusterManager.prototype.chooseCluster = function(num) {
     this.clusters[num].chosen();
 };
 
+ClusterManager.prototype.relayout = function(style) {
+    this.layoutStyle = +style;
+                                                    // 0：推进布场（前中后）
+                                                    // 1：切入机会（左中右）
+                                                    // 2：胜利号角（角度扩散）
+    for(var i = 0; i < this.clusterNum; i++) this.clustersGeometry[i] = this.clusters[i].getGeometry();
+    switch(this.layoutStyle)
+    {
+        case 0: this.relayout_tj();break;
+        case 1: this.relayout_qr();break;
+        case 2: this.relayout_hj();break;
+    }
+};
+ClusterManager.prototype.relayout_tj = function() {
+    var limit = new Array(2);
+    limit[0] = 30; limit[1] = 70;
+    this.clusterLimit.selectAll("path").remove();
+    for(var i=0;i<limit.length;i++)
+    {
+        this.clusterLimit.append("path")
+            .attr("d","M"+this.field.width*limit[i]/100+" "+0+
+                      "L"+this.field.width*limit[i]/100+" "+this.field.height)
+            .attr("class","clusterLimit");
+    }
+
+    var list = new Array((+limit.length+1));
+    var sub_list = new Array((+limit.length+1));
+    for(i = 0; i < list.length; i++)
+    {
+        list[i] = new Array();
+        sub_list[i] = new Array();
+    }
+    for(i = 0; i < this.clusterNum; i++)
+    {
+        for(var j = 0; j < limit.length; j++)
+            if(this.clustersOriginGeometry[i].x < limit[j]*this.field.width/100) break;
+        list[j].push({id:i, pos:this.clustersOriginGeometry[i].y, occupy:this.clustersGeometry[i].height});
+        sub_list[j].push({id:i, pos:this.clustersOriginGeometry[i].x, occupy:this.clustersGeometry[i].width});
+    }
+
+    for(i = 0; i < list.length; i++) this.relayout_sort(0, list[i], this.field.height);
+    for(i = 0; i < list.length; i++)
+    {
+        var start, end;
+        if(i == 0) start = 0;
+        else start = limit[i-1]*this.field.width/100;
+        if(i == list.length-1) end = this.field.width;
+        else end = limit[i]*this.field.width/100;
+
+        this.relayout_sort(start, sub_list[i], end);
+    }
+    for(i = 0; i < list.length; i++)
+    {
+        for(j = 0; j < list[i].length; j++)
+        {
+            this.clustersGeometry[list[i][j].id].x = sub_list[i][j].pos;
+            this.clustersGeometry[list[i][j].id].y = list[i][j].pos;
+        }
+    }
+
+    this.relayout_layout();
+};
+ClusterManager.prototype.relayout_qr = function() {
+    var limit = new Array(2);
+    limit[0] = 33; limit[1] = 66;
+    this.clusterLimit.selectAll("path").remove();
+    for(var i=0;i<limit.length;i++)
+    {
+        this.clusterLimit.append("path")
+            .attr("d","M"+0+" "+this.field.height*limit[i]/100+
+                "L"+this.field.width+" "+this.field.height*limit[i]/100)
+            .attr("class","clusterLimit");
+    }
+
+    var list = new Array();
+    for(i = 0; i < this.clusterNum; i++)
+        list.push({id:i, pos:this.clustersOriginGeometry[i].x, occupy:this.clustersGeometry[i].width});
+
+    this.relayout_sort(0, list, this.field.width);
+    for(i = 0; i < list.length; i++)
+    {
+        var temp_y;
+        for(var j = 0; j < limit.length; j++)
+            if(limit[j]*this.field.height/100 > this.clustersOriginGeometry[i].y) break;
+        if(j == 0) temp_y = limit[0]*this.field.height/200;
+        else if(j == limit.length) temp_y = (limit[j-1]+100)*this.field.height/200;
+        else temp_y = (limit[j-1]+limit[j])*this.field.height/200;
+
+        this.clustersGeometry[list[i].id].x = list[i].pos;
+        this.clustersGeometry[list[i].id].y = temp_y;
+    }
+
+    this.relayout_layout();
+};
+ClusterManager.prototype.relayout_hj = function() {
+    var angle = Math.atan(this.field.height/this.field.width/4);
+    this.clusterLimit.selectAll("path").remove();
+
+    var list = new Array();
+    for(var i = 0; i < this.clusterNum; i++)
+        list.push({id:i, pos:this.clustersOriginGeometry[i].x, occupy:this.clustersGeometry[i].width});
+
+    this.relayout_sort(0, list, this.field.width);
+    for(i = 0; i < list.length; i++)
+    {
+        var temp_y;
+        if(i == 0) temp_y = this.field.height/2;
+        else
+        {
+            temp_y = (list[i].pos - list[0].pos) * Math.tan(angle);
+            if(i%2 == 0) temp_y = this.field.height/2 + temp_y;
+            else temp_y = this.field.height/2 - temp_y;
+        }
+
+        this.clustersGeometry[list[i].id].x = list[i].pos;
+        this.clustersGeometry[list[i].id].y = temp_y;
+    }
+    for(i=0;i<2;i++)
+    {
+        this.clusterLimit.append("path")
+            .attr("d","M"+list[0].pos+" "+this.field.height/2+
+                "L"+this.field.width+" "+(this.field.height/2-(i*2-1)*(this.field.width-list[0].pos)*Math.tan(angle)))
+            .attr("class","clusterLimit");
+    }
+
+    this.relayout_layout();
+};
+ClusterManager.prototype.relayout_sort = function(start, list, end) {
+    var occupy_all = 0;
+    for(var i = 0; i < list.length; i++) occupy_all = occupy_all + (+list[i].occupy);
+    var occupied_all = 0, occupied;
+    for(i = 0; i < list.length; i++)
+    {
+        occupied = list[i].occupy / occupy_all * (end - start);
+        list[i].pos = start + occupied_all + occupied/2;
+        occupied_all = occupied_all + occupied;
+    }
+};
+ClusterManager.prototype.relayout_layout = function() {
+    for(var i = 0; i < this.clusterNum; i++)
+        this.clusters[i].resetPos(this.clustersGeometry[i].x,this.clustersGeometry[i].y,this.changeDuration,i*this.changeDuration);
+};
+
 Cluster = function(start, end, type, num) {
+    console.log(start,end);
+    var that = this;
     this.cg = cm.clusterGroup;
     this.start = start;
     this.end = end;
@@ -110,6 +301,11 @@ Cluster = function(start, end, type, num) {
 
     this.x_scale = d3.scaleLinear().domain([0,100]).range([0,this.cg.attr("width")]).clamp(true);
     this.y_scale = d3.scaleLinear().domain([0,100]).range([0,this.cg.attr("height")]).clamp(true);
+    this.r_scale = function(r) {
+        var wid = that.x_scale(r), hei = that.y_scale(r);
+        if(wid<hei) return wid;
+        else return hei;
+    };
 
     //calculate data
     this.playerNum = 0;
@@ -218,14 +414,14 @@ Cluster = function(start, end, type, num) {
             y = (+y)+(+dy);
             resetNodePos(i, x, y, 0);
         }
-        if(start>=1) repaintPath(start-1, 0, 1);
-        if(that.type == CT_Shoot) for(i = start; i < end; i++) repaintPath(i, 0, 2);
+        if(start>=1) repaintPath(start-1, 1, 0);
+        if(that.type == CT_Shoot) for(i = start; i < end; i++) repaintPath(i, 2, 0);
+        else if(that.type == CT_Centre) for(i = start; i < end; i++) repaintPath(i, 3, 0);
         else for(i = start; i < end; i++) repaintPath(i, 0, 0);
-        if(end != seq.nodes.length-1) repaintPath(end, 0, 1);
+        if(end != seq.nodes.length-1) repaintPath(end, 1, 0);
     }
 
     //rect
-    var that = this;
     this.cg.append("g")
         .attr("id", "cluster" + this.num)
         .attr("transform", "translate("+currentx+","+currenty+")").attr("x",currentx).attr("y",currenty)
@@ -235,27 +431,41 @@ Cluster = function(start, end, type, num) {
         .on("mouseover", function(){d3.select(this).style("cursor", "move");
                                     if(that.isChosen == 0)
                                         d3.select(this).select("#clusterrect"+that.num)
-                                            .attr("style","stroke:blue; fill:whitesmoke; stroke-width:1.5;")})
+                                            .attr("style","stroke:steelblue; fill:white; stroke-width:3;")})
         .on("mouseout", function(){if(that.isChosen == 0)
                                         d3.select(this).select("#clusterrect"+that.num)
-                                            .attr("style","stroke:black; fill:whitesmoke; stroke-width:1;")})
+                                            .attr("style","stroke:black; fill:white; stroke-width:1;")})
         .on("click", function(){cm.chooseCluster(that.num)})
         .call(drag)
         .append("rect")
         .attr("id","clusterrect" + this.num)
         .attr("x",0).attr("y",0).attr("width",0).attr("height",0)
-        .attr("style","stroke:black; fill:whitesmoke; stroke-width:1;")
+        .attr("style","stroke:black; fill:white; stroke-width:1;")
         .attr("opacity", 0);
-    this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num);
+    this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num).attr("opacity",0);
 
-    switch (type)
-    {
-        case CT_Node_Link: this.nodeLink(); break;
-        case CT_Node_Link_All: this.nodeLinkAll(); break;
-        case CT_Hive_Plot: this.hivePlot(); break;
-        case CT_Tag_Cloud: this.tagCloud(); break;
-        case CT_Matrix: this.matrixVis(); break;
-        case CT_Shoot: this.shoot(start, end); break;
+    switch (type) {
+        case CT_Node_Link:
+            this.nodeLink();
+            break;
+        case CT_Node_Link_All:
+            this.nodeLinkAll();
+            break;
+        case CT_Hive_Plot:
+            this.hivePlot();
+            break;
+        case CT_Tag_Cloud:
+            this.tagCloud();
+            break;
+        case CT_Matrix:
+            this.matrixVis();
+            break;
+        case CT_Shoot:
+            this.shoot();
+            break;
+        case CT_Centre:
+            this.centre(centreParams);
+            break;
     }
 };
 
@@ -271,71 +481,141 @@ Cluster.prototype.Clear = function() {
         .transition().duration(this.changeDuration)
         .attr("x",0).attr("y",0).attr("width",0).attr("height",0)
         .attr("opacity", 0);
-    this.cg.select("#subClusterGroup"+this.num).remove();
-    this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num);
+    this.cg.select("#subClusterGroup"+this.num)
+        .remove();
+
+    this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num).attr("opacity","0");
     for(var i = this.start; i <= this.end; i++)
     {
-        resetNodePos(i, +this.x_scale(seq.nodes[i].x), +this.y_scale(seq.nodes[i].y), this.changeDuration);
-        resetNodeSize(i, seq.r, this.changeDuration);
-        showNodeText(i, this.changeDuration);
+        resetNodePos(i, +this.x_scale(seq.nodes[i].x), +this.y_scale(seq.nodes[i].y), this.changeDuration, this.changeDuration);
+        resetNodeSize(i, seq.r, this.changeDuration, this.changeDuration);
+        showNodeText(i, this.changeDuration, this.changeDuration);
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration, -1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, -1)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end, this.changeDuration, -1);
+    if(this.start >= 1) repaintPath(this.start-1, -1,this.changeDuration, this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, -1, this.changeDuration, this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end, -1, this.changeDuration, this.changeDuration*2);
     this.cleared = 1;
 };
 
 Cluster.prototype.nodeLink = function() {
-    var times = 0.3;
-    var currentwid = this.x_scale(this.maxx - this.minx)*times;
-    var currenthei = this.y_scale(this.maxy - this.miny)*times;
-    if(currentwid < 6) currentwid = 26;else currentwid += 20;
-    if(currenthei < 6) currenthei = 26;else currenthei += 20;
+//---------------average position
+    // var times_wid = this.playerNum * 0.1, times_hei = this.playerNum * 0.1;
+    // var currentwid = this.x_scale(this.maxx - this.minx)*times_wid;
+    // var currenthei = this.y_scale(this.maxy - this.miny)*times_hei;
+    // if(currentwid < 6) currentwid = 26;else currentwid += 20;
+    // if(currenthei < 6) currenthei = 26;else currenthei += 20;
+    // var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
+    // var currenty=(+this.cg.select("#cluster"+this.num).attr("y"))+this.cg.select("#cluster"+this.num).attr("height")/2-currenthei/2;
+    //
+    // for(var i = this.start; i <= this.end; i++)
+    // {
+    //     for(var j = 0; j < this.playerNum; j++) if(this.player[j].pid == this.sequence.nodes[i].pid) break;
+    //     resetNodePos(i, this.player[j].avgdx*times_wid+currentx+currentwid/2,
+    //         this.player[j].avgdy*times_hei+currenty+currenthei/2, this.changeDuration, this.changeDuration);
+    //     if(i == this.start || i == this.end)
+    //     {
+    //         resetNodeSize(i, seq.r*0.9, this.changeDuration, this.changeDuration);
+    //         showNodeText(i, this.changeDuration, this.changeDuration);
+    //     }
+    //     else
+    //     {
+    //         if( this.sequence.nodes[i].pid == this.sequence.nodes[this.start].pid ||
+    //             this.sequence.nodes[i].pid == this.sequence.nodes[this.end].pid)
+    //             resetNodeSize(i, 0, this.changeDuration, this.changeDuration);
+    //         else resetNodeSize(i, seq.r*0.3, this.changeDuration, this.changeDuration);
+    //         hideNodeText(i, this.changeDuration, this.changeDuration);
+    //     }
+    // }
+    // if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration*2);
+    // for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration*2)
+    // if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration*2);
+    //
+    // this.cg.select("#cluster"+this.num)
+    //     .transition().delay(this.changeDuration*2)
+    //     .duration(this.changeDuration)
+    //     .attr("transform", "translate("+currentx+","+currenty+")").attr("x", currentx).attr("y",currenty)
+    //     .attr("width",currentwid)
+    //     .attr("height",currenthei);
+    // this.cg.select("#clusterrect"+this.num)
+    //     .transition().delay(this.changeDuration*2)
+    //     .duration(this.changeDuration)
+    //     .attr("width",currentwid)
+    //     .attr("height",currenthei)
+    //     .attr("opacity", 1);
+
+//------------node link all
+    var pos = new Array();
+    for(var i = 0; i < this.playerNum; i++)
+    {
+        pos.push(pm.findPositionByPid(this.player[i].pid));
+        var temp;temp = pos[i].x;pos[i].x = 100-pos[i].y;pos[i].y = temp;
+    }
+    var minx = pos[0].x, maxx = pos[0].x, miny = pos[0].y, maxy = pos[0].y;
+    for(i = 1; i < this.playerNum; i++)
+    {
+        if(pos[i].x < minx) minx = pos[i].x;
+        if(pos[i].x > maxx) maxx = pos[i].x;
+        if(pos[i].y < miny) miny = pos[i].y;
+        if(pos[i].y > maxy) maxy = pos[i].y;
+    }
+    for(i = 0; i < this.playerNum; i++)
+    {
+        pos[i].x = pos[i].x - minx;
+        pos[i].y = pos[i].y - miny;
+    }
+    var times = 1;
+    var times_wid = 0.15*times, times_hei = 0.17*times, pad_w, pad_h;
+    var currentwid = this.x_scale(maxx - minx)*times_wid;
+    var currenthei = this.y_scale(maxy - miny)*times_hei;
+    if(currentwid < 6) pad_w = 13;else pad_w = 10;
+    if(currenthei < 6) pad_h = 13;else pad_h = 10;
+    currentwid += 2*pad_w;
+    currenthei += 2*pad_h;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
     var currenty=(+this.cg.select("#cluster"+this.num).attr("y"))+this.cg.select("#cluster"+this.num).attr("height")/2-currenthei/2;
 
-    this.cg.select("#cluster"+this.num)
-        .transition()
-        .duration(this.changeDuration)
-        .attr("transform", "translate("+currentx+","+currenty+")").attr("x", currentx).attr("y",currenty)
-        .attr("width",currentwid)
-        .attr("height",currenthei);
-    this.cg.select("#clusterrect"+this.num)
-        .transition()
-        .duration(this.changeDuration)
-        .attr("width",currentwid)
-        .attr("height",currenthei)
-        .attr("opacity", 1);
-
-    for(var i = this.start; i <= this.end; i++)
+    for(i = this.start; i <= this.end; i++)
     {
         for(var j = 0; j < this.playerNum; j++) if(this.player[j].pid == this.sequence.nodes[i].pid) break;
-        resetNodePos(i, this.player[j].avgdx*times+currentx+currentwid/2,
-            this.player[j].avgdy*times+currenty+currenthei/2, this.changeDuration);
+        resetNodePos(i, this.x_scale(pos[j].x)*times_wid+currentx+pad_w,
+            this.y_scale(pos[j].y)*times_hei+currenty+pad_h, this.changeDuration, this.changeDuration);
         if(i == this.start || i == this.end)
         {
-            resetNodeSize(i, seq.r*times*3, this.changeDuration);
-            showNodeText(i, this.changeDuration);
+            resetNodeSize(i, seq.r*0.9, this.changeDuration, this.changeDuration);
+            showNodeText(i, this.changeDuration, this.changeDuration);
         }
         else
         {
             if( this.sequence.nodes[i].pid == this.sequence.nodes[this.start].pid ||
                 this.sequence.nodes[i].pid == this.sequence.nodes[this.end].pid)
-                resetNodeSize(i, 0, this.changeDuration);
-            else resetNodeSize(i, seq.r*times, this.changeDuration);
-            hideNodeText(i, this.changeDuration);
+                resetNodeSize(i, 0, this.changeDuration, this.changeDuration);
+            else resetNodeSize(i, seq.r*0.3, this.changeDuration, this.changeDuration);
+            hideNodeText(i, this.changeDuration, this.changeDuration);
         }
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration*2);
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2)
+        .duration(this.changeDuration)
+        .attr("transform", "translate("+currentx+","+currenty+")").attr("x", currentx).attr("y",currenty)
+        .attr("width",currentwid)
+        .attr("height",currenthei);
+    this.cg.select("#clusterrect"+this.num)
+        .transition().delay(this.changeDuration*2)
+        .duration(this.changeDuration)
+        .attr("width",currentwid)
+        .attr("height",currenthei)
+        .attr("opacity", 1);
 
     this.type = CT_Node_Link;
     this.cleared = 0;
 };
 
 Cluster.prototype.nodeLinkAll = function() {
-    var wid = 200, hei = 154, pad = 2;
+    var wid = +this.x_scale(17), hei = +this.y_scale(20), pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -346,7 +626,8 @@ Cluster.prototype.nodeLinkAll = function() {
         .duration(this.changeDuration)
         .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
         .attr("width",currentwid)
-        .attr("height",currenthei);
+        .attr("height",currenthei)
+        .attr("opacity",0);
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(this.changeDuration)
@@ -364,21 +645,27 @@ Cluster.prototype.nodeLinkAll = function() {
 
     for(var i = this.start; i <= this.end; i++)
     {
-        var x, y;
-        for(var j = 0; j < tempp.playerNum; j++)
-            if(this.sequence.nodes[i].pid == tempp.pos[j].pid) break;
-        if(j != tempp.playerNum)
-        {
-            x = tempf.x_scale(tempp.pos[j].x)+currentx+pad;
-            y = tempf.y_scale(tempp.pos[j].y)+currenty+pad;
-            resetNodePos(i, x, y, this.changeDuration);
-            resetNodeSize(i, tempf.r_scale(5), this.changeDuration);
-            showNodeText(i, this.changeDuration);
+        var pos = pm.findPositionByPid(this.sequence.nodes[i].pid);
+        if(pos != undefined) {
+            var x = tempf.x_scale(100-pos.y) + currentx + pad, y = tempf.y_scale(pos.x) + currenty + pad;
+            resetNodePos(i, x, y, this.changeDuration, this.changeDuration);
+            if (this.sequence.nodes[i].pid == this.sequence.nodes[this.start].pid ||
+                this.sequence.nodes[i].pid == this.sequence.nodes[this.end].pid)
+                resetNodeSize(i, tempf.r_scale(9), this.changeDuration, this.changeDuration);
+            else resetNodeSize(i, tempf.r_scale(7), this.changeDuration, this.changeDuration);
+            showNodeText(i, this.changeDuration, this.changeDuration);
         }
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration*2);
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+    this.cg.select("#subClusterGroup"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
 
     this.type = CT_Node_Link_All;
     this.cleared = 0;
@@ -386,10 +673,10 @@ Cluster.prototype.nodeLinkAll = function() {
 
 Cluster.prototype.hivePlot = function() {
     var num = this.playerNum;
-    var r_step = 6;
-    var r_point = 2;
-    var r_node = 10;
-    var r_center = 5;
+    var r_step = +this.r_scale(1);
+    var r_point = +this.r_scale(0.4);
+    var r_node = +this.r_scale(1.2);
+    var r_center = +this.r_scale(1);
     var currentwid = 2*(r_center+num*r_step+2*r_node);
     var currenthei = 2*(r_center+num*r_step+2*r_node);
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -400,7 +687,8 @@ Cluster.prototype.hivePlot = function() {
         .duration(this.changeDuration)
         .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
         .attr("width",currentwid)
-        .attr("height",currenthei);
+        .attr("height",currenthei)
+        .attr("opacity", 0);
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(this.changeDuration)
@@ -437,13 +725,20 @@ Cluster.prototype.hivePlot = function() {
     for(i = this.start; i <= this.end; i++)
     {
         var coor = coor_change(2*this.playerIndex[i-this.start]*Math.PI/num, r_center+(i-this.start)*r_step);
-        resetNodePos(i, coor.x+currentwid/2+currentx, coor.y+currenthei/2+currenty, this.changeDuration);
-        resetNodeSize(i, r_point, this.changeDuration);
-        hideNodeText(i, this.changeDuration);
+        resetNodePos(i, coor.x+currentwid/2+currentx, coor.y+currenthei/2+currenty, this.changeDuration, this.changeDuration);
+        resetNodeSize(i, r_point, this.changeDuration, this.changeDuration);
+        hideNodeText(i, this.changeDuration, this.changeDuration);
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration*2);
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+    this.cg.select("#subClusterGroup"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
 
     function coor_change(radian, radius) {
         coor = {x: radius * Math.cos(radian), y: radius * Math.sin(radian)};
@@ -469,8 +764,8 @@ Cluster.prototype.tagCloud = function() {
         })
     }
 
-    var currentwid = Math.max(150,d3.sum(players,function(d){return d.size}));
-    var currenthei = Math.max(150,d3.sum(players,function(d){return d.size}));
+    var currentwid = Math.max(+this.x_scale(10),d3.sum(players,function(d){return 2*d.size}));
+    var currenthei = Math.max(+this.x_scale(10),d3.sum(players,function(d){return 2*d.size}));
     var currentx = (+this.cg.select("#cluster" + this.num).attr("x")) + this.cg.select("#cluster" + this.num).attr("width") / 2 - currentwid / 2;
     var currenty = (+this.cg.select("#cluster" + this.num).attr("y")) + this.cg.select("#cluster" + this.num).attr("height") / 2 - currenthei / 2;
     var size = 2;
@@ -480,7 +775,8 @@ Cluster.prototype.tagCloud = function() {
         .duration(this.changeDuration)
         .attr("transform", "translate(" + currentx + "," + currenty + ")").attr("x", currentx).attr("y", currenty)
         .attr("width", currentwid)
-        .attr("height", currenthei);
+        .attr("height", currenthei)
+        .attr("opacity", 0);
     this.cg.select("#clusterrect" + this.num)
         .transition()
         .duration(this.changeDuration)
@@ -494,6 +790,7 @@ Cluster.prototype.tagCloud = function() {
         .attr("height", currenthei);
 
     var fill = d3.scaleOrdinal(d3.schemeCategory20);
+    var drawn = 0;
 
     d3.layout.cloud().size([currentwid, currenthei])
         .words(players)
@@ -503,7 +800,9 @@ Cluster.prototype.tagCloud = function() {
         .on("end", draw)
         .start();
 
-    function draw(words) {
+    function draw(words){
+        if(words.length != players.length) return;
+        drawn = 1;
         that.cg.select("#subClusterGroup"+that.num)
             .append("g")
             .attr("transform", "translate("+[currentwid/2,currenthei/2]+")")
@@ -520,31 +819,48 @@ Cluster.prototype.tagCloud = function() {
             .attr("transform", function(d) {
                 return "translate(" + [d.x, d.y] + ")rotate(0)";
             })
-            .text(function(d) { return d.text; });
+            .text(function(d) { return d.text; })
+            .on("mouseover", function(){d3.select(this).style("cursor","pointer");})
+            .on("click", function(d){pm.reChoose(d.pid)});
         for(i = that.start; i <= that.end; i++)
         {
-            for(j = 0; j < words.length; j++)
-            if(that.sequence.nodes[i].pid == words[j].pid)
+            for(j = 0; j < players.length; j++)
+            if(that.sequence.nodes[i].pid == players[j].pid)
             {
-                resetNodePos(i, currentx+currentwid/2+words[j].x+words[j].x0, currenty+currenthei/2+words[j].y+words[j].y0/2, that.changeDuration);
-                resetNodeSize(i, size, that.changeDuration);
-                hideNodeText(i, that.changeDuration)
+                resetNodePos(i, currentx+currentwid/2+players[j].x+players[j].x0, currenty+currenthei/2+players[j].y+players[j].y0/2, that.changeDuration,that.changeDuration);
+                resetNodeSize(i, size, that.changeDuration,that.changeDuration);
+                hideNodeText(i, that.changeDuration,that.changeDuration)
             }
         }
     }
 
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(!drawn)
+    {
+        this.Clear();
+        this.tagCloud();
+    }
+    else
+    {
+        if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration,this.changeDuration*2);
+        for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration,this.changeDuration*2)
+        if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration,this.changeDuration*2);
 
-    this.type = CT_Tag_Cloud;
-    this.cleared = 0;
+        this.cg.select("#cluster" + this.num)
+            .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+            .attr("opacity", 1);
+        this.cg.select("#subClusterGroup"+this.num)
+            .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+            .attr("opacity", 1);
+
+        this.type = CT_Tag_Cloud;
+        this.cleared = 0;
+    }
 };
 
 Cluster.prototype.matrixVis = function() {
     var num = this.playerNum;
     var that = this;
-    var size = 10, pad = 0;
+    var size = +this.r_scale(3), pad = 0;
     var currentwid = num*size+2*pad;
     var currenthei = num*size+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -555,7 +871,8 @@ Cluster.prototype.matrixVis = function() {
         .duration(this.changeDuration)
         .attr("transform", "translate("+currentx+","+currenty+")").attr("x", currentx).attr("y",currenty)
         .attr("width",currentwid)
-        .attr("height",currenthei);
+        .attr("height",currenthei)
+        .attr("opacity",0);
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(this.changeDuration)
@@ -616,13 +933,20 @@ Cluster.prototype.matrixVis = function() {
     {
         for(j = 0; j < num; j++)
             if(this.sequence.nodes[i].pid == this.player[j].pid) break;
-        resetNodePos(i, j*size+pad+currentx+size/2, j*size+pad+currenty+size/2, this.changeDuration);
-        resetNodeSize(i,size/2,this.changeDuration);
-        hideNodeText(i, this.changeDuration);
+        resetNodePos(i, j*size+pad+currentx+size/2, j*size+pad+currenty+size/2, this.changeDuration,this.changeDuration);
+        resetNodeSize(i,size/2,this.changeDuration,this.changeDuration);
+        hideNodeText(i, this.changeDuration,this.changeDuration);
     }
-    if(this.start >= 1) repaintPath(this.start-1,this.changeDuration,1);
-    for(i = this.start; i < this.end; i++) repaintPath(i, this.changeDuration, 0)
-    if(this.end != seq.nodes.length-1) repaintPath(this.end,this.changeDuration,1);
+    if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration,this.changeDuration*2);
+    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration,this.changeDuration*2)
+    if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration,this.changeDuration*2);
+
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity",1);
+    this.cg.select("#subClusterGroup"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
 
     function chooseColorByTimes(times) {
         if(times>=3) level = 2;
@@ -644,9 +968,8 @@ Cluster.prototype.matrixVis = function() {
     this.cleared = 0;
 };
 
-Cluster.prototype.shoot = function(start, end) {
-    var wid = 210, hei = 320, pad = 2;
-    var panelHeight = 60;
+Cluster.prototype.shoot = function() {
+    var wid = +this.y_scale(35), hei = +this.x_scale(27.5), pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -657,7 +980,8 @@ Cluster.prototype.shoot = function(start, end) {
         .duration(this.changeDuration)
         .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
         .attr("width",currentwid)
-        .attr("height",currenthei);
+        .attr("height",currenthei)
+        .attr("opacity", 0);
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(this.changeDuration)
@@ -671,8 +995,57 @@ Cluster.prototype.shoot = function(start, end) {
         .attr("width",currentwid)
         .attr("height",currenthei);
 
-    this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, panelHeight, start, end, currentx, currenty); 
+    this.shotVis = new ShotVis(this.sequence, clusterGroup, wid, hei, pad, this.start, this.end, currentx, currenty);
+    this.shotVis.drawPosition(this.changeDuration);
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+    this.cg.select("#subClusterGroup"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+
     this.type = CT_Shoot;
+    this.cleared = 0;
+};
+
+Cluster.prototype.centre = function (params) {
+    var wid = +this.y_scale(20), hei = +this.x_scale(20), pad = 2;
+    var currentwid = wid+2*pad;
+    var currenthei = hei+2*pad;
+    var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
+    var currenty=(+this.cg.select("#cluster"+this.num).attr("y"))+this.cg.select("#cluster"+this.num).attr("height")/2-currenthei/2;
+
+    this.cg.select("#cluster"+this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("transform","translate("+currentx+","+currenty+")").attr("x", currentx).attr("y", currenty)
+        .attr("width",currentwid)
+        .attr("height",currenthei)
+        .attr("opacity", 0);
+    this.cg.select("#clusterrect"+this.num)
+        .transition()
+        .duration(this.changeDuration)
+        .attr("width",currentwid)
+        .attr("height",currenthei)
+        .attr("opacity", 1);
+    var clusterGroup = this.cg.select("#subClusterGroup"+this.num);
+
+    clusterGroup.transition()
+        .duration(this.changeDuration)
+        .attr("width",currentwid)
+        .attr("height",currenthei);
+
+    this.centreVis = new CentreVis(this.sequence, clusterGroup, wid, hei, pad, currentx, currenty, centreParams);
+
+    this.centreVis.drawPosition(this.changeDuration);
+    this.cg.select("#cluster"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+    this.cg.select("#subClusterGroup"+this.num)
+        .transition().delay(this.changeDuration*2).duration(this.changeDuration)
+        .attr("opacity", 1);
+
+    this.type = CT_Centre;
     this.cleared = 0;
 };
 
@@ -685,7 +1058,7 @@ Cluster.prototype.chosen = function() {
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(200)
-        .attr("style", "stroke:red; fill:whitesmoke; stroke-width:2;");
+        .attr("style", "stroke:darkred; fill:white; stroke-width:3;");
 };
 
 Cluster.prototype.dechosen = function() {
@@ -693,26 +1066,64 @@ Cluster.prototype.dechosen = function() {
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(200)
-        .attr("style", "stroke:black; fill:whitesmoke; stroke-width:1;");
+        .attr("style", "stroke:black; fill:white; stroke-width:1;");
 };
 
-function resetNodePos(id, x, y, duration) {
+Cluster.prototype.getGeometry = function() {
+    var temp = this.cg.select("#cluster"+this.num);
+    return {
+        x: +temp.attr("x"),
+        y: +temp.attr("y"),
+        width: +temp.attr("width"),
+        height: +temp.attr("height")
+    };
+};
+
+Cluster.prototype.resetPos = function(x, y, duration, delay) {
+    var temp = this.cg.select("#cluster"+this.num);
+    var wid = +temp.attr("width"), hei = +temp.attr("height");
+    var dx = x-wid/2-temp.attr("x"), dy = y-hei/2-temp.attr("y");
+    temp.attr("x",x-wid/2).attr("y",y-hei/2)
+        .transition().delay(delay).duration(duration)
+        .attr("transform","translate("+(x-wid/2)+","+(y-hei/2)+")");
+
+    for(var i = this.start; i <= this.end; i++)
+    {
+        var node_x = d3.select("#node_container").select("#node"+i).attr("x"),
+            node_y = d3.select("#node_container").select("#node"+i).attr("y");
+        node_x = (+node_x)+(+dx);
+        node_y = (+node_y)+(+dy);
+        resetNodePos(i, node_x, node_y, duration, delay);
+    }
+    if(this.start>=1) repaintPath(this.start-1, 1, duration, delay);
+    if(this.type == CT_Shoot) for(i = this.start; i < this.end; i++) repaintPath(i, 2, duration, delay);
+    else if(this.type == CT_Centre) for(i = this.start; i < this.end; i++) repaintPath(i, 3, duration, delay);
+    else for(i = this.start; i < this.end; i++) repaintPath(i, 0, duration, delay);
+    if(this.end != seq.nodes.length-1) repaintPath(this.end, 1, duration, delay);
+};
+
+function resetNodePos(id, x, y, duration, delay) {
+    if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id)
         .attr("x",x).attr("y",y)
         .transition()
+        .delay(delay)
         .duration(duration)
         .attr("transform","translate("+x+","+y+")");
 }
 
-function resetNodeSize(id, r, duration) {
+function resetNodeSize(id, r, duration, delay) {
+    if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id)
         .attr("size", r);
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("circle")
         .transition()
+        .delay(delay)
         .duration(duration)
         .attr("r",r);
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("path")
         .transition()
+        .delay(delay)
         .duration(duration)
         .attr("d","M "+(-0.4*r)+" "+(-0.9*r)+
             " L "+(-0.9*r)+" "+(-0.1*r)+
@@ -727,80 +1138,157 @@ function resetNodeSize(id, r, duration) {
             " Z");
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
         .transition()
+        .delay(delay)
         .duration(duration)
         .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;");
 }
 
-function hideNodeText(id, duration) {
+function hideNodeText(id, duration, delay) {
+    if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
-        .attr("opacity",1)
-        .transition().duration(duration)
+        //.attr("opacity",1)
+        .transition().delay(delay).duration(duration)
         .attr("opacity",0);
 }
 
-function showNodeText(id, duration) {
+function showNodeText(id, duration, delay) {
+    if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
-        .attr("opacity",0)
-        .transition().duration(duration)
+        //.attr("opacity",0)
+        .transition().delay(delay).duration(duration)
         .attr("opacity",1);
 }
 
-function repaintPath(id, duration, style) {
-    d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
-        .transition().duration(duration)
-        .attr("style", function() {
-            var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
-                stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
-            switch(style)
-            {
-                case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
-                case 0: stroke = "gray"; stroke_width = "1px"; break;
-                case 1: stroke_width = "2px"; break;
-                case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
-            }
-            return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
-        })
-        .attr("d", function() {
-            // source and target are duplicated for straight lines
-            var x_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("x")),
-                y_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("y")),
-                x_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("x")),
-                y_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("y"));
-            switch (style) {
-                case -1: {
-                    if (isLongPass(seq.links[id], seq.nodes[id])) {
+function repaintPath(id, style, duration, delay) {
+    if(delay == undefined) delay = 0;
+    if(duration != 0)
+    {
+        d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
+            .attr("opacity",1)
+            .transition().duration(duration)
+            .attr("opacity",0);
+        d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
+            .transition().delay(duration)
+            .attr("style", function() {
+                var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
+                    stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
+                switch(style)
+                {
+                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
+                    case 0: stroke = "gray"; stroke_width = "1px"; break;
+                    case 1: stroke_width = "2px"; break;
+                    case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
+                    case 3: stroke = "green"; stroke_width = "3px"; break;
+                }
+                return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
+            })
+            .attr("d", function() {
+                // source and target are duplicated for straight lines
+                var x_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("x")),
+                    y_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("y")),
+                    x_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("x")),
+                    y_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("y"));
+                switch (style) {
+                    case -1: {
+                        if (isLongPass(seq.links[id], seq.nodes[id])) {
+                            return line(getArc(
+                                x_source,
+                                y_source,
+                                x_target,
+                                y_target,
+                                10
+                            ));
+                        }
+                        else {
+                            return line([
+                                {x: x_source, y: y_source}, {x: x_source, y: y_source},
+                                {x: x_target, y: y_target}, {x: x_target, y: y_target}]);
+                        }
+                    }
+                    case 2:
+                    case 3:{
+                        return line([{x: x_source, y: y_source}, {x: x_target, y: y_target}]);
+                    }
+                    case 0: {
                         return line(getArc(
                             x_source,
                             y_source,
                             x_target,
                             y_target,
-                            10
+                            2
                         ));
                     }
-                    else {
-                        return line([
-                            {x: x_source, y: y_source}, {x: x_source, y: y_source},
-                            {x: x_target, y: y_target}, {x: x_target, y: y_target}]);
+                    case 1: {
+                        return "M" + x_source + " " + y_source +
+                            "C" + x_target + " " + y_source +
+                            " " + x_source + " " + y_target +
+                            " " + x_target + " " + y_target;
                     }
                 }
-                case 2:{
-                    return line([{x: x_source, y: y_source}, {x: x_target, y: y_target}]);
+            })
+            .transition().delay(delay-duration).duration(duration)
+            .attr("opacity",1);
+    }
+    else
+    {
+        d3.select("#mainfield").select("#path_container").select("#linkPath"+id)
+            .transition().duration(0)
+            .attr("style", function() {
+                var stroke = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke"),
+                    stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
+                switch(style)
+                {
+                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
+                    case 0: stroke = "gray"; stroke_width = "1px"; break;
+                    case 1: stroke_width = "2px"; break;
+                    case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
+                    case 3: stroke = "green"; stroke_width = "3px"; break;
                 }
-                case 0: {
-                    return line(getArc(
-                        x_source,
-                        y_source,
-                        x_target,
-                        y_target,
-                        2
-                    ));
+                return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
+            })
+            .attr("d", function() {
+                // source and target are duplicated for straight lines
+                var x_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("x")),
+                    y_source = (+d3.select("#mainfield").select("#node_container").select("#node" + id).attr("y")),
+                    x_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("x")),
+                    y_target = (+d3.select("#mainfield").select("#node_container").select("#node" + (id + 1)).attr("y"));
+                switch (style) {
+                    case -1: {
+                        if (isLongPass(seq.links[id], seq.nodes[id])) {
+                            return line(getArc(
+                                x_source,
+                                y_source,
+                                x_target,
+                                y_target,
+                                10
+                            ));
+                        }
+                        else {
+                            return line([
+                                {x: x_source, y: y_source}, {x: x_source, y: y_source},
+                                {x: x_target, y: y_target}, {x: x_target, y: y_target}]);
+                        }
+                    }
+                    case 2:
+                    case 3:{
+                        return line([{x: x_source, y: y_source}, {x: x_target, y: y_target}]);
+                    }
+                    case 0: {
+                        return line(getArc(
+                            x_source,
+                            y_source,
+                            x_target,
+                            y_target,
+                            2
+                        ));
+                    }
+                    case 1: {
+                        return "M" + x_source + " " + y_source +
+                            "C" + x_target + " " + y_source +
+                            " " + x_source + " " + y_target +
+                            " " + x_target + " " + y_target;
+                    }
                 }
-                case 1: {
-                    return "M" + x_source + " " + y_source +
-                        "C" + x_target + " " + y_source +
-                        " " + x_source + " " + y_target +
-                        " " + x_target + " " + y_target;
-                }
-            }
-        });
+            });
+    }
 }

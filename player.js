@@ -1,10 +1,41 @@
 /**
  * Created by WuJiang on 2017/7/23.
  */
-PlayersManager = function() {
+PlayersManager = function(data) {
     this.infos = infos;
     this.player = new Array();
     this.playerNum = 0;
+
+    this.player_num = data.length;
+    var num = new Array(10);
+    num[0] = num[1] = num[2] = num[3] = num[4] = num[5] = num[6] = num[7] = num[8] = num[9] = 0;
+    for (var i = 0; i < data.length; i++)
+        switch (data[i].position)
+        {
+            case "Goalkeeper": num[0]++; break;
+            case "Defender": num[1]++; break;
+            case "Midfielder": num[2]++; break;
+            case "Striker": num[3]++; break;
+            case "Substitute": num[4]++; break;
+        }
+    this.pos = new Array();
+    for (i = 0; i < data.length; i++)
+    {
+        var x, y;
+        switch (data[i].position)
+        {
+            case "Goalkeeper": num[5]++; x = num[5] * 100 / (num[0]+1); y = 90; break;
+            case "Defender": num[6]++; x = num[6] * 100 / (num[1]+1); y = 70; break;
+            case "Midfielder": num[7]++; x = num[7] * 100 / (num[2]+1); y = 50; break;
+            case "Striker": num[8]++; x = num[8] * 100 / (num[3]+1); y = 30; break;
+            case "Substitute": num[9]++; x = -6; y = 105 - num[9]*8; break;
+        }
+        this.pos.push({
+            pid: data[i].pid,
+            x: x,
+            y: y
+        })
+    }
 };
 
 PlayersManager.prototype.addPlayer = function(field, x, y, size, pid, data) {
@@ -19,29 +50,30 @@ PlayersManager.prototype.reChoose = function(pid) {
         else if(this.player[i].pid != pid && this.player[i].chosen == 1) this.player[i].dechoose();
     }
     this.infos.changeValues(pid);
-    for( i = 0; i < seq.nodes.length; i++)
-        if(seq.nodes[i].pid == pid)
-        {
-            d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
-                .transition().duration(200)
-                .attr("stroke","red")
-                .attr("style","stroke-width: 2px;");
-            d3.select("#mainfield").select("#node_container").select("#node"+i).select("path")
-                .transition().duration(200)
-                .attr("stroke","red")
-                .attr("style","stroke-width: 2px; fill: whitesmoke;");
-        }
-        else
-        {
-            d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
-                .transition().duration(200)
-                .attr("stroke","black")
-                .attr("style","stroke-width: 1px;");
-            d3.select("#mainfield").select("#node_container").select("#node"+i).select("path")
-                .transition().duration(200)
-                .attr("stroke","black")
-                .attr("style","stroke-width: 1px; fill: whitesmoke;");
-        }
+    if(seq!=undefined)
+        for( i = 0; i < seq.nodes.length; i++)
+            if(seq.nodes[i].pid == pid)
+            {
+                d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
+                    .transition().duration(200)
+                    .attr("stroke","red")
+                    .attr("style","stroke-width: 2px;");
+                d3.select("#mainfield").select("#node_container").select("#node"+i).select("path")
+                    .transition().duration(200)
+                    .attr("stroke","red")
+                    .attr("style","stroke-width: 2px; fill: whitesmoke;");
+            }
+            else
+            {
+                d3.select("#mainfield").select("#node_container").select("#node"+i).select("circle")
+                    .transition().duration(200)
+                    .attr("stroke","black")
+                    .attr("style","stroke-width: 1px;");
+                d3.select("#mainfield").select("#node_container").select("#node"+i).select("path")
+                    .transition().duration(200)
+                    .attr("stroke","black")
+                    .attr("style","stroke-width: 1px; fill: whitesmoke;");
+            }
 };
 
 PlayersManager.prototype.changeToCircle = function() {
@@ -100,47 +132,25 @@ PlayersManager.prototype.findNameByPid = function(pid) {
     for (var i = 0; i < data.players.length; i++)
         if(data.players[i].pid == pid) break;
     if(i == data.players.length) return undefined;
-    else return data.players[i].first_name+" "+data.players[i].last_name;
+    else return data.players[i].first_name;
+};
+
+PlayersManager.prototype.findPositionByPid = function(pid) {
+    for(var i = 0; i < this.player_num; i++)
+        if(this.pos[i].pid == pid) break;
+    if(i != this.player_num) return {x: this.pos[i].x, y: this.pos[i].y};
+    else return undefined;
 };
 
 Players = function(field, data) {
-    //console.log(data);
     this.size = field.r_scale(5);
-    this.playerNum = data.length;
 
-    var num = new Array(10);
-    num[0] = num[1] = num[2] = num[3] = num[4] = num[5] = num[6] = num[7] = num[8] = num[9] = 0;
-    for (var i = 0; i < data.length; i++)
-        switch (data[i].position)
-        {
-            case "Goalkeeper": num[0]++; break;
-            case "Defender": num[1]++; break;
-            case "Midfielder": num[2]++; break;
-            case "Striker": num[3]++; break;
-            case "Substitute": num[4]++; break;
-        }
-    this.pos = new Array();
     for (i = 0; i < data.length; i++)
     {
-        var x, y;
-        switch (data[i].position)
-        {
-            case "Goalkeeper": num[5]++; x = num[5] * 100 / (num[0]+1); y = 90; break;
-            case "Defender": num[6]++; x = num[6] * 100 / (num[1]+1); y = 70; break;
-            case "Midfielder": num[7]++; x = num[7] * 100 / (num[2]+1); y = 50; break;
-            case "Striker": num[8]++; x = num[8] * 100 / (num[3]+1); y = 30; break;
-            case "Substitute": num[9]++; x = -6; y = 105 - num[9]*8; break;
-        }
-        if(field.direct == 0)
-        {
-            pm.addPlayer(field, 100-y, x, this.size, data[i].pid, data[i]);
-            this.pos.push({pid: data[i].pid, x: 100-y, y: x});
-        }
-        else
-        {
-            pm.addPlayer(field, x, y, this.size, data[i].pid, data[i]);
-            this.pos.push({pid: data[i].pid, x: x, y: y});
-        }
+        var pos = pm.findPositionByPid(data[i].pid);
+        var x = pos.x, y = pos.y;
+        if(field.direct == 0) pm.addPlayer(field, 100-y, x, this.size, data[i].pid, data[i]);
+        else pm.addPlayer(field, x, y, this.size, data[i].pid, data[i]);
     }
 };
 
