@@ -1,10 +1,104 @@
-.circle-btn
-{
-    width: 20px;
-    height: 20px;
-    padding-left: 0;
-    padding-top: 0;
-    padding-right: 0;
-    padding-bottom: 0;
-    border-radius: 10px;
+#help_container {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    border: 1px solid #bbbbbb;
+
+    width: 100%;
+    height: 250px;
+}
+
+#help_titleDiv {
+    margin: 3px 3px 3px 3px;
+    padding: 0 0 0 0;
+    border: 0;
+    float: left;
+
+    width: 23%;
+    height: 242px;
+}
+#help_upTriangle {
+    top: 0;
+    margin: 5px auto 0 auto;
+
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+}
+.release {
+     border-bottom: 10px solid #0000ff;
+}
+#help_upTriangle .press {
+    border-bottom: 10px solid #00ff00;
+}
+#help_upTriangle .over {
+    border-bottom: 10px solid #ff0000;
+}
+#help_titleList {
+    border: 1px solid #cccccc;
+    margin: 0 auto 0 auto;
+
+    height: 212px;
+}
+#help_downTriangle {
+    position: relative;
+    bottom: 0;
+
+    margin: 0 auto 5px auto;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+}
+#help_downTriangle .release {
+    border-top: 10px solid #777777;
+}
+
+#help_pointerTriangle{
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    border: 0;
+
+    position: absolute;
+    top: 90px;
+    left: 23%;
+    width: 5%;
+    height: 100px;
+}
+#help_pointerTriangle_before {
+    position: absolute;
+    top: 1px;
+    right: 0;
+
+    width: 0;
+    height: 0;
+    border-top: 49px solid transparent;
+    border-right: 14px solid whitesmoke;
+    border-bottom: 49px solid transparent;
+}
+#help_pointerTriangle_after {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    border-right: 15px solid #cccccc;
+    border-bottom: 50px solid transparent;
+}
+
+#help_contentDiv {
+    margin: 3px 3px 3px 3px;
+    padding: 0 0 0 0;
+    border: 1px solid #cccccc;
+    float: right;
+    background-color: whitesmoke;
+
+    width: 73%;
+    height: 242px;
+    overflow: auto;
+}
+#help_contentShow{
+
 }

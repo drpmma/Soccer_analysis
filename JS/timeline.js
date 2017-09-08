@@ -1,13 +1,13 @@
 /**
  * Created by zf on 2017/7/27.
  */
-var x_smallfield=0.813
-var x_timeline = 0.16
-var x_width = 0.1
-var y_timeline = 0.72
-var y_height = 0.02
-var width_smallfield=0.065
-var height_smallfield=0.07
+let x_smallfield=0.01
+let x_timeline = 0.12
+let x_width = 0.094
+let y_timeline = 0.72
+let y_height = 0.02
+let width_smallfield=0.065
+let height_smallfield=0.07
 
 timeline= function (svg,width,height) {
     this.svg=svg;
@@ -46,7 +46,7 @@ timeline= function (svg,width,height) {
         .attr("y2", (y_timeline+y_height) * height)
         .attr("stroke", "black")
         .attr("stroke-width", "1px")
-    for(var i=0;i<7;i++) {
+    for(let i=0;i<7;i++) {
         this.g_timeline.append("line")
             .attr("x1", (x_timeline + i * x_width) * width)
             .attr("y1", y_timeline * height)
@@ -72,16 +72,16 @@ matchinfo = function (svg,field,data,width,height) {
     this.height=height;
 
     this.onTransition = new Array(data.length);
-    for(var i = 0; i < this.onTransition.length; i++)
+    for(let i = 0; i < this.onTransition.length; i++)
         this.onTransition[i] = 0;
 
-    var that = this;
+    let that = this;
     
     this.g_sequence=svg.append("g")
         .attr("id","Sequence")
-    for(var i=0;i<data.length;i++)
+    for(let i=0;i<data.length;i++)
     {
-        var g=this.g_sequence.append("g")
+        let g=this.g_sequence.append("g")
             .attr("id",function () {
                 return "g_sequence"+(i+1)
             })
@@ -104,7 +104,7 @@ matchinfo = function (svg,field,data,width,height) {
                 d3.select(this).select("#rect_g").attr("fill-opacity","0")
                 d3.select(this).select("#align_g").attr("fill","white").attr("fill-opacity","1")
                 id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
-                var color=d3.scaleLinear()
+                let color=d3.scaleLinear()
                     .domain([0,20])
                     .range(["red","white"])
                 d3.select(this).select("#arc_g").attr("fill",function () {
@@ -114,18 +114,18 @@ matchinfo = function (svg,field,data,width,height) {
                     d3.select(this).selectAll("#mouse_field").remove();
             })
             .on("click",function () {
-                var val1 = nb.sideBar.nodeTimeOptions[nb.sideBar.nodeTimeSel],
-                    val2 = nb.sideBar.sequenceStyleSel;
+                let val1 = sideSetting.nodeTimeOptions[sideSetting.nodeTimeSel],
+                    val2 = sideSetting.sequenceStyleSel;
                 time=val1;
                 id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
                 x=d3.select(this).select("circle")
                     .attr("cx");
                 if(click>=0)
                 {
-                    var name= "#g_sequence"+(click+1)
-                    var name1 = "#rect_g_click"+click
-                    var name2 = "#arc_g_click"+click
-                    var name3 ="#align_g_click"+click
+                    let name= "#g_sequence"+(click+1)
+                    let name1 = "#rect_g_click"+click
+                    let name2 = "#arc_g_click"+click
+                    let name3 ="#align_g_click"+click
                     d3.select("#Sequence").select(name).select(name1).attr("fill-opacity",0).attr("fill","gray").attr("id",function () {
                         console.log("ffff",click)
                         return "rect_g"
@@ -154,7 +154,7 @@ matchinfo = function (svg,field,data,width,height) {
                 //     .attr("width",width_smallfield*width)
                 //     .attr("fill","red").attr("fill-opacity","0.5")
                 d3.selectAll("#mouse_field").remove();
-                var phase = that.repaint(d3.select(this), id, x);
+                let phase = that.repaint(d3.select(this), id, x);
 
                 d3.select("#mainfield").select("#path_container").remove();
                 d3.select("#mainfield").select("#node_container").remove();
@@ -178,8 +178,8 @@ matchinfo = function (svg,field,data,width,height) {
             .attr("cy",(y_timeline+0.01)*height)
             .attr("r",0.008*height)
             .attr("fill",function () {
-                var len=data[i].actions.length -1;
-                var color=getEventColor(data[i].actions[len].eid);
+                let len=data[i].actions.length -1;
+                let color=getEventColor(data[i].actions[len].eid);
                 return color;
             })
     }
@@ -209,9 +209,9 @@ matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequenc
 matchinfo.prototype.repaint = function (selection, id, x) {
     g_mouse_field = selection.append("g")
         .attr("id","mouse_field");
-    var phase_field = new Field(g_mouse_field, x - 0.04 * this.width, (y_timeline-0.1) * this.height,
+    let phase_field = new Field(g_mouse_field, x - 0.04 * this.width, (y_timeline-0.1) * this.height,
         width_smallfield * this.width, height_smallfield * this.height, "click", 0, 0, 1)
-    var phase_seq = new Sequence(phase_field.fieldGroup, this.data[id]);
+    let phase_seq = new Sequence(phase_field.fieldGroup, this.data[id]);
     phase_seq.draw_node("node", 2, "black", 0);
 
     return {field:phase_field, seq:phase_seq};
@@ -221,38 +221,38 @@ matchinfo.prototype.donut =function () {
     width=this.width;
     height=this.height;
 
-    var data =new Array();
-    for(var i=0;i<this.data.length;i++)
+    let data =new Array();
+    for(let i=0;i<this.data.length;i++)
     {
-        var name = "#g_sequence" + (i+1);
-        var g_court = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_court,x_smallfield*width,(i*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[i]);
+        let name = "#g_sequence" + (i+1);
+        let g_court = d3.select("#Sequence").select(name)
+        let smallqurt= new Field(g_court,x_smallfield*width,(i*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+        let phase_small=new Sequence(smallqurt.fieldGroup,this.data[i]);
         // if(i==0) time=this.data[i].endTime.min*60+this.data[i].endTime.sec;
         // else time=(this.data[i].endTime.min-this.data[i-1].endTime.min)*60+this.data[i].endTime.sec-this.data[i-1].endTime.sec+60
-        var len=phase_small.nodes.length
+        let len=phase_small.nodes.length
         data.push(len+2)
         console.log("len",len)
         d3.select("#Sequence").select(name).select("#smallfield_remove").remove();
     }
     console.log(data)
-    var color=["blue","yellow","red","pink","green","steelblue","purple","silver","maroon","lime"]
-    var angele_data=d3.pie()(data);
+    let color=["blue","yellow","red","pink","green","steelblue","purple","silver","maroon","lime"]
+    let angele_data=d3.pie()(data);
     console.log(angele_data)
-    for(var num=0;num<data.length;num++) {
-        var name = "#g_sequence" + (num+1);
-        var g_court = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_court,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield",0,0,0);
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
-        var arc=d3.arc()
+    for(let num=0;num<data.length;num++) {
+        let name = "#g_sequence" + (num+1);
+        let g_court = d3.select("#Sequence").select(name)
+        let smallqurt= new Field(g_court,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield",0,0,0);
+        let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+        let arc=d3.arc()
             .innerRadius(0)
             .outerRadius(0.07*width)
             .padAngle(0.005)
             .startAngle(angele_data[num].startAngle)
             .endAngle(angele_data[num].endAngle)
-        var g=g_court.append("g")
+        let g=g_court.append("g")
             .attr("transform",function () {
-                return "translate("+0.83*width+","+(0.05*num+0.02)*height+")"
+                return "translate("+x_smallfield*width+","+(0.05*num+0.02)*height+")"
             })
             .attr("id",function () {
                 return "g_arc"+num
@@ -274,7 +274,7 @@ matchinfo.prototype.donut =function () {
             })
         g.transition().duration(0.5*view_time)
             .delay(2*view_time).attr("transform",function () {
-            return "translate("+0.92*width+","+0.2*height+")"
+            return "translate("+(x_smallfield+0.09)*width+","+0.2*height+")"
         })
         g.append("path")
             .attr("d",arc)
@@ -291,18 +291,18 @@ matchinfo.prototype.donut =function () {
             .transition().duration(0.8*view_time)
             .delay(2.2*view_time)
             .attr("transform",function () {
-                var i=parseInt(d3.select(this).attr("id").substring(4))
-                var k=(angele_data[num].endAngle-angele_data[num].startAngle)/(data[num]-1)
+                let i=parseInt(d3.select(this).attr("id").substring(4))
+                let k=(angele_data[num].endAngle-angele_data[num].startAngle)/(data[num]-1)
                 console.log("k",angele_data[num].endAngle-angele_data[num].startAngle)
-                var x=0.07*Math.sin(angele_data[num].startAngle+k*i)*width
-                var y=-1*0.07*Math.cos(angele_data[num].startAngle+k*i)*width
+                let x=0.07*Math.sin(angele_data[num].startAngle+k*i)*width
+                let y=-1*0.07*Math.cos(angele_data[num].startAngle+k*i)*width
                 console.log("x,y",x,y)
                 return "translate("+x+","+y+")"
             })
             .attr("r",function () {
-                var i=parseInt(d3.select(this).attr("id").substring(4))
-                var k=(angele_data[num].endAngle-angele_data[num].startAngle)
-                var r=0.07*width*k/data[num]
+                let i=parseInt(d3.select(this).attr("id").substring(4))
+                let k=(angele_data[num].endAngle-angele_data[num].startAngle)
+                let r=0.07*width*k/data[num]
                 return r;
             })
             .attr("fill",function () {
@@ -331,10 +331,10 @@ matchinfo.prototype.proj = function (X) {
     width=this.width;
     height=this.height;
 
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let g_sequence = d3.select("#Sequence").select(name)
+        let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
             .attr("x",x_smallfield*width)
@@ -343,10 +343,10 @@ matchinfo.prototype.proj = function (X) {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
-        var datax= [0,0,0,0,0,0,0,0,0,0];
-        var datay= [0,0,0,0,0,0,0,0,0,0];
-        for(var j=0;j<phase_small.nodes.length;j++)
+        let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+        let datax= [0,0,0,0,0,0,0,0,0,0];
+        let datay= [0,0,0,0,0,0,0,0,0,0];
+        for(let j=0;j<phase_small.nodes.length;j++)
         {
             datax[parseInt((phase_small.nodes[j].x-1)/10)]++
             datay[parseInt((phase_small.nodes[j].y-1)/10)]++
@@ -426,10 +426,10 @@ matchinfo.prototype.proj = function (X) {
     }
 }
 matchinfo.prototype.proj_move = function (X)  {
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var name1 = "#smallfield" + num
-        var rect=d3.select("#Sequence").select(name).selectAll("#rect_g")
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let name1 = "#smallfield" + num
+        let rect=d3.select("#Sequence").select(name).selectAll("#rect_g")
         d3.select("#Sequence").select(name).select(name1).transition().duration(view_time / 5).delay(0).remove();
     }
 }
@@ -437,13 +437,13 @@ matchinfo.prototype.distancealign =function () {
     width=this.width;
     height=this.height;
 
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield",0,0,0);
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let g_sequence = d3.select("#Sequence").select(name)
+        let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield",0,0,0);
+        let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         min=phase_small.nodes[0].x;
-        for(var j=0;j<phase_small.nodes.length;j++)
+        for(let j=0;j<phase_small.nodes.length;j++)
         {
             if(phase_small.nodes[j].x<min) min=phase_small.nodes[j].x;
         }
@@ -453,7 +453,7 @@ matchinfo.prototype.distancealign =function () {
             })
         this.g_align.append("rect")
             .attr("id","align_g")
-            .attr("x",(0.83+min/100*0.16)*width)
+            .attr("x",(x_smallfield+min/100*0.16)*width)
             .attr("y",(num*0.05+0.01)*height)
             .attr("width",(100-min)/100*0.16*width)
             .attr("height",0.02*height)
@@ -473,7 +473,7 @@ matchinfo.prototype.distancealign =function () {
                 return "align_circle"+i;
             })
             .attr("cx",function (d,i) {
-                return (0.83+0.005*i)*width
+                return (x_smallfield+0.005*i)*width
             })
             .attr("cy",(num*0.05+0.02)*height)
             .attr("fill",function (d,i) {
@@ -481,7 +481,7 @@ matchinfo.prototype.distancealign =function () {
             })
             .transition().duration(0.5*view_time).delay(0)
             .attr("cx",function (d) {
-                return ((phase_small.nodes[d.source].x/100)*0.16+0.83)*width
+                return ((phase_small.nodes[d.source].x/100)*0.16+x_smallfield)*width
             })
             .attr("cy",function () {
                 return (num*0.05+0.02)*height
@@ -494,14 +494,14 @@ matchinfo.prototype.timealign =function () {
     width=this.width;
     height=this.height;
 
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield",0,0,0);
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
-        var len=phase_small.nodes.length;
-        var max=(phase_small.nodes[len-1].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[len-1].time.sec-phase_small.nodes[0].time.sec
-        var len =max;
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let g_sequence = d3.select("#Sequence").select(name)
+        let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield",0,0,0);
+        let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+        let len=phase_small.nodes.length;
+        let max=(phase_small.nodes[len-1].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[len-1].time.sec-phase_small.nodes[0].time.sec
+        let len =max;
         if(max==0) max=1;
         if(max>40) len=40
         this.g_align=g_sequence.append("g")
@@ -511,14 +511,14 @@ matchinfo.prototype.timealign =function () {
             // .attr("transform",function (d,i) {
             //     return "translate("+(0.83)*width+","+(num*0.05+0.015)*height+")"
             // })
-            .attr("x",0.83*width)
+            .attr("x",x_smallfield*width)
             .attr("y",(num*0.05+0.01)*height)
         this.g_align.append("rect")
             .attr("id","align_g")
             // .attr("transform",function () {
             //     return "translate("+(0.83)*width+","+0+")"
             // })
-            .attr("x",0.83*width)
+            .attr("x",x_smallfield*width)
             .attr("y",(num*0.05+0.01)*height)
             .attr("width",(0.004*len)*width)
             .attr("height",0.02*height)
@@ -541,7 +541,7 @@ matchinfo.prototype.timealign =function () {
             //     return "translate("+(0.005*i)*width+","+0+")"
             // })
             .attr("cx",function (d,i) {
-                return (0.83)*width+0.005*i*height
+                return (x_smallfield)*width+0.005*i*height
             })
             .attr("cy",(num*0.05+0.02)*height)
             .attr("fill",function (d,i) {
@@ -550,10 +550,10 @@ matchinfo.prototype.timealign =function () {
             .transition().duration(0.5*view_time).delay(0)
             .attr("r",0.0045*height)
             .attr("cx",function (d) {
-                var t=(phase_small.nodes[d.source].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[d.source].time.sec-phase_small.nodes[0].time.sec
+                let t=(phase_small.nodes[d.source].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[d.source].time.sec-phase_small.nodes[0].time.sec
                 return (t/max*0.004*len+0.83)*width
             })
-        var s= "#smallfield"+num
+        let s= "#smallfield"+num
         g_sequence.select("#smallfield").remove()
     }
 }
@@ -561,10 +561,10 @@ matchinfo.prototype.point =function () {
     width=this.width;
     height=this.height;
 
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let g_sequence = d3.select("#Sequence").select(name)
+        let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
             .attr("x",x_smallfield*width)
@@ -573,15 +573,15 @@ matchinfo.prototype.point =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+        let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_node("node",2,"black",2);
     }
 }
 matchinfo.prototype.point_move =function ()
 {
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var name1="#smallfield"+num
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let name1="#smallfield"+num
         d3.select("#Sequence").select(name).selectAll("#rect_g").transition().duration(view_time/5).delay(0).remove();
         d3.select("#Sequence").select(name).select(name1).transition().duration(view_time/5).delay(0).remove();
     }
@@ -590,10 +590,10 @@ matchinfo.prototype.mark =function () {
     width=this.width;
     height=this.height;
 
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let g_sequence = d3.select("#Sequence").select(name)
+        let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
             .attr("x",x_smallfield*width)
@@ -602,7 +602,7 @@ matchinfo.prototype.mark =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+        let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_path("link",1,2)
         phase_small.draw_node("node",2,"black",2);
     }
@@ -611,10 +611,10 @@ matchinfo.prototype.point_link =function () {
     width=this.width;
     height=this.height;
 
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let g_sequence = d3.select("#Sequence").select(name)
+        let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
             .attr("x",x_smallfield*width)
@@ -623,7 +623,7 @@ matchinfo.prototype.point_link =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+        let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_path("link",0, 2)
         phase_small.draw_node("node",2,"black",2);
     }
@@ -632,10 +632,10 @@ matchinfo.prototype.worm =function () {
     width=this.width;
     height=this.height;
 
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var g_sequence = d3.select("#Sequence").select(name)
-        var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let g_sequence = d3.select("#Sequence").select(name)
+        let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
         g_sequence.append("rect")
             .attr("id","rect_g")
             .attr("x",x_smallfield*width)
@@ -644,7 +644,7 @@ matchinfo.prototype.worm =function () {
             .attr("height",height_smallfield*height)
             .attr("fill","gray")
             .attr("fill-opacity","0")
-        var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+        let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         phase_small.draw_path("link",1,2)
         phase_small.draw_node("node",0,"black",2);
     }
@@ -653,22 +653,22 @@ matchinfo.prototype.clear = function (type,oldtype) {
     width=this.width;
     height=this.height;
 
-    for(var num=0;num<this.data.length;num++) {
-        var name = "#g_sequence" + (num + 1);
-        var name1 = "#smallfield" + num
-        var g_sequence=d3.select(name)
-        var name2 ="#g_arc"+num
-        var name3 = "#align_g"+num
-        var arc_g = d3.select("#Sequence").select(name).select(name2)
-        var rect_g = d3.select("#Sequence").select(name).selectAll("#rect_g")
-        var align_g = d3.select("#Sequence").select(name).select(name3)
-        var g_proj = d3.select("#Sequence").select(name).selectAll("#g_proj")
-        var field = d3.select("#Sequence").select(name).select(name1)
-        var nodes = d3.select("#Sequence").select(name).select(name1).select("#node_container");
-        var paths = d3.select("#Sequence").select(name).select(name1).select("#path_container")
-        var name4 = "#rect_g_click"+num
-        var name5 = "#arc_g_click"+num
-        var name6 ="#align_g_click"+num
+    for(let num=0;num<this.data.length;num++) {
+        let name = "#g_sequence" + (num + 1);
+        let name1 = "#smallfield" + num
+        let g_sequence=d3.select(name)
+        let name2 ="#g_arc"+num
+        let name3 = "#align_g"+num
+        let arc_g = d3.select("#Sequence").select(name).select(name2)
+        let rect_g = d3.select("#Sequence").select(name).selectAll("#rect_g")
+        let align_g = d3.select("#Sequence").select(name).select(name3)
+        let g_proj = d3.select("#Sequence").select(name).selectAll("#g_proj")
+        let field = d3.select("#Sequence").select(name).select(name1)
+        let nodes = d3.select("#Sequence").select(name).select(name1).select("#node_container");
+        let paths = d3.select("#Sequence").select(name).select(name1).select("#path_container")
+        let name4 = "#rect_g_click"+num
+        let name5 = "#arc_g_click"+num
+        let name6 ="#align_g_click"+num
         d3.select("#Sequence").select(name).select(name4).attr("fill-opacity",0).attr("fill","gray").attr("id","rect_g")
         d3.select("#Sequence").select(name).select(name5).attr("fill-opacity",0).attr("fill","gray").attr("id","arc_g")
         d3.select("#Sequence").select(name).select(name6).attr("fill-opacity",0).attr("fill","gray").attr("id","align_g")
@@ -700,7 +700,7 @@ matchinfo.prototype.clear = function (type,oldtype) {
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 nodes.selectAll(".node").transition().duration(0.8 * view_time).delay(0.2 * view_time)
                     .attr("transform", function () {
-                        var x = d3.select(this).attr("x")
+                        let x = d3.select(this).attr("x")
                         console.log("x", this)
 
                         return "translate(" + x + "," + 0 + ")"
@@ -714,7 +714,7 @@ matchinfo.prototype.clear = function (type,oldtype) {
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 nodes.selectAll(".node").transition().duration(0.8 * view_time).delay(0.2 * view_time)
                     .attr("transform", function () {
-                        var y = d3.select(this).attr("y")
+                        let y = d3.select(this).attr("y")
                         console.log("y", this)
 
                         return "translate(" + 0 + "," + y + ")"
@@ -730,16 +730,16 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     nodes.selectAll(".node").select("circle").attr("r", 2).transition().duration(0.5 * view_time).delay(0.2 * view_time).attr("r", 0.003 * height);
                     field.transition().duration(0.3 * view_time).delay(0.7 * view_time)
                         .attr("transform", function () {
-                            var id = parseInt(d3.select(this).attr("id").substring(10))
-                            var y = (id * 0.05 + 0.02) * height
+                            let id = parseInt(d3.select(this).attr("id").substring(10))
+                            let y = (id * 0.05 + 0.02) * height
                             return "translate(" + 0.83 * width + "," + y + ")"
                         })
                         .select("#node_container")
                         .selectAll(".node")
                         .transition().duration(0.8* view_time).delay(0)
                         .attr("transform", function () {
-                            var y = d3.select(this).attr("y")
-                            var id = parseInt(d3.select(this).attr("id").substring(4))
+                            let y = d3.select(this).attr("y")
+                            let id = parseInt(d3.select(this).attr("id").substring(4))
                             console.log("ybb")
                             return "translate(" + id * 0.005 * height + "," + 0 + ")"
                         })
@@ -760,16 +760,16 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     nodes.selectAll(".node").select("circle").attr("r", 2).transition().duration(0.5 * view_time).delay(0.2 * view_time).attr("r", 0.003 * height);
                     field.transition().duration(0.3 * view_time).delay(0.7 * view_time)
                         .attr("transform", function () {
-                            var id = parseInt(d3.select(this).attr("id").substring(10))
-                            var y = (id * 0.05 + 0.015) * height
-                            return "translate(" + 0.83 * width + "," + y + ")"
+                            let id = parseInt(d3.select(this).attr("id").substring(10))
+                            let y = (id * 0.05 + 0.015) * height
+                            return "translate(" + x_smallfield * width + "," + y + ")"
                         })
                         .select("#node_container")
                         .selectAll(".node")
                         .transition().duration(0.8 * view_time).delay(0)
                         .attr("transform", function () {
-                            var y = d3.select(this).attr("y")
-                            var id = parseInt(d3.select(this).attr("id").substring(4))
+                            let y = d3.select(this).attr("y")
+                            let id = parseInt(d3.select(this).attr("id").substring(4))
                             console.log("ybb")
                             return "translate(" + id * 0.003 * height + "," + 0 + ")"
                         })
@@ -790,16 +790,16 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     nodes.selectAll(".node").select("circle").attr("r", 2).transition().duration(0.5 * view_time).delay(0.2 * view_time).attr("r", 0.003 * height);
                     field.transition().duration(0.3 * view_time).delay(0.7 * view_time)
                         .attr("transform", function () {
-                            var id = parseInt(d3.select(this).attr("id").substring(10))
-                            var y = (id * 0.05 + 0.015) * height
-                            return "translate(" + 0.83 * width + "," + y + ")"
+                            let id = parseInt(d3.select(this).attr("id").substring(10))
+                            let y = (id * 0.05 + 0.015) * height
+                            return "translate(" + x_smallfield * width + "," + y + ")"
                         })
                         .select("#node_container")
                         .selectAll(".node")
                         .transition().duration(0.8 * view_time).delay(0)
                         .attr("transform", function () {
-                            var y = d3.select(this).attr("y")
-                            var id = parseInt(d3.select(this).attr("id").substring(4))
+                            let y = d3.select(this).attr("y")
+                            let id = parseInt(d3.select(this).attr("id").substring(4))
                             return "translate(" + id * 0.003 * height + "," + 0 + ")"
                         })
                         .transition().duration(view_time).delay(view_time)
@@ -823,8 +823,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             // }
             if(type<4)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -850,8 +850,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==5)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -877,8 +877,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==6)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -906,19 +906,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .attr("opacity",1)
                     .transition().duration(view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.005*height+","+0+")"
                     })
                     .attr("r",0.005*height)
 
                 field.transition().duration(0.5*view_time).delay(view_time).attr("transform",function () {
-                    return "translate("+0.83*width+","+(num*0.05+0.01)*height+")"
+                    return "translate("+x_smallfield*width+","+(num*0.05+0.01)*height+")"
                 })
                 field.select("#gid").selectAll("cirlce")
                     .transition().duration(0.5*view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.003*height+","+0+")"
                     })
@@ -927,8 +927,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==7)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -950,19 +950,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .attr("opacity",1)
                     .transition().duration(view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.005*height+","+0+")"
                     })
                     .attr("r",0.005*height)
 
                 field.transition().duration(0.5*view_time).delay(view_time).attr("transform",function () {
-                    return "translate("+0.83*width+","+(num*0.05+0.01)*height+")"
+                    return "translate("+x_smallfield*width+","+(num*0.05+0.01)*height+")"
                 })
                 field.select("#gid").selectAll("cirlce")
                     .transition().duration(0.5*view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.003*height+","+0+")"
                     })
@@ -971,8 +971,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==8)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -994,19 +994,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .attr("opacity",1)
                     .transition().duration(view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.005*height+","+0+")"
                     })
                     .attr("r",0.005*height)
 
                 field.transition().duration(0.5*view_time).delay(view_time).attr("transform",function () {
-                    return "translate("+0.83*width+","+(num*0.05+0.01)*height+")"
+                    return "translate("+x_smallfield*width+","+(num*0.05+0.01)*height+")"
                 })
                 field.select("#gid").selectAll("cirlce")
                     .transition().duration(0.5*view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.003*height+","+0+")"
                     })
@@ -1020,8 +1020,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             g_proj.transition().delay(0).duration(0.5*view_time).remove()
             if(type<4)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -1047,8 +1047,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==4)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -1074,8 +1074,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==6)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -1103,19 +1103,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .attr("opacity",1)
                     .transition().duration(view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.005*height+","+0+")"
                     })
                     .attr("r",0.005*height)
 
                 field.transition().duration(0.5*view_time).delay(view_time).attr("transform",function () {
-                    return "translate("+0.83*width+","+(num*0.05+0.01)*height+")"
+                    return "translate("+x_smallfield*width+","+(num*0.05+0.01)*height+")"
                 })
                 field.select("#gid").selectAll("cirlce")
                     .transition().duration(0.5*view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.003*height+","+0+")"
                     })
@@ -1124,8 +1124,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==7)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -1147,19 +1147,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .attr("opacity",1)
                     .transition().duration(view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.005*height+","+0+")"
                     })
                     .attr("r",0.005*height)
 
                 field.transition().duration(0.5*view_time).delay(view_time).attr("transform",function () {
-                    return "translate("+0.83*width+","+(num*0.05+0.01)*height+")"
+                    return "translate("+x_smallfield*width+","+(num*0.05+0.01)*height+")"
                 })
                 field.select("#gid").selectAll("cirlce")
                     .transition().duration(0.5*view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.003*height+","+0+")"
                     })
@@ -1168,8 +1168,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==8)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 field.selectAll(".fieldLines").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 field.selectAll(".fieldRect").transition().duration(0.2 * view_time).delay(10).attr("opacity", 0)
                 g_proj.transition().duration(0.2*view_time).delay(0).attr("opacity",0);
@@ -1191,19 +1191,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .attr("opacity",1)
                     .transition().duration(view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.005*height+","+0+")"
                     })
                     .attr("r",0.005*height)
 
                 field.transition().duration(0.5*view_time).delay(view_time).attr("transform",function () {
-                    return "translate("+0.83*width+","+(num*0.05+0.01)*height+")"
+                    return "translate("+x_smallfield*width+","+(num*0.05+0.01)*height+")"
                 })
                 field.select("#gid").selectAll("cirlce")
                     .transition().duration(0.5*view_time).delay(0)
                     .attr("transform",function () {
-                        var id=parseInt(d3.select(this).attr("id"))
+                        let id=parseInt(d3.select(this).attr("id"))
                         console.log("id",id)
                         return "translate("+id*0.003*height+","+0+")"
                     })
@@ -1219,12 +1219,12 @@ matchinfo.prototype.clear = function (type,oldtype) {
                 align_g.selectAll("circle")
                     .transition().delay(0.3*view_time).duration(0.2*view_time)
                     .attr("cx",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(12))
+                        let id = parseInt(d3.select(this).attr("id").substring(12))
                         return (x_smallfield)*width+0.005*height*id
                     })
                     .transition().delay(0.1*view_time).duration(0.5*view_time)
                     .attr("cx",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(12))
+                        let id = parseInt(d3.select(this).attr("id").substring(12))
                         return (x_smallfield)*width+0.005*height*id
                     })
                     .attr("cy",(num*0.08+0.01)*height)
@@ -1234,8 +1234,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
 
             if(type<4)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 align_g.append("g").selectAll("circle")
                     .data(phase_small.nodes)
                     .enter().append("circle")
@@ -1262,8 +1262,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==4)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 align_g.append("g").selectAll("circle")
                     .data(phase_small.nodes)
                     .enter().append("circle")
@@ -1292,8 +1292,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==5)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 align_g.append("g").selectAll("circle")
                     .data(phase_small.nodes)
                     .enter().append("circle")
@@ -1326,8 +1326,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
                 align_g.selectAll("circle")
                     .transition().delay(0.5*view_time).duration(0.5*view_time)
                     .attr("cx",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(12))
-                        return (0.83+0.005*id)*width
+                        let id = parseInt(d3.select(this).attr("id").substring(12))
+                        return (x_smallfield+0.005*id)*width
                     })
                     .attr("r",0.005*height)
                     .transition().delay(1*view_time).duration(0)
@@ -1339,8 +1339,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
                 align_g.selectAll("circle")
                     .transition().delay(0.5*view_time).duration(0.5*view_time)
                     .attr("cx",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(12))
-                        return (0.83+0.005*id)*width
+                        let id = parseInt(d3.select(this).attr("id").substring(12))
+                        return (x_smallfield+0.005*id)*width
                     })
                     .attr("r",0.005*height)
                     .transition().delay(1*view_time).duration(0)
@@ -1358,12 +1358,12 @@ matchinfo.prototype.clear = function (type,oldtype) {
                 align_g.selectAll("circle")
                     .transition().delay(0.3*view_time).duration(0.2*view_time)
                     .attr("cx",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(12))
+                        let id = parseInt(d3.select(this).attr("id").substring(12))
                         return (x_smallfield)*width+0.005*height*id
                     })
                     .transition().delay(0.1*view_time).duration(0.5*view_time)
                     .attr("cx",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(12))
+                        let id = parseInt(d3.select(this).attr("id").substring(12))
                         return (x_smallfield)*width+0.005*height*id
                     })
                     .attr("cy",(num*0.08+0.01)*height)
@@ -1373,8 +1373,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
 
             if(type<4)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 align_g.append("g").selectAll("circle")
                     .data(phase_small.nodes)
                     .enter().append("circle")
@@ -1401,8 +1401,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==4)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 align_g.append("g").selectAll("circle")
                     .data(phase_small.nodes)
                     .enter().append("circle")
@@ -1431,8 +1431,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==5)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 align_g.append("g").selectAll("circle")
                     .data(phase_small.nodes)
                     .enter().append("circle")
@@ -1465,8 +1465,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
                 align_g.selectAll("circle")
                     .transition().delay(0.5*view_time).duration(0.5*view_time)
                     .attr("cx",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(12))
-                        return (0.83+0.005*id)*width
+                        let id = parseInt(d3.select(this).attr("id").substring(12))
+                        return (x_smallfield+0.005*id)*width
                     })
                     .attr("r",0.005*height)
                     .transition().delay(1*view_time).duration(0)
@@ -1478,8 +1478,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
                 align_g.selectAll("circle")
                     .transition().delay(0.5*view_time).duration(0.5*view_time)
                     .attr("cx",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(12))
-                        return (0.83+0.005*id)*width
+                        let id = parseInt(d3.select(this).attr("id").substring(12))
+                        return (x_smallfield+0.005*id)*width
                     })
                     .attr("r",0.005*height)
                     .transition().delay(1*view_time).duration(0)
@@ -1491,12 +1491,12 @@ matchinfo.prototype.clear = function (type,oldtype) {
         {
             if(type<4)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 arc_g.select("path").transition().delay(0.2*view_time).duration(0.2*view_time).remove()
                 arc_g.transition().delay(1.1*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
-                        return "translate("+0.83*width+","+ (num*0.05+0.01)*height+")"
+                        return "translate("+x_smallfield*width+","+ (num*0.05+0.01)*height+")"
                     })
                     .transition().delay(0.2*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
@@ -1506,19 +1506,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .transition().delay(0.3*view_time).duration(0.2*view_time)
                     .attr("r",4)
                     .attr("fill",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
                         return getEventColor(phase_small.nodes[id].eid)
                     })
                     .transition().delay(0.4*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
                         return "translate("+id*0.005*height+","+ 0+")"
                     })
                     .transition().delay(0.4*view_time).duration(0.4*view_time)
                     .attr("transform",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
-                        var x=phase_small.nodes[id].x/100*width_smallfield*width
-                        var y=phase_small.nodes[id].y/100*height_smallfield*height
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
+                        let x=phase_small.nodes[id].x/100*width_smallfield*width
+                        let y=phase_small.nodes[id].y/100*height_smallfield*height
                         return "translate("+x+","+ y+")"
                     })
                     .transition().delay(0.5*view_time).duration(0.5*view_time)
@@ -1528,12 +1528,12 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==4)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 arc_g.select("path").transition().delay(0.2*view_time).duration(0.2*view_time).remove()
                 arc_g.transition().delay(1.1*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
-                        return "translate("+0.83*width+","+ (num*0.05+0.01)*height+")"
+                        return "translate("+x_smallfield*width+","+ (num*0.05+0.01)*height+")"
                     })
                     .transition().delay(0.2*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
@@ -1543,19 +1543,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .transition().delay(0.3*view_time).duration(0.2*view_time)
                     .attr("r",4)
                     .attr("fill",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
                         return getEventColor(phase_small.nodes[id].eid)
                     })
                     .transition().delay(0.4*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
                         return "translate("+id*0.005*height+","+ 0+")"
                     })
                     .transition().delay(0.4*view_time).duration(0.4*view_time)
                     .attr("transform",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
-                        var x=phase_small.nodes[id].x/100*width_smallfield*width
-                        var y=phase_small.nodes[id].y/100*height_smallfield*height
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
+                        let x=phase_small.nodes[id].x/100*width_smallfield*width
+                        let y=phase_small.nodes[id].y/100*height_smallfield*height
                         return "translate("+x+","+ 0+")"
                     })
                     .transition().delay(0.5*view_time).duration(0.5*view_time)
@@ -1565,12 +1565,12 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type == 5)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 arc_g.select("path").transition().delay(0.2*view_time).duration(0.2*view_time).remove()
                 arc_g.transition().delay(1.1*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
-                        return "translate("+0.83*width+","+ (num*0.05+0.01)*height+")"
+                        return "translate("+x_smallfield*width+","+ (num*0.05+0.01)*height+")"
                     })
                     .transition().delay(0.2*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
@@ -1580,19 +1580,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .transition().delay(0.3*view_time).duration(0.2*view_time)
                     .attr("r",4)
                     .attr("fill",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
                         return getEventColor(phase_small.nodes[id].eid)
                     })
                     .transition().delay(0.4*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
                         return "translate("+id*0.005*height+","+ 0+")"
                     })
                     .transition().delay(0.4*view_time).duration(0.4*view_time)
                     .attr("transform",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
-                        var x=phase_small.nodes[id].x/100*width_smallfield*width
-                        var y=phase_small.nodes[id].y/100*height_smallfield*height
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
+                        let x=phase_small.nodes[id].x/100*width_smallfield*width
+                        let y=phase_small.nodes[id].y/100*height_smallfield*height
                         return "translate("+0+","+ y+")"
                     })
                     .transition().delay(0.5*view_time).duration(0.5*view_time)
@@ -1602,12 +1602,12 @@ matchinfo.prototype.clear = function (type,oldtype) {
             }
             else if(type==6|| type==7)
             {
-                var smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
-                var phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
+                let smallqurt= new Field(g_sequence,x_smallfield*width,(num*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield_remove",0,0,0);
+                let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
                 arc_g.select("path").transition().delay(0.2*view_time).duration(0.2*view_time).remove()
                 arc_g.transition().delay(1.1*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
-                        return "translate("+0.83*width+","+ (num*0.05+0.02)*height+")"
+                        return "translate("+x_smallfield*width+","+ (num*0.05+0.02)*height+")"
                     })
                     // .transition().delay(0.2*view_time).duration(0.3*view_time)
                     // .attr("transform",function () {
@@ -1617,19 +1617,19 @@ matchinfo.prototype.clear = function (type,oldtype) {
                     .transition().delay(0.3*view_time).duration(0.2*view_time)
                     .attr("r",0.005*height)
                     .attr("fill",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
                         return getEventColor(phase_small.nodes[id].eid)
                     })
                     .transition().delay(0.4*view_time).duration(0.3*view_time)
                     .attr("transform",function () {
-                        var id = parseInt(d3.select(this).attr("id").substring(4))
+                        let id = parseInt(d3.select(this).attr("id").substring(4))
                         return "translate("+id*0.005*height+","+ 0+")"
                     })
                     // .transition().delay(0.4*view_time).duration(0.4*view_time)
                     // .attr("transform",function () {
-                    //     var id = parseInt(d3.select(this).attr("id").substring(4))
-                    //     var x=phase_small.nodes[id].x/100*width_smallfield*width
-                    //     var y=phase_small.nodes[id].y/100*height_smallfield*height
+                    //     let id = parseInt(d3.select(this).attr("id").substring(4))
+                    //     let x=phase_small.nodes[id].x/100*width_smallfield*width
+                    //     let y=phase_small.nodes[id].y/100*height_smallfield*height
                     //     return "translate("+x+","+ 0+")"
                     // })
                     // .transition().delay(0.5*view_time).duration(0.5*view_time)
@@ -1653,8 +1653,8 @@ matchinfo.prototype.clear = function (type,oldtype) {
 }
 
 matchinfo.prototype.viewtransform = function (type,time) {
-    var val1 = nb.sideBar.sequenceTimeOptions[nb.sideBar.sequenceTimeSel],
-        val2 = nb.sideBar.sequenceStyleSel;
+    let val1 = sideSetting.sequenceTimeOptions[sideSetting.sequenceTimeSel],
+        val2 = sideSetting.sequenceStyleSel;
     view_time=val1;
     view_transform=1;
 

@@ -1,9 +1,45 @@
 Helps = function() {
-    this.clusterSettingHelp();
-    this.showSettingHelp();
-    this.sequenceSettingHelp();
-    this.dataSettingHelp();
-    this.universalHelp();
+    this.helpList = new Array();
+    this.helpNum = 0;
+    this.currentHelp = -1;
+    this.show = 5;
+
+    this.createElements();
+
+    // this.clusterSettingHelp();
+    // this.showSettingHelp();
+    // this.sequenceSettingHelp();
+    // this.dataSettingHelp();
+    // this.universalHelp();
+};
+Helps.prototype.createElements = function() {
+    let elements = '';
+    elements += '<div id="help_container">';
+    elements += '   <div id="help_titleDiv">';
+    elements += '       <div id="help_upTriangle" class="release"></div>';
+    elements += '       <div id="help_titleList"></div>';
+    elements += '       <div id="help_downTriangle" class="release"></div>';
+    elements += '   </div>';
+    elements += '   <div id="help_pointerTriangle">';
+    elements += '      <div id="help_pointerTriangle_after"></div>';
+    elements += '      <div id="help_pointerTriangle_before"></div>';
+    elements += '   </div>';
+    elements += '   <div id="help_contentDiv">';
+    elements += '      <div id="help_contentShow"></div>';
+    elements += '   </div>';
+    elements += '</div>';
+    $('#help_content')[0].innerHTML = elements;
+
+    $('#help_upTriangle')
+        .mousedown(function() {
+            this.attr("class","press");
+        })
+        .mouseover(function() {
+            this.attr("class","over");
+        })
+        .mouseup(function() {
+            this.attr("class","release")
+        })
 };
 Helps.prototype.clusterSettingHelp = function() {
     let params = {
@@ -133,53 +169,7 @@ Helps.prototype.universalHelp = function(){
 };
 
 
-Help = function(params) {
-    let div = params.div,
-        top = params.top,
-        bottom = params.bottom,
-        left = params.left,
-        right = params.right,
-        id = params.id,
-        title = params.title,
-        place = params.place,
-        content = params.content;
-    div.attr("position","relative");
-    let d = div.append("div")
-        .style("position","absolute")
-        .style("z-index","999")
-        .style("top",top+"px")
-        .style("bottom",bottom+"px")
-        .style("left",left+"px")
-        .style("right",right+"px")
-        .style("width","16px")
-        .style("height","16px")
-        .style("padding-top",0);
-    d.append("a")
-        .attr("id",id)
-        .attr("title",title)
-        .append("img")
-        .attr("src","./img/help.png");
-
-    $("#"+id).popover({
-                trigger:'manual',
-                placement : place,
-                html: 'true',
-                content : content(),
-                animation: true
-            })
-        .on("mouseenter", function () {
-                let _this = this;
-                $(this).popover("show");
-                $(this).siblings(".popover").on("mouseleave", function () {
-                    $(_this).popover('hide');
-                });
-            })
-        .on("mouseleave", function () {
-                let _this = this;
-                setTimeout(function () {
-                    if (!$(".popover:hover").length) {
-                        $(_this).popover("hide")
-                    }
-                }, 200);
-            });
+Help = function(title, inner) {
+    this.title = title;
+    this.inner = inner;
 };
