@@ -1,0 +1,33 @@
+.navigationTextTeam {
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 20px;
+}
+
+.navigationTextVS {
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 20px;
+}
+
+.navigationTextDate {
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 15px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #444;
+}
+
+.navigationTextSetting {
+    display: table-cell;
+    cursor: pointer;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 15px;
+    color: #444;
+}

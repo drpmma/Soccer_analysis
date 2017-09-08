@@ -5,6 +5,8 @@ Data = function (_data) {
     this.players = _data.players;
     this.computePlayersStats();
     this.sequences = _data.sequences;
+    console.log(_data);
+    StoreSequence(_data.sequences);
     _data.sequences.forEach(function(seq){
         seq.actions.forEach(function(action){
             if(action.eid == E_DEF_CLEARANCE) {
@@ -26,6 +28,15 @@ Data = function (_data) {
             }
         });
     });
+}
+
+var ConstAllSequences = [];
+function StoreSequence(AllSequences) {
+    ConstAllSequences = AllSequences;
+}
+
+function PassSequence() {
+    return ConstAllSequences;
 }
 
 Data.prototype.computePlayersStats = function(){
@@ -362,6 +373,113 @@ function getArc(sx,sy,tx,ty,r){
         {x:tx, y:ty}];
 }
 
+function getPassCategory(pass, source){
+    //rebuild the event to check if a centre
+    var rebuiltAction = {
+        eid: pass.eid,
+        qualifiers: pass.qualifiers,
+        x: source.x,
+        y: source.y
+    };
+
+    if(isCorner(rebuiltAction)){
+        return SUB_CHAIN_TYPE_PASS_CORNER;
+    }
+    if(isCentreAndNotCorner(rebuiltAction)) {
+        return SUB_CHAIN_TYPE_PASS_CENTRE;
+    }
+
+
+    //else
+    for(var q in pass.qualifiers){
+        var qual = pass.qualifiers[q];
+        switch(qual.qid){
+            //long passes
+            case Q_PASS_LONG:
+            case Q_PASS_CROSS:
+            case Q_PASS_SWITCH_OF_PLAY:
+            case Q_PASS_CHIPPED:
+            case Q_PASS_THROUGH:
+            case Q_PASS_LAY_OFF:
+            case Q_PASS_LAUNCH:
+                return SUB_CHAIN_TYPE_PASS_LONG;
+
+            //freekicks/throw ins
+            case Q_PASS_THROW_IN:
+            case Q_PASS_FREE_KICK:
+            case Q_PASS_CORNER:
+                return SUB_CHAIN_TYPE_PASS_FREEKICK;
+
+            /*
+             //assist
+             case Q_PASS_ASSIST:
+             throw "can't be a pass assist ! "+JSON.stringify(pass);
+             */
+            //nothing to do
+            case Q_PASS_ATTACKING:
+            case Q_PASS_PULL_BACK:
+                break;
+
+            //head passes
+            case Q_PASS_HEAD:
+            case Q_PASS_FLICK_ON:
+                return SUB_CHAIN_TYPE_PASS_HEAD;
+        }
+    }
+    return SUB_CHAIN_TYPE_PASS_STANDARD;
+}
+
+function isCentreAndNotCorner(action, fromRight){
+    if(action.eid != E_PASS) return false;
+
+    //if a corner, return false
+    if(isCorner(action)) return false;
+
+    if(!posInCentreOriginArea(action.x, action.y))return false;
+    var dest = getPassDestPosition(action);
+    //console.log("dest",dest);
+    if(!posInCentreDestinationArea(dest.x, dest.y))return false;
+
+    if(fromRight != undefined) {
+        if (fromRight) {
+            return (action.y <= 50);
+        }
+        return (action.y > 50);
+    }
+    return true;
+
+}
+
+function isCorner(action, fromRight){
+    if(action.eid != E_PASS) return false;
+    var is_corner = false;
+    for(var q in action.qualifiers){
+        var qual = action.qualifiers[q];
+        if(qual.qid == Q_PASS_CORNER){
+            is_corner = true;
+            break;
+        }
+    }
+    if(is_corner){
+        if(fromRight != undefined) {
+            if (fromRight) {
+                return (action.y <= 50);
+            }
+            return (action.y > 50);
+        }
+        return true;
+    }
+    return false;
+}
+
+function posInCentreOriginArea(x,y){
+    return x >= 80 && (y <= 30 || y >= 70 );
+}
+
+function posInCentreDestinationArea(x,y){
+    return x >= 70 && y >= 20 && y <= 80 ;
+}
+
 function isShot(action){
     return C_SHOT.indexOf(action.eid) != -1;
 }
@@ -465,6 +583,26 @@ var PID_SHOT_DEST = -1;
  */
 var SHOT_DEST_TYPE_MOUTH = 0;
 var SHOT_DEST_TYPE_BLOCKED = 1;
+
+/*
+ Constants for clustering
+ */
+var SUB_CHAIN_TYPE_SHOT = 1;
+var SUB_CHAIN_TYPE_LONG_RUN = 2;
+var SUB_CHAIN_TYPE_NON_PASS_EVENT = 3;
+var SUB_CHAIN_TYPE_PERSONAL_ACTION_BEFORE_SHOT = 4;
+var SUB_CHAIN_TYPE_SIMPLE_NODE = 50;
+
+//group of passes
+var SUB_CHAIN_TYPE_PASS_CLUSTER = 6;
+
+//unique passes
+var SUB_CHAIN_TYPE_PASS_STANDARD = 100;
+var SUB_CHAIN_TYPE_PASS_LONG = 101;
+var SUB_CHAIN_TYPE_PASS_FREEKICK = 102;
+var SUB_CHAIN_TYPE_PASS_HEAD = 103;
+var SUB_CHAIN_TYPE_PASS_CENTRE = 104;
+var SUB_CHAIN_TYPE_PASS_CORNER = 105;
 
 //----------------------------------Events Constants---------------------------------//
 var E_DUPLICATE = -1;
@@ -768,3 +906,4 @@ var CT_Hive_Plot = 3142;
 var CT_Tag_Cloud = 3143;
 var CT_Matrix = 3144;
 var CT_Shoot = 3145;
+var CT_Centre = 3146;
