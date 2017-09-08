@@ -129,10 +129,14 @@ function normal_cluster(phase, start, end, num) {
                 path = d3.select("#Path" + (id - 1).toString())
                 .select("path");
                 var d_array = path.attr("d").split(" ");
+
                 path.attr("d", function () {
-                    return d_array[0] + " " + d_array[1] + " " + d_array[2] + " "
-                        + d_array[3] + " " + (d3.event.x + cluster_chain[num][i].x) + " " + (d3.event.y + cluster_chain[num][i].y);
+                    var x=d3.event.x + cluster_chain[num][i].x,y=d3.event.y + cluster_chain[num][i].y;
+                    var s=d_array[0] + " " + d_array[1] + " " + d_array[2] + " "+ "Q" + " " +
+                        (x+parseInt(d_array[1]))/2+" "+((y+parseInt(d_array[2]))/2+0.2*(x-parseInt(d_array[1])))+" "+x+" "+y;
+                    return s;
                 })
+                path.attr("fill","none")
             }
             if(id != phase.node.length - 1)
             {
@@ -140,9 +144,11 @@ function normal_cluster(phase, start, end, num) {
                     .select("path");
                 var d_array = path.attr("d").split(" ");
                 path.attr("d", function () {
-                    return d_array[0] + " " + (d3.event.x + cluster_chain[num][i].x) + " " + (d3.event.y + cluster_chain[num][i].y)
-                            + " " +  d_array[3] + " " + d_array[4] + " " + d_array[5];
+                    var x=d3.event.x + cluster_chain[num][i].x,y=d3.event.y + cluster_chain[num][i].y;
+                    var s=d_array[0]+" "+x+" "+y+" "+"Q"+" "+(x+parseInt(d_array[6]))/2+" "+((y+parseInt(d_array[7]))/2-0.2*(x-parseInt(d_array[6])))+" " + d_array[6] + " " + d_array[7];
+                    return s;
                 })
+                path.attr("fill","none")
             }
         }
     }
@@ -255,12 +261,13 @@ function normal_cluster(phase, start, end, num) {
                             st = Path.select("path").attr("d");
                             starr = st.split(/\s/);
                             console.log(prex,prey);
-                            if(prex == -1 && prey == -1) st = "M "+starr[1]+" "+starr[2]+" L "+changex+" "+changey;
-                            else st = "M "+prex+" "+prey+" L "+changex+" "+changey;
+                            if(prex == -1 && prey == -1) st = "M "+starr[1]+" "+starr[2]+" Q "+(parseInt(starr[1])+parseInt(changex))/2+" "+((parseInt(starr[2])+parseInt(changey))/2-0.2*(parseInt(starr[1])-parseInt(changex)))+" "+changex+" "+changey;
+                            else st = "M "+prex+" "+prey+" Q "+(parseInt(prex)+parseInt(changex))/2+" "+(((parseInt(prey)+parseInt(changey)))/2-0.2*(parseInt(prex)-parseInt(changex)))+" "+changex+" "+changey;
                             prex = changex; prey = changey;
                             return st;
                         })
-                        .attr("stroke",function(){if(now>start&&now<=end) return "rgb(200,200,200)"; else return "black";});
+                        .attr("stroke",function(){if(now>start&&now<=end) return "rgb(200,200,200)"; else return "black";})
+                        .attr("fill","none");
                 }
                 Path = d3.select("#Path"+now);
                 Path.select("path")
@@ -269,9 +276,9 @@ function normal_cluster(phase, start, end, num) {
                     .attr("d",function(){
                         st = Path.select("path").attr("d");
                         starr = st.split(/\s/);
-                        return "M "+changex+" "+changey+" L "+starr[4]+" "+starr[5];
-                    });
-
+                        return "M "+changex+" "+changey+" Q "+(parseInt(starr[4])+parseInt(changex))/2+" "+((parseInt(starr[5])+parseInt(changey))/2+0.2*(parseInt(starr[4])-parseInt(changex)))+" "+starr[4]+" "+starr[5];
+                    })
+                    .attr("fill","none");
                 break;
             }
             case 1://Node-link-all
