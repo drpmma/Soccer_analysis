@@ -1,0 +1,86 @@
+html, body
+{
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#svg_div
+{
+    position: absolute;
+    width: 100%;
+    height: 99.5%;
+    background-color: whitesmoke;
+}
+
+.visuShotsSlider line {
+    stroke: red;
+    stroke-width: 10;
+    cursor: pointer;
+}
+
+.visuShotsSlider rect {
+    fill: white;
+}
+
+.visuShotsFilterModes, .visuShotsVisuModes, .visuShotsBrushing{
+    fill:white;
+}
+
+.selection{
+    stroke: orange;
+    stroke-width:2;
+    fill-opacity: .08;
+    shape-rendering: crispEdges;
+}
+
+.shot_hidden{
+    opacity:0;
+}
+
+.shot_visible{
+    opacity:.6;
+}
+
+.shot_transparent{
+    opacity:0.15;
+}
+
+.modes_text, .filters_text, .stats_text{
+    /*font-size: 9px;*/
+    font-family:'Trebuchet MS',Arial, Helvetica;
+    fill:white;
+    stroke-width:0;
+}
+
+.modes_selected, .orders_selected{
+    fill:red;
+}
+
+.fieldRect
+{
+    stroke-width: 1;
+    fill: white;
+    stroke: gray;
+}
+
+.fieldLines
+{
+    stroke-width: 1;
+    fill: white;
+    stroke: gray;
+}
+
+/*.Points*/
+/*{*/
+    /*stroke-width: 0.5%;*/
+    /*fill: white;*/
+    /*stroke: gray;*/
+/*}*/
+
+/*.Gate*/
+/*{*/
+    /*stroke-width: 2%;*/
+    /*fill: white;*/
+    /*stroke: gray;*/
+/*}*/
