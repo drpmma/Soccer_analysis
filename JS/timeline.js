@@ -114,7 +114,7 @@ matchinfo = function (svg,field,data,width,height) {
                     d3.select(this).selectAll("#mouse_field").remove();
             })
             .on("click",function () {
-                let val1 = sideSetting.nodeTimeOptions[sideSetting.nodeTimeSel],
+                let val1 = sideSetting.showTimeParams.value,
                     val2 = sideSetting.sequenceStyleSel;
                 time=val1;
                 id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
@@ -1653,7 +1653,7 @@ matchinfo.prototype.clear = function (type,oldtype) {
 }
 
 matchinfo.prototype.viewtransform = function (type,time) {
-    let val1 = sideSetting.sequenceTimeOptions[sideSetting.sequenceTimeSel],
+    let val1 = sideSetting.sequenceTimeParams.value,
         val2 = sideSetting.sequenceStyleSel;
     view_time=val1;
     view_transform=1;

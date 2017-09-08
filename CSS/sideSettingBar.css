@@ -2,3 +2,7 @@
     overflow: auto;
     max-height: 200px;
 }
+
+.ui-draggable, .ui-droppable {
+    background-position: top;
+}

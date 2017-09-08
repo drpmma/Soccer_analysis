@@ -9,12 +9,15 @@
     <link rel="stylesheet" href="./CSS/helps.css" type="text/css" />
     <link rel="stylesheet" href="./CSS/cluster.css" type="text/css" />
     <link rel="stylesheet" href="./CSS/sideSettingBar.css" type="text/css" />
-    <script type = "text/javascript" src = "LIB/d3.js"></script>
-    <script type = "text/javascript" src = "LIB/d3.layout.cloud.js"></script>
+    <link rel="stylesheet" href="./CSS/jquery-ui.css" type="text/css" />
+    <script type = "text/javascript" src = "LIB/d3/d3.js"></script>
+    <script type = "text/javascript" src = "LIB/d3/d3.layout.cloud.js"></script>
     <link href="./CSS/bootstrap.css" rel="stylesheet">
-    <script src="./LIB/jquery.min.js"></script>
-    <script src="./LIB/bootstrap.min.js"></script>
+    <script src="LIB/jQuery/jquery.min.js"></script>
+    <script src="LIB/jQuery/jquery-ui.js"></script>
+    <script src="LIB/bootstrap/bootstrap.min.js"></script>
     <script type = "text/javascript" src = "JS/NavigationBar.js"></script>
+    <script type = "text/javascript" src = "JS/SideSettingBar.js"></script>
     <script type = "text/javascript" src = "JS/help.js"></script>
     <script type = "text/javascript" src = "JS/Data.js"></script>
     <script type = "text/javascript" src = "JS/Field.js"></script>
@@ -98,20 +101,30 @@
                 <div class="panel panel-default" style="margin: 5px 0 5px 0;">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" href="#collapse_cluster">显示设置</a>
+                            <a data-toggle="collapse" href="#collapse_show">显示设置</a>
                         </h4>
                     </div>
-                    <div id="collapse_cluster" class="panel-collapse collapse in">
+                    <div id="collapse_show" class="panel-collapse collapse in">
                         <div class="panel-body" id="showSetting"></div>
                     </div>
                 </div>
                 <div class="panel panel-default" style="margin: 5px 0 5px 0;">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" href="#collapse_show">聚团设置</a>
+                            <a data-toggle="collapse" href="#collapse_abstract">抽象化设置</a>
                         </h4>
                     </div>
-                    <div id="collapse_show" class="panel-collapse collapse in">
+                    <div id="collapse_abstract" class="panel-collapse collapse in">
+                        <div class="panel-body" id="abstractSetting"></div>
+                    </div>
+                </div>
+                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse_cluster">聚团设置</a>
+                        </h4>
+                    </div>
+                    <div id="collapse_cluster" class="panel-collapse collapse in">
                         <div class="panel-body" id="clusterSetting"></div>
                     </div>
                 </div>
