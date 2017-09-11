@@ -9,7 +9,8 @@ ClusterManager = function(field, sequence) {
         .attr("id", "clusterGroup")
         .attr("transform", "translate(0,0)")
         .attr("width", this.field.fieldGroup.attr("width"))
-        .attr("height", this.field.fieldGroup.attr("height"));
+        .attr("height", this.field.fieldGroup.attr("height"))
+        .attr("opacity", 1);
     this.clusterLimit = this.clusterGroup.append("g")
         .attr("id","clusterLayoutLimit")
         .attr("transform", "translate(0,0)")
@@ -283,6 +284,13 @@ ClusterManager.prototype.relayout_sort = function(start, list, end) {
 ClusterManager.prototype.relayout_layout = function() {
     for(var i = 0; i < this.clusterNum; i++)
         this.clusters[i].resetPos(this.clustersGeometry[i].x,this.clustersGeometry[i].y,this.changeDuration,i*this.changeDuration);
+};
+
+ClusterManager.prototype.show = function(duration) {
+    this.clusterGroup.transition().duration(duration).attr("opacity", 1);
+};
+ClusterManager.prototype.hide = function(duration) {
+    this.clusterGroup.transition().duration(duration).attr("opacity", 0);
 };
 
 Cluster = function(start, end, type, num) {

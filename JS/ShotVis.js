@@ -729,7 +729,8 @@ ShotVis.prototype.getContextShots = function(){
 
 ShotVis.prototype.getContextData = function(){
     this.context_data = this.getContextShots();
-    for(var s in this.context_data){
+    console.log(this.context_data);
+    for(var s = 0; s< this.context_data.length; s++){
         this.context_data[s].shot_type = this.getShotType(this.context_data[s]);
     }
 };

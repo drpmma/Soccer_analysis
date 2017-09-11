@@ -548,7 +548,7 @@ function clearPitch() {
         .duration(500)
         .style("opacity",0);
 
-
+    if(cm != undefined) cm.hide(500);
 
 }
 
@@ -679,8 +679,6 @@ function redrawAllPitch(hyAllSequencesNodes, MethodName, MethodLayer) {
 
 
 
-
-
 }
 
 function kMeansOrkMedoids(hyDrawPoints, k) {
@@ -712,7 +710,7 @@ function drawAllOriginalSequences(hyAllSequences) {
 
     }
 
-
+    if(cm != undefined) cm.show(0);
 }
 
 function abstractDraw(value) {
@@ -757,6 +755,7 @@ function abstractDraw(value) {
                     .transition()
                     .duration(500)
                     .style("opacity",1);
+                if(cm != undefined) cm.show(500);
             }
             break;
         case 10:

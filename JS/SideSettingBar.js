@@ -331,7 +331,7 @@ sideSettingBar.prototype.AddSlider = function(params) {
         callback = params.callback;
 
     g.append("p").attr("id","setting_slider_title_"+slidername).text(t+"　：　"+value)
-        .append("div").attr("id","setting_slider_"+slidername);
+        .append("div").attr("id","setting_slider_"+slidername).style("margin-top","5px");
 
     $( "#setting_slider_"+slidername)
         .slider({
