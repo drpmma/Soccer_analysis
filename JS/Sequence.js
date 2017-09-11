@@ -524,10 +524,11 @@ function ChangeAllFlag() {
 }
 
 function ChangeClusterAlgorithmMode(Mode) {
-    if(Mode == "k-means"){
+    console.log(Mode);
+    if(Mode == 1){
         CLUSTERALGORITHMMODE = "k-means" ;
     }
-    else {
+    else if(Mode == 2){
         CLUSTERALGORITHMMODE = "k-medoids" ;
     }
     console.log(CLUSTERALGORITHMMODE)
@@ -715,6 +716,7 @@ function drawAllOriginalSequences(hyAllSequences) {
 }
 
 function abstractDraw(value) {
+    console.log(value);
     //console.log(AllFlag);
     //console.log("ClusterAlgorithmMode " + CLUSTERALGORITHMMODE);
     if( CurrentXscale == undefined) {
@@ -722,7 +724,7 @@ function abstractDraw(value) {
     }
 
     var tempAllSequences = PassSequence();
-    console.log(tempAllSequences[5].actions)
+    //console.log(tempAllSequences[5].actions)
     var hyAllSequences = tempAllSequences;
 
     var hyAllSequencesNodes = [];

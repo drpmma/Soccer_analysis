@@ -195,6 +195,7 @@ ShotVis.prototype.drawShots = function () {
 }
 
 ShotVis.prototype.getShotType = function(shot){
+    console.log(shot, E_SHOT_MISS, E_SHOT_POST, E_SHOT_SAVED, E_SHOT_GOAL,E_SHOT_CHANCE_MISSED);
     switch(shot.eid){
         case E_SHOT_MISS:
             return "missed";
@@ -715,7 +716,7 @@ ShotVis.prototype.clickVisuMode = function(mode){
 ShotVis.prototype.getContextShots = function(){
     var shots = [];
 
-    data.players.forEach(function(player){
+    data.players.team0.forEach(function(player){
         if(player.events == undefined) return;
         player.events.forEach(function(d){
             if(isShot(d)){
@@ -761,7 +762,7 @@ ShotVis.prototype.getShotColor = function (shot_type) {
         case "missed":
             return "red";
         default:
-            console.log("unknown name for shot: " + d);
+//            console.log("unknown name for shot: " + d);
             return "yellow";
     }
 }

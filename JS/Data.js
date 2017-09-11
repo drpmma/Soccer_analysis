@@ -3,8 +3,12 @@ Data = function (_data) {
     this.matchInfos = _data.matchInfos;
     this.matrixPass = _data.matrixPass;
     this.players = _data.players;
-    this.computePlayersStats();
     this.sequences = _data.sequences;
+
+    this.dataHandle();
+
+    this.computePlayersStats();
+
     console.log(_data);
     StoreSequence(_data.sequences);
     _data.sequences.forEach(function(seq){
@@ -30,6 +34,47 @@ Data = function (_data) {
     });
 }
 
+Data.prototype.dataHandle = function() {
+    for(let i = 0; i < this.players.team0.length; i++) {
+        this.players.team0[i].events = new Array();
+    }
+    for(let i = 0; i < this.sequences.length; i++) {
+        let sequence = this.sequences[i];
+
+        for(let j = 0; j < sequence.actions.length; j++) {
+            let action = sequence.actions[j];
+            action.eid = +action.eid;
+            action.x = +action.pos.x;
+            action.y = +action.pos.y;
+
+            for(let k = 0; k < this.players.team0.length; k++)
+                if(this.players.team0[k].pid == action.pid) this.players.team0[k].events.push(action);
+            for(let k = 0; k < action.qualifiers.length; k++)
+                action.qualifiers[k].qid = +action.qualifiers[k].qid;
+            if(action.eid == E_PASS && j != sequence.actions.length-1) {
+                let flag1 = 0, flag2 = 0;
+                for(let k = 0; k < action.qualifiers.length; k++) {
+                    let qualifier = action.qualifiers[k];
+
+                    if(qualifier.qid == Q_PASS_END_X) flag1 = 1;
+                    if(qualifier.qid == Q_PASS_END_Y) flag2 = 1;
+                }
+                if(flag1 == 0)
+                    action.qualifiers.push({
+                        qid: Q_PASS_END_X,
+                        value: sequence.actions[j+1].pos.x
+                    })
+                if(flag2 == 0)
+                    action.qualifiers.push({
+                        qid: Q_PASS_END_Y,
+                        value: sequence.actions[j+1].pos.y
+                    })
+            }
+        }
+    }
+
+}
+
 var ConstAllSequences = [];
 function StoreSequence(AllSequences) {
     ConstAllSequences = AllSequences;
@@ -40,10 +85,10 @@ function PassSequence() {
 }
 
 Data.prototype.computePlayersStats = function(){
-    for(var i = 0; i < this.players.length; i++)
+    for(var i = 0; i < this.players.team0.length; i++)
     //this.players.forEach(function(player)
     {
-        this.players[i].stats = computePlayerStat(this.players[i]);
+        this.players.team0[i].stats = computePlayerStat(this.players.team0[i]);
     };
 
 
@@ -150,6 +195,8 @@ Data.prototype.computePlayersStats = function(){
 
 
                     //events to ignore
+                    case E_RUN:
+                    case E_LONG_RUN:
                     case E_BALL_OUT:
                     case 49://Ball recovery
                     case 61://ball touch
@@ -250,8 +297,8 @@ function getShotDestination(action){
             //do nothing
         }
     }
-    if(mouthY != undefined && mouthZ != undefined) return {type: SHOT_DEST_TYPE_MOUTH, y: parseFloat(mouthY), z: parseFloat(mouthZ)};
-    else if(blockedX != undefined && blockedY != undefined) return {type: SHOT_DEST_TYPE_BLOCKED, x: parseFloat(blockedX), y: parseFloat(blockedY)};
+    if(mouthY !== undefined && mouthZ !== undefined) return {type: SHOT_DEST_TYPE_MOUTH, y: parseFloat(mouthY), z: parseFloat(mouthZ)};
+    else if(blockedX !== undefined && blockedY !== undefined) return {type: SHOT_DEST_TYPE_BLOCKED, x: parseFloat(blockedX), y: parseFloat(blockedY)};
     else{
         console.log("Unknown shot mouth position in "+JSON.stringify(action));
         return {type: SHOT_DEST_TYPE_BLOCKED, x: parseFloat(action.x), y: parseFloat(action.y)};

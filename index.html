@@ -25,6 +25,8 @@
     <script type = "text/javascript" src = "JS/infos.js"></script>
     <script type = "text/javascript" src = "JS/dataconvert.js"></script>
     <script type = "text/javascript" src = "JS/model.js"></script>
+    <script type = "text/javascript" src = "JS/timeline.js"></script>
+    <script type = "text/javascript" src = "JS/Sequence.js"></script>
 
     <link rel="stylesheet" href="./CSS/UnifrakturMaguntia.css">
     <link rel="stylesheet" href="./CSS/jqmath-0.4.0.css">
@@ -42,54 +44,54 @@
     <nav class="navbar navbar-default" style="margin-bottom:0">
         <div class="container-fluid">
             <div class="row box">
-                <div class="col-md-3 navbar-header">
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navbar-header">
                     <a class="navbar-brand" href="#">
                         <img alt="brand" src="./img/soccer.ico"/>
                     </a>
                     <a class="navbar-brand" href="#">足球可视化系统</a>
                 </div>
-                <div class="col-md-5">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
                     <ul class="nav navbar-nav navbar-match">
-                        <li class="navigationTextTeam col-md-5">
+                        <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
                             <a style="float:left" id="vir_nav_team0"></a>
                             <a style="float:right" id="vir_nav_score0"></a>
                         </li>
                         <li class="disabled navigationTextVS col-md-2" id="vir_nav_vs"></li>
-                        <li class="navigationTextTeam col-md-5">
+                        <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
                             <a style="float:left" id="vir_nav_score1"></a>
                             <a style="float:right" id="vir_nav_team1"></a>
                         </li>
                     </ul>
                 </div>
-                <div id="vir_navigationDate" class="col-md-3 navigationTextDate"></div>
-                <div class="col-md-1 navigationTextHelp" data-toggle="modal" data-target="#help_manual">帮助手册</div>
+                <div id="vir_navigationDate" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navigationTextDate"></div>
+                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 navigationTextHelp" data-toggle="modal" data-target="#help_manual">帮助手册</div>
             </div>
         </div>
     </nav>
     <nav class="navbar navbar-default navbar-fixed-top" style="margin-bottom:0">
         <div class="container-fluid">
             <div class="row box">
-                <div id="navigationHead" class="col-md-3 navbar-header">
+                <div id="navigationHead" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navbar-header">
                     <a class="navbar-brand" href="#">
                         <img alt="brand" src="./img/soccer.ico"/>
                     </a>
                     <a class="navbar-brand" href="#">足球可视化系统</a>
                 </div>
-                <div id="navigationMatch" class="col-md-5">
+                <div id="navigationMatch" class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
                     <ul class="nav navbar-nav navbar-match">
-                        <li class="navigationTextTeam col-md-5">
+                        <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
                             <a style="float:left" id="nav_team0"></a>
                             <a style="float:right" id="nav_score0"></a>
                         </li>
                         <li class="disabled navigationTextVS col-md-2" id="nav_vs"></li>
-                        <li class="navigationTextTeam col-md-5">
+                        <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
                             <a style="float:left" id="nav_score1"></a>
                             <a style="float:right" id="nav_team1"></a>
                         </li>
                     </ul>
                 </div>
-                <div id="navigationDate" class="col-md-3 navigationTextDate"></div>
-                <div id="navigationHelp" class="col-md-1 navigationTextHelp" data-toggle="modal" data-target="#help_manual">帮助手册</div>
+                <div id="navigationDate" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navigationTextDate"></div>
+                <div id="navigationHelp" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 navigationTextHelp" data-toggle="modal" data-target="#help_manual">帮助手册</div>
             </div>
         </div>
     </nav>
@@ -97,7 +99,7 @@
     <!--主体-->
     <div class="container-fluid mainwindow" style="margin:0;padding:0;">
         <div class="row box" style="margin:0;padding:0;height:100%;">
-            <div id="settingBar" class="navbar navbar-default navbar-setting col-md-3">
+            <div id="settingBar" class="navbar navbar-default navbar-setting col-lg-3 col-md-3 col-sm-3 col-xs-3">
                 <div class="panel panel-default" style="margin: 5px 0 5px 0;">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -149,7 +151,7 @@
                     </div>
                 </div>
             </div>
-            <div id="svg_div" class="navbar navbar-default col-md-12" style="float:left">
+            <div id="svg_div" class="navbar navbar-default col-lg-12 col-md-12 col-sm-12 col-xs-12" style="float:left">
             </div>
         </div>
     </div>

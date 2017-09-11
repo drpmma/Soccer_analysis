@@ -12,11 +12,11 @@ PlayersManager = function(data) {
     for (var i = 0; i < data.length; i++)
         switch (data[i].position)
         {
-            case "Goalkeeper": num[0]++; break;
-            case "Defender": num[1]++; break;
-            case "Midfielder": num[2]++; break;
-            case "Striker": num[3]++; break;
-            case "Substitute": num[4]++; break;
+            case "守门员": num[0]++; break;
+            case "后卫": num[1]++; break;
+            case "中场": num[2]++; break;
+            case "前锋": num[3]++; break;
+            case "替补": num[4]++; break;
         }
     this.pos = new Array();
     for (i = 0; i < data.length; i++)
@@ -24,11 +24,11 @@ PlayersManager = function(data) {
         var x, y;
         switch (data[i].position)
         {
-            case "Goalkeeper": num[5]++; x = num[5] * 100 / (num[0]+1); y = 90; break;
-            case "Defender": num[6]++; x = num[6] * 100 / (num[1]+1); y = 70; break;
-            case "Midfielder": num[7]++; x = num[7] * 100 / (num[2]+1); y = 50; break;
-            case "Striker": num[8]++; x = num[8] * 100 / (num[3]+1); y = 30; break;
-            case "Substitute": num[9]++; x = -6; y = 105 - num[9]*8; break;
+            case "守门员": num[5]++; x = num[5] * 100 / (num[0]+1); y = 90; break;
+            case "后卫": num[6]++; x = num[6] * 100 / (num[1]+1); y = 70; break;
+            case "中场": num[7]++; x = num[7] * 100 / (num[2]+1); y = 50; break;
+            case "前锋": num[8]++; x = num[8] * 100 / (num[3]+1); y = 30; break;
+            case "替补": num[9]++; x = -6; y = 105 - num[9]*8; break;
         }
         this.pos.push({
             pid: data[i].pid,
@@ -122,17 +122,19 @@ PlayersManager.prototype.changeToJersey = function() {
 };
 
 PlayersManager.prototype.findJerseyByPid = function(pid) {
-    for (var i = 0; i < data.players.length; i++)
-        if(data.players[i].pid == pid) break;
-    if(i == data.players.length) return undefined;
-    else return data.players[i].jersey;
+    let players = data.players.team0;
+    for (var i = 0; i < players.length; i++)
+        if(players[i].pid == pid) break;
+    if(i == players.length) return undefined;
+    else return players[i].jersey;
 };
 
 PlayersManager.prototype.findNameByPid = function(pid) {
-    for (var i = 0; i < data.players.length; i++)
-        if(data.players[i].pid == pid) break;
-    if(i == data.players.length) return undefined;
-    else return data.players[i].first_name;
+    let players = data.players.team0
+    for (var i = 0; i < players.length; i++)
+        if(players[i].pid == pid) break;
+    if(i == players.length) return undefined;
+    else return players[i].name;
 };
 
 PlayersManager.prototype.findPositionByPid = function(pid) {
@@ -185,7 +187,7 @@ Player = function (field, x, y, size, pid, data) {
         .attr("style", "cursor: pointer;")
         .on("click", function() {return that.click();});
     this.playerGroup.append("title")
-        .text(this.data.first_name + "-" + this.data.position);
+        .text(this.data.name + "-" + this.data.position);
 
     this.drawCircle();
     //this.drawJersey();

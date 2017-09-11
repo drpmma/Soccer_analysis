@@ -107,7 +107,7 @@ CentreVis.prototype.getContextData = function () {
 CentreVis.prototype.getContextCentres = function (fromRight) {
     var centres = [];
 
-    data.players.forEach(function(player){
+    data.players.team0.forEach(function(player){
         if(player.events == undefined) return;
         player.events.forEach(function(event){
             if(isCentreAndNotCorner(event, fromRight)){

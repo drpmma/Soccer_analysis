@@ -142,7 +142,7 @@ Infos.prototype.changeValues = function(pid) {
             this.infosGroup.select("#name").select("text")
                 .transition()
                 .duration(this.changeDuration)
-                .text(this.data[i].first_name + " " + this.data[i].last_name + " - " + this.data[i].jersey + " " + this.data[i].position);
+                .text(this.data[i].name + " - " + this.data[i].jersey + " " + this.data[i].position);
 
             for (var j = 0; j < this.data[i].stats.length; j++)
                 this.info[j].changeValue(this.data[i].stats[j].nb);

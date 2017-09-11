@@ -40,15 +40,18 @@ sideSettingBar.prototype.AbstractMethodsSelect = function(k) {
     console.log("AbstractSelect"+k);
     this.abstractMethodSel = k;
     ChangeClusterAlgorithmMode(k);
+    this.AbstractLayerSelect(this.abstractLayerParams.value);
 };
 sideSettingBar.prototype.AbstractLayerSelect = function(k) {
     console.log("AbstractLayerSelect"+k);
-    this.abstractLayerSel = k;
-    abstractDraw(10*k);
+    if(k == 0) abstractDraw(0);
+    else if(this.abstractMethodSel == 0) abstractDraw(k);
+    else abstractDraw((+k)+110);
 };
 sideSettingBar.prototype.SingleOrAll = function() {
     console.log("SingleOrAll");
     ChangeAllFlag();
+    this.AbstractLayerSelect(this.abstractLayerParams.value);
 };
 
 sideSettingBar.prototype.sequenceStyleSelect = function(k) {
@@ -111,7 +114,7 @@ sideSettingBar.prototype.sequenceChangeBtn = function() {
 };
 sideSettingBar.prototype.dataChangeBtn = function() {
     let data_name = new Array();
-    data_name[0] = "./data/dumpData_t178_m456391_agg0.json";
+    data_name[0] = "./data/MatchData_合并.json";
     data_name[1] = "./data/dumpData_t1_m483676_agg0.json";
     data_name[2] = "./data/dumpData_t120_m483683_agg0.json";
     data_name[3] = "./data/dumpData_t186_m456391_agg0.json";
@@ -169,12 +172,22 @@ sideSettingBar.prototype.CreateOptions = function() {
         }
     };
 
-    this.abstractLayers = new Array();
-    for(i = 0; i < 22; i++) this.abstractLayers[i] = i*10;
-    this.abstractLayerSel = 0;
+    this.abstractLayerParams = {
+        title: "抽象程度",
+        name: "abstract_layer",
+        min: 0,
+        max: 100,
+        value: 0,
+        g: this.abstractSetting,
+        step: 10,
+        callback: function(k) {
+            that.abstractLayerParams.value = k;
+            that.AbstractLayerSelect(k);
+        }
+    };
 
     this.abstractMethods = new Array();
-    this.abstractMethods = ["k-means","k-medoids"];
+    this.abstractMethods = ["简化","平均聚合","中位聚合"];
     this.abstractMethodSel = 0;
 
     this.playerStyleOptions = new Array();
@@ -236,7 +249,7 @@ sideSettingBar.prototype.CreateElements = function() {
     this.AddSelection("中英文选择",this.EnCnOptions,this.EnCnSel,"default",this.showSetting,function(k){that.EnCnSelect(k)});
 
     this.AddSelection("抽象方法",this.abstractMethods,this.abstractMethodSel,"default",this.abstractSetting,function(k){that.AbstractMethodsSelect(k) });
-    this.AddSelection("抽象程度",this.abstractLayers,this.abstractLayerSel,"default",this.abstractSetting,function(k){that.AbstractLayerSelect(k)});
+    this.AddSlider(this.abstractLayerParams);
     temp = this.AddButtonToolBar(this.abstractSetting);
     this.AddButton("显示所有/单次进攻","default",this.AddButtonGroup(temp),function () {
         that.SingleOrAll()
