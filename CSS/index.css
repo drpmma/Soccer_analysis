@@ -18,6 +18,60 @@ body {
     background-color: whitesmoke;
 }
 
+#shortcut {
+    position: absolute;
+    left: 13%;
+    top: 80%;
+    width: 61.2%;
+    height: 19%;
+
+    /*border-width: 1px;*/
+    /*border-style: solid;*/
+    /*border-color: gray;*/
+    /*border-radius: 10px;*/
+
+    /*padding-top: 0.5%;*/
+    /*padding-bottom: 0.5%;*/
+    /*padding-left: 0.5%;*/
+    /*padding-right: 0.5%;*/
+
+    background-color: whitesmoke;
+}
+#tips {
+    width: 23%;
+    height: 99%;
+    display: inline;
+    float: left;
+
+    border-width: 1px;
+    border-style: solid;
+    border-color: whitesmoke;
+    border-radius: 10px;
+
+    /*background-color: white;*/
+}
+#tips_color, #tips_line {
+    width: 50%;
+    height: 100%;
+    display: inline;
+    float: left;
+
+    /*background-color: white;*/
+}
+#toolbar {
+    width: 76%;
+    height: 99%;
+    display: inline;
+    float: right;
+
+    border-width: 1px;
+    border-style: solid;
+    border-color: whitesmoke;
+    border-radius: 10px;
+
+    /*background-color: white;*/
+}
+
 .mainwindow {
     margin: 0;
     padding: 0;
