@@ -8,6 +8,11 @@ var y_timeline = 0.72
 var y_height = 0.02
 var width_smallfield=0.065
 var height_smallfield=0.07
+var x_donut=0.06
+var r_donut=0.05
+var length_align=0.11
+var height_alignrect=0.015
+var heightbetween_rect=0.04
 
 timeline= function (svg,width,height) {
     this.svg=svg;
@@ -183,7 +188,7 @@ matchinfo = function (svg,field,data,width,height) {
                 return color;
             })
     }
-    this.viewtransform(0,0);
+    this.viewtransform(7,0);
 }
 
 matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequence) {
@@ -246,7 +251,7 @@ matchinfo.prototype.donut =function () {
         let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         let arc=d3.arc()
             .innerRadius(0)
-            .outerRadius(0.07*width)
+            .outerRadius(r_donut*width)
             .padAngle(0.005)
             .startAngle(angele_data[num].startAngle)
             .endAngle(angele_data[num].endAngle)
@@ -274,7 +279,7 @@ matchinfo.prototype.donut =function () {
             })
         g.transition().duration(0.5*view_time)
             .delay(2*view_time).attr("transform",function () {
-            return "translate("+(x_smallfield+0.09)*width+","+0.2*height+")"
+            return "translate("+(x_donut)*width+","+0.2*height+")"
         })
         g.append("path")
             .attr("d",arc)
@@ -294,15 +299,15 @@ matchinfo.prototype.donut =function () {
                 let i=parseInt(d3.select(this).attr("id").substring(4))
                 let k=(angele_data[num].endAngle-angele_data[num].startAngle)/(data[num]-1)
                 console.log("k",angele_data[num].endAngle-angele_data[num].startAngle)
-                let x=0.07*Math.sin(angele_data[num].startAngle+k*i)*width
-                let y=-1*0.07*Math.cos(angele_data[num].startAngle+k*i)*width
+                let x=r_donut*Math.sin(angele_data[num].startAngle+k*i)*width
+                let y=-1*r_donut*Math.cos(angele_data[num].startAngle+k*i)*width
                 console.log("x,y",x,y)
                 return "translate("+x+","+y+")"
             })
             .attr("r",function () {
                 let i=parseInt(d3.select(this).attr("id").substring(4))
                 let k=(angele_data[num].endAngle-angele_data[num].startAngle)
-                let r=0.07*width*k/data[num]
+                let r=r_donut*width*k/data[num]
                 return r;
             })
             .attr("fill",function () {
@@ -400,7 +405,7 @@ matchinfo.prototype.proj = function (X) {
                 })
                 .attr("x",x_smallfield*width)
                 .attr("width",function (d) {
-                    return (d/6)*width_smallfield*width;
+                    return (d/6)*width_smallf16ield*width;
                 })
                 .attr("height",height_smallfield/10*height)
                 .attr("fill","steelblue")
@@ -453,10 +458,10 @@ matchinfo.prototype.distancealign =function () {
             })
         this.g_align.append("rect")
             .attr("id","align_g")
-            .attr("x",(x_smallfield+min/100*0.16)*width)
-            .attr("y",(num*0.05+0.01)*height)
-            .attr("width",(100-min)/100*0.16*width)
-            .attr("height",0.02*height)
+            .attr("x",(x_smallfield+min/100*length_align)*width)
+            .attr("y",(num*heightbetween_rect+0.01)*height)
+            .attr("width",(100-min)/100*length_align*width)
+            .attr("height",height_alignrect*height)
             .attr("fill","none")
             .attr("stroke","none")
             .attr("stroke-width","1px")
@@ -475,16 +480,16 @@ matchinfo.prototype.distancealign =function () {
             .attr("cx",function (d,i) {
                 return (x_smallfield+0.005*i)*width
             })
-            .attr("cy",(num*0.05+0.02)*height)
+            .attr("cy",(num*heightbetween_rect+0.02)*height)
             .attr("fill",function (d,i) {
                 return getEventColor(d.eid)
             })
             .transition().duration(0.5*view_time).delay(0)
             .attr("cx",function (d) {
-                return ((phase_small.nodes[d.source].x/100)*0.16+x_smallfield)*width
+                return ((phase_small.nodes[d.source].x/100)*length_align+x_smallfield)*width
             })
             .attr("cy",function () {
-                return (num*0.05+0.02)*height
+                return (num*heightbetween_rect+0.017)*height
             })
             .attr("r",0.0045*height)
         g_sequence.select("#smallfield").remove()
@@ -501,9 +506,8 @@ matchinfo.prototype.timealign =function () {
         let phase_small=new Sequence(smallqurt.fieldGroup,this.data[num]);
         let len=phase_small.nodes.length;
         let max=(phase_small.nodes[len-1].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[len-1].time.sec-phase_small.nodes[0].time.sec
-        let len =max;
         if(max==0) max=1;
-        if(max>40) len=40
+        if(len>20) len=20;
         this.g_align=g_sequence.append("g")
             .attr("id",function () {
                 return "align_g"+num
@@ -512,16 +516,13 @@ matchinfo.prototype.timealign =function () {
             //     return "translate("+(0.83)*width+","+(num*0.05+0.015)*height+")"
             // })
             .attr("x",x_smallfield*width)
-            .attr("y",(num*0.05+0.01)*height)
+            .attr("y",(num*heightbetween_rect+0.01)*height)
         this.g_align.append("rect")
             .attr("id","align_g")
-            // .attr("transform",function () {
-            //     return "translate("+(0.83)*width+","+0+")"
-            // })
             .attr("x",x_smallfield*width)
-            .attr("y",(num*0.05+0.01)*height)
-            .attr("width",(0.004*len)*width)
-            .attr("height",0.02*height)
+            .attr("y",(num*heightbetween_rect+0.01)*height)
+            .attr("width",(length_align*len/20)*width)
+            .attr("height",height_alignrect*height)
             .attr("fill","none")
             .attr("stroke","none")
             .attr("stroke-width","1px")
@@ -543,7 +544,7 @@ matchinfo.prototype.timealign =function () {
             .attr("cx",function (d,i) {
                 return (x_smallfield)*width+0.005*i*height
             })
-            .attr("cy",(num*0.05+0.02)*height)
+            .attr("cy",(num*heightbetween_rect+0.017)*height)
             .attr("fill",function (d,i) {
                 return getEventColor(d.eid)
             })
@@ -551,7 +552,7 @@ matchinfo.prototype.timealign =function () {
             .attr("r",0.0045*height)
             .attr("cx",function (d) {
                 let t=(phase_small.nodes[d.source].time.min-phase_small.nodes[0].time.min)*60+phase_small.nodes[d.source].time.sec-phase_small.nodes[0].time.sec
-                return (t/max*0.004*len+0.83)*width
+                return (t/max*len/20*length_align+x_smallfield)*width
             })
         let s= "#smallfield"+num
         g_sequence.select("#smallfield").remove()
