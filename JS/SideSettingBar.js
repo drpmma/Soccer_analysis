@@ -6,6 +6,32 @@ sideSettingBar = function() {
     this.sequenceSetting = d3.select("#sequenceSetting");
     this.dataSetting = d3.select("#dataSetting");
 
+    $(function () {
+        $('#menu').click(function(){
+            let stgbar = $('#settingBar');
+            let mnwid = $('#svg_div');
+            let mn = $('#menu_text img');
+            let duration = 500, easing = "swing";
+            if(sideSetting.soh === 1) {
+                stgbar.animate({left:'-25%'},duration,easing);
+                mnwid.animate({left:'0'},duration,easing);
+                mn.animate({width:'5px',height:'33px'},duration/2,easing,function(){
+                    mn[0].src = 'img/menu_in.png';
+                    mn.animate({width:'30px',height:'33px'},duration/2,easing);
+                });
+                sideSetting.soh = 0;
+            } else {
+                mnwid.animate({left: '25%'},duration,easing);
+                stgbar.animate({left:'0'},duration,easing);
+                mn.animate({width:'5px',height:'33px'},duration/2,easing,function(){
+                    mn[0].src = 'img/menu_out.png';
+                    mn.animate({width:'30px',height:'33px'},duration/2,easing);
+                });
+                sideSetting.soh = 1;
+            }
+        })
+    });
+
     this.CreateOptions();
     this.CreateElements();
 };

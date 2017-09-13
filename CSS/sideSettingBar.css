@@ -6,3 +6,18 @@
 .ui-draggable, .ui-droppable {
     background-position: top;
 }
+
+.panel_setting {
+    border-color: rgb(180,180,180);
+    margin: 15px 0 0 0;
+}
+
+.panel_setting_head {
+    border-color: rgb(180,180,180);
+    background-color: rgb(153,153,153);
+}
+
+.navbar-setting {
+    overflow: auto;
+    height: 100%;
+}

@@ -1,3 +1,14 @@
+#navigationHead {
+    line-height: 35px;
+}
+#navigationHead_img {
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
+}
+#navigationHead_txt {
+    font-size: 22px;
+}
+
 .navigationTextTeam {
     line-height: 50px;
     vertical-align: middle;
@@ -7,21 +18,46 @@
 }
 
 .navigationTextVS {
+    color: #ccc;
     line-height: 50px;
     vertical-align: middle;
     text-align: center;
     font-size: 20px;
 }
 
+#navigation_date_img {
+    float:right;
+}
+#navigation_date_txt {
+    float:right;
+}
+#vir_navigation_date_img {
+    float:right;
+}
+#vir_navigation_date_txt {
+    float:right;
+}
 .navigationTextDate {
     line-height: 50px;
     vertical-align: middle;
     text-align: center;
     font-size: 15px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #444;
+    color: #ccc;
 }
 
+#navigation_help_img {
+    float:right;
+}
+#navigation_help_txt {
+    float:right;
+}
+#vir_navigation_help_img {
+    float:right;
+}
+#vir_navigation_help_txt {
+    float:right;
+}
 .navigationTextHelp {
     display: table-cell;
     cursor: pointer;
@@ -30,12 +66,7 @@
     vertical-align: middle;
     text-align: center;
     font-size: 15px;
-    color: #444;
-}
-
-.navbar-setting {
-    overflow: auto;
-    height: 100%;
+    color: #ccc;
 }
 
 .navbar-match {

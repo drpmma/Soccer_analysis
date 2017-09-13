@@ -1,0 +1,58 @@
+#shortcut {
+    position: absolute;
+    left: 13%;
+    top: 82%;
+    width: 61.2%;
+    height: 17%;
+
+    /*border-width: 1px;*/
+    /*border-style: solid;*/
+    /*border-color: gray;*/
+    /*border-radius: 10px;*/
+
+    /*padding-top: 0.5%;*/
+    /*padding-bottom: 0.5%;*/
+    /*padding-left: 0.5%;*/
+    /*padding-right: 0.5%;*/
+
+    background-color: rgb(36,40,51);
+}
+#tips {
+    width: 30%;
+    height: 99%;
+    display: inline;
+    float: left;
+
+    border-width: 1px;
+    border-style: solid;
+    border-color: whitesmoke;
+    border-radius: 10px;
+
+    /*padding-top: auto;!*0.2%;*!*/
+    /*padding-bottom: auto;!*0.2%;*!*/
+    padding-left: 11px;
+    padding-right: 0.5%;
+
+    background-color: white;
+}
+#tips_color, #tips_line {
+    width: 50%;
+    height: 100%;
+    display: inline;
+    float: left;
+
+    /*background-color: white;*/
+}
+#toolbar {
+    width: 69%;
+    height: 99%;
+    display: inline;
+    float: right;
+
+    border-width: 0;
+    border-style: solid;
+    border-color: whitesmoke;
+    border-radius: 10px;
+
+    /*background-color: rgb(36,40,51);*/
+}

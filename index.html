@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="CSS/jquery-ui.css" type="text/css" />
     <link rel="stylesheet" href="CSS/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="CSS/bootstrap_dialog.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/shortcut.css" type="text/css" />
     <script type = "text/javascript" src = "LIB/d3/d3.js"></script>
     <script type = "text/javascript" src = "LIB/d3/d3.layout.cloud.js"></script>
     <script src="LIB/jQuery/jquery.min.js"></script>
@@ -45,30 +46,35 @@
 </head>
 <body>
     <!--导航栏-->
-    <nav class="navbar navbar-default" style="margin-bottom:0">
+    <nav class="navbar navbar-inverse" style="margin-bottom:0;">
         <div class="container-fluid">
             <div class="row box">
                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navbar-header">
-                    <a class="navbar-brand" href="#">
-                        <img alt="brand" src="./img/soccer.ico"/>
+                    <a id="vir_navigationHead_img" class="navbar-brand" href="#">
+                        <img alt="brand" src="./img/soccer.png"/>
                     </a>
-                    <a class="navbar-brand" href="#">足球可视化系统</a>
+                    <a id="vir_navigationHead_txt" class="navbar-brand" href="#">足球可视化系统</a>
                 </div>
                 <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
                     <ul class="nav navbar-nav navbar-match">
                         <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                            <a style="float:left" id="vir_nav_team0"></a>
-                            <a style="float:right" id="vir_nav_score0"></a>
+                            <a style="float:left"></a>
+                            <a style="float:right"></a>
                         </li>
-                        <li class="disabled navigationTextVS col-md-2" id="vir_nav_vs"></li>
+                        <li class="disabled navigationTextVS col-md-2" id="nav_vs"></li>
                         <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                            <a style="float:left" id="vir_nav_score1"></a>
-                            <a style="float:right" id="vir_nav_team1"></a>
+                            <a style="float:left"></a>
+                            <a style="float:right"></a>
                         </li>
                     </ul>
                 </div>
-                <div id="vir_navigationDate" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navigationTextDate"></div>
-                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 navigationTextHelp" data-toggle="modal" data-target="#help_manual">帮助手册</div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextDate"></div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextHelp" data-toggle="modal" data-target="#help_manual">
+                    <a id="vir_navigation_help_txt" class="navbar-brand" href="#">帮助手册</a>
+                    <a id="vir_navigation_help_img" class="navbar-brand" href="#">
+                        <img alt="brand" src="img/help.png"/>
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
@@ -76,10 +82,10 @@
         <div class="container-fluid">
             <div class="row box">
                 <div id="navigationHead" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navbar-header">
-                    <a class="navbar-brand" href="#">
-                        <img alt="brand" src="./img/soccer.ico"/>
+                    <a id="navigationHead_img" class="navbar-brand" href="#">
+                        <img alt="brand" src="./img/soccer.png"/>
                     </a>
-                    <a class="navbar-brand" href="#">足球可视化系统</a>
+                    <a id="navigationHead_txt" class="navbar-brand" href="#">足球可视化系统</a>
                 </div>
                 <div id="navigationMatch" class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
                     <ul class="nav navbar-nav navbar-match">
@@ -94,8 +100,13 @@
                         </li>
                     </ul>
                 </div>
-                <div id="navigationDate" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navigationTextDate"></div>
-                <div id="navigationHelp" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 navigationTextHelp" data-toggle="modal" data-target="#help_manual">帮助手册</div>
+                <div id="navigationDate" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextDate"></div>
+                <div id="navigationHelp" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextHelp" data-toggle="modal" data-target="#help_manual">
+                    <a id="navigation_help_txt" class="navbar-brand" href="#">帮助手册</a>
+                    <a id="navigation_help_img" class="navbar-brand" href="#">
+                        <img alt="brand" src="img/help.png"/>
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
@@ -104,8 +115,8 @@
     <div class="container-fluid mainwindow" style="margin:0;padding:0;">
         <div class="row box" style="margin:0;padding:0;height:100%;">
             <div id="settingBar" class="navbar-setting col-lg-3 col-md-3 col-sm-3 col-xs-3 part" style="margin-bottom:0">
-                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
-                    <div class="panel-heading">
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_show">显示设置</a>
                         </h4>
@@ -114,8 +125,8 @@
                         <div class="panel-body" id="showSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
-                    <div class="panel-heading">
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_abstract">抽象化设置</a>
                         </h4>
@@ -124,8 +135,8 @@
                         <div class="panel-body" id="abstractSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
-                    <div class="panel-heading">
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_cluster">聚团设置</a>
                         </h4>
@@ -134,8 +145,8 @@
                         <div class="panel-body" id="clusterSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
-                    <div class="panel-heading">
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion" href="#collapse_sequence">序列设置</a>
                         </h4>
@@ -144,8 +155,8 @@
                         <div class="panel-body" id="sequenceSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
-                    <div class="panel-heading">
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion" href="#collapse_data">数据设置</a>
                         </h4>
@@ -156,6 +167,12 @@
                 </div>
             </div>
             <div id="svg_div" class="navbar navbar-default col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom:0;float:left">
+                <div id="menu">
+                    <div id="menu_text">
+                        <img src="img/menu_out.png"/>
+                        设<br>置<br>栏
+                    </div>
+                </div>
                 <div id="shortcut">
                     <div id="tips">
                         <div id="tips_color"></div>
@@ -171,7 +188,7 @@
     <div class="modal fade" id="help_manual" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header" id="help_header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
@@ -181,7 +198,7 @@
                 </div>
                 <div id="help_content" class="modal-body">
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="help_footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 </div>
             </div><!-- /.modal-content -->
