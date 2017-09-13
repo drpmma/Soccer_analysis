@@ -649,7 +649,7 @@ Cluster.prototype.nodeLinkAll = function() {
         .attr("height",currenthei);
 
     var tempf = new Field(this.cg.select("#subClusterGroup"+this.num), pad, pad, wid, hei, "clusterfield"+this.num, 0, 1,1);
-    var tempp = new Players(tempf, data.players);
+    var tempp = new Players(tempf, data.players.team0);
 
     for(var i = this.start; i <= this.end; i++)
     {
