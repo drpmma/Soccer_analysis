@@ -1,13 +1,13 @@
 /**
  * Created by zf on 2017/7/27.
  */
-var x_smallfield = 0.01
+var x_smallfield = 0.02
 var x_timeline = 0.12
 var x_width = 0.094
-var y_timeline = 0.72
+var y_timeline = 0.75
 var y_height = 0.02
-var width_smallfield=0.065
-var height_smallfield=0.07
+var width_smallfield=0.07
+var height_smallfield=0.075
 var x_donut=0.06
 var r_donut=0.05
 var length_align=0.11
@@ -30,20 +30,28 @@ timeline= function (svg,width,height) {
     //     .attr("stroke-width","0.5px")
     this.g_timeline=svg.append("g")
         .attr("id","timeline");
-    this.g_timeline.append("line")
-        .attr("x1",x_timeline*width)
-        .attr("y1",y_timeline*height)
-        .attr("x2",(x_timeline+x_width*6.5)*width)
-        .attr("y2",y_timeline*height)
-        .attr("stroke","black")
-        .attr("stroke-width","1.5px")
-    this.g_timeline.append("line")
-        .attr("x1",x_timeline*width)
-        .attr("y1",(y_timeline+y_height)*height)
-        .attr("x2",(x_timeline+x_width*6.5)*width)
-        .attr("y2",(y_timeline+y_height)*height)
-        .attr("stroke","black")
-        .attr("stroke-width","1.5px")
+    // this.g_timeline.append("line")
+    //     .attr("x1",x_timeline*width)
+    //     .attr("y1",y_timeline*height)
+    //     .attr("x2",(x_timeline+x_width*6.5)*width)
+    //     .attr("y2",y_timeline*height)
+    //     .attr("stroke","black")
+    //     .attr("stroke-width","1.5px")
+    // this.g_timeline.append("line")
+    //     .attr("x1",x_timeline*width)
+    //     .attr("y1",(y_timeline+y_height)*height)
+    //     .attr("x2",(x_timeline+x_width*6.5)*width)
+    //     .attr("y2",(y_timeline+y_height)*height)
+    //     .attr("stroke","black")
+    //     .attr("stroke-width","1.5px")
+    this.g_timeline.append("rect")
+        .attr("x",(x_timeline)*width)
+        .attr("y",y_timeline*height)
+        .attr("width",x_width*6.5*width)
+        .attr("height",y_height*height)
+        .attr("rx","10")
+        .attr("ry","10")
+        .attr("fill","rgb(255,255,255)")
     this.g_timeline.append("line")
         .attr("x1", (x_timeline+x_width*6.5)* width)
         .attr("y1", y_timeline * height)
@@ -52,13 +60,13 @@ timeline= function (svg,width,height) {
         .attr("stroke", "black")
         .attr("stroke-width", "1px")
     for(let i=0;i<7;i++) {
-        this.g_timeline.append("line")
-            .attr("x1", (x_timeline + i * x_width) * width)
-            .attr("y1", y_timeline * height)
-            .attr("x2", (x_timeline + i * x_width) * width)
-            .attr("y2", (y_timeline+y_height) * height)
-            .attr("stroke", "black")
-            .attr("stroke-width", "1px")
+        // this.g_timeline.append("line")
+        //     .attr("x1", (x_timeline + i * x_width) * width)
+        //     .attr("y1", y_timeline * height)
+        //     .attr("x2", (x_timeline + i * x_width) * width)
+        //     .attr("y2", (y_timeline+y_height) * height)
+        //     .attr("stroke", "black")
+        //     .attr("stroke-width", "1px")
         this.g_timeline.append('text')
             .attr("x",(x_timeline + i * x_width) * width)
             .attr('y',(y_timeline+y_height*2)*height)
@@ -188,7 +196,7 @@ matchinfo = function (svg,field,data,width,height) {
                 return color;
             })
     }
-    this.viewtransform(7,0);
+    this.viewtransform(0,0);
 }
 
 matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequence) {
