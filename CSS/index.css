@@ -126,14 +126,14 @@ body {
 .fieldRect
 {
     stroke-width: 1;
-    fill: white;
+    fill: rgb(220,223,232);
     stroke: gray;
 }
 
 .fieldLines
 {
     stroke-width: 1;
-    fill: white;
+    fill: rgb(220,223,232);
     stroke: gray;
 }
 
