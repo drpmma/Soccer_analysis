@@ -4,18 +4,20 @@
     <title>足球可视化系统 / SoccerStory</title>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="CSS/index.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/NavigationBar.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/docs.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/helps.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/cluster.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/sideSettingBar.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/jquery-ui.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/NavigationBar.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/docs.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/helps.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/cluster.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/sideSettingBar.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/jquery-ui.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/bootstrap_dialog.css" type="text/css" />
     <script type = "text/javascript" src = "LIB/d3/d3.js"></script>
     <script type = "text/javascript" src = "LIB/d3/d3.layout.cloud.js"></script>
-    <link href="./CSS/bootstrap.css" rel="stylesheet">
     <script src="LIB/jQuery/jquery.min.js"></script>
     <script src="LIB/jQuery/jquery-ui.js"></script>
     <script src="LIB/bootstrap/bootstrap.min.js"></script>
+    <script src="LIB/bootstrap/bootstrap_dialog.js"></script>
     <script type = "text/javascript" src = "JS/NavigationBar.js"></script>
     <script type = "text/javascript" src = "JS/SideSettingBar.js"></script>
     <script type = "text/javascript" src = "JS/help.js"></script>
@@ -27,9 +29,10 @@
     <script type = "text/javascript" src = "JS/model.js"></script>
     <script type = "text/javascript" src = "JS/timeline.js"></script>
     <script type = "text/javascript" src = "JS/Sequence.js"></script>
+    <script type = "text/javascript" src = "JS/video.js"></script>
 
-    <link rel="stylesheet" href="./CSS/UnifrakturMaguntia.css">
-    <link rel="stylesheet" href="./CSS/jqmath-0.4.0.css">
+    <link rel="stylesheet" href="CSS/UnifrakturMaguntia.css">
+    <link rel="stylesheet" href="CSS/jqmath-0.4.0.css">
 
     <style>
         .dashed {
@@ -68,7 +71,7 @@
             </div>
         </div>
     </nav>
-    <nav class="navbar navbar-default navbar-fixed-top" style="margin-bottom:0;box-shadow:rgba(0,0,0,0.3492) 0 0 10px 0;border-width:0;">
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom:0;box-shadow:rgba(0,0,0,0.3492) 0 0 10px 0;border-width:0;">
         <div class="container-fluid">
             <div class="row box">
                 <div id="navigationHead" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navbar-header">
@@ -99,8 +102,8 @@
     <!--主体-->
     <div class="container-fluid mainwindow" style="margin:0;padding:0;">
         <div class="row box" style="margin:0;padding:0;height:100%;">
-            <div id="settingBar" class="navbar-setting col-lg-3 col-md-3 col-sm-3 col-xs-3" style="margin-bottom:0">
-                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
+            <div id="settingBar" class="navbar-setting col-lg-3 col-md-3 col-sm-3 col-xs-3 part" style="margin-bottom:0">
+                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_show">显示设置</a>
@@ -110,7 +113,7 @@
                         <div class="panel-body" id="showSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
+                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_abstract">抽象化设置</a>
@@ -120,7 +123,7 @@
                         <div class="panel-body" id="abstractSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
+                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse_cluster">聚团设置</a>
@@ -130,7 +133,7 @@
                         <div class="panel-body" id="clusterSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
+                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion" href="#collapse_sequence">序列设置</a>
@@ -140,7 +143,7 @@
                         <div class="panel-body" id="sequenceSetting"></div>
                     </div>
                 </div>
-                <div class="panel panel-default" style="margin: 5px 0 5px 0;">
+                <div class="panel panel-default" style="margin: 10px 0 10px 0;">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion" href="#collapse_data">数据设置</a>
@@ -183,6 +186,9 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
+
+    <div id="video_player"></div>
+
     <script>
         let navigation = new navigationBar();
         let sideSetting = new sideSettingBar();
@@ -201,6 +207,7 @@
         let oldtype=-1;
         let click=-1;
         let data_select=new dataselect();
+        //let videoPlayer = new Video();
         width = document.getElementById("svg_div").getBoundingClientRect().width;
         height = document.getElementById("svg_div").getBoundingClientRect().height;
         model();
@@ -208,8 +215,8 @@
 
     <script type="text/javascript" src="LIB/utils.js"></script>
     <!--<script src="http://code.jquery.com/jquery-1.4.3.min.js"></script>-->
-    <script src="./LIB/jqmath-etc-0.4.0.min.js"></script>
-    <script src="./LIB/kmeans.min.js"></script>
+    <script src="LIB/jqmath-etc-0.4.0.min.js"></script>
+    <script src="LIB/kmeans.min.js"></script>
     <!--<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>-->
     <script src="LIB/recurrent.js"></script>
     <script src="LIB/kmedoids.js"></script>
@@ -240,5 +247,6 @@
     <script type = "text/javascript" src = "JS/model.js"></script>
     <script type = "text/javascript" src = "JS/tips.js"></script>
     <script type = "text/javascript" src = "JS/toolbar.js"></script>
+    <script type = "text/javascript" src = "JS/video.js"></script>
 </body>
 </html>

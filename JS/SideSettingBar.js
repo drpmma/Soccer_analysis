@@ -144,6 +144,19 @@ sideSettingBar.prototype.CreateOptions = function() {
             that.clusterTimeParams.value = k;
         }
     };
+    this.videoBufferTimeParams = {
+        title: "视频缓冲时间",
+        name: "video_buffer_time",
+        min: 0,
+        max: 60,
+        value: 5,
+        g: this.showSetting,
+        step: 1,
+        callback: function(k) {
+            that.videoBufferTimeParams.value = k;
+            videoPlayer.setBufferTime(k);
+        }
+    };
 
     this.clusterStyleOptions = new Array();
     this.clusterStyleOptions[0] = "普通";
@@ -245,6 +258,7 @@ sideSettingBar.prototype.CreateElements = function() {
     this.AddButton("取消聚团","default",this.AddButtonGroup(temp),function(){that.declusterizeBtn()});
 
     this.AddSlider(this.showTimeParams);
+    this.AddSlider(this.videoBufferTimeParams);
     this.AddSelection("球员样式",this.playerStyleOptions,this.playerStyleSel,"default",this.showSetting,function(k){that.playerStyleSelect(k)});
     this.AddSelection("中英文选择",this.EnCnOptions,this.EnCnSel,"default",this.showSetting,function(k){that.EnCnSelect(k)});
 

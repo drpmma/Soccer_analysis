@@ -10,6 +10,49 @@ body {
     overflow-y: auto;
 }
 
+.part {
+    border-radius: 5px;
+    border-color: #808080;
+
+    background-color: rgb(36,40,51);
+
+    scrollbar-3dlight-color: red;
+    scrollbar-arrow-color: orange;
+    scrollbar-base-color: yellow;
+    scrollbar-darkshadow-color: green;
+    scrollbar-face-color: blue;
+    scrollbar-highlight-color: purple;
+    scrollbar-shadow-color: black;
+}
+.part::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+    background-color: transparent;
+}
+.part::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: rgb(153,153,153);
+}
+.part::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: transparent;
+}
+.part::-webkit-scrollbar-button {
+    height: 5px;
+    width: 5px;
+    background-color: transparent;
+}
+.part::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+}
+.part::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+.part::-webkit-resizer {
+    background-color: blue;
+}
+
 #svg_div
 {
     position: absolute;

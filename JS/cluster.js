@@ -444,6 +444,10 @@ Cluster = function(start, end, type, num) {
                                         d3.select(this).select("#clusterrect"+that.num)
                                             .attr("style","stroke:black; fill:white; stroke-width:1;")})
         .on("click", function(){cm.chooseCluster(that.num)})
+        .on("dblclick", function(){
+            let time0 = that.sequence.nodes[that.start].time, time1 = that.sequence.nodes[that.end].time;
+            videoPlayer.playPart(time0,time1);
+        })
         .call(drag)
         .append("rect")
         .attr("id","clusterrect" + this.num)
@@ -1119,7 +1123,6 @@ function resetNodePos(id, x, y, duration, delay) {
         .duration(duration)
         .attr("transform","translate("+x+","+y+")");
 }
-
 function resetNodeSize(id, r, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id)
@@ -1150,7 +1153,6 @@ function resetNodeSize(id, r, duration, delay) {
         .duration(duration)
         .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;");
 }
-
 function hideNodeText(id, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
@@ -1158,7 +1160,6 @@ function hideNodeText(id, duration, delay) {
         .transition().delay(delay).duration(duration)
         .attr("opacity",0);
 }
-
 function showNodeText(id, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
@@ -1166,7 +1167,6 @@ function showNodeText(id, duration, delay) {
         .transition().delay(delay).duration(duration)
         .attr("opacity",1);
 }
-
 function repaintPath(id, style, duration, delay) {
     if(delay == undefined) delay = 0;
     if(duration != 0)

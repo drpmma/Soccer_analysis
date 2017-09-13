@@ -90,6 +90,7 @@ matchinfo = function (svg,field,data,width,height) {
             .attr("id",function () {
                 return "g_sequence"+(i+1)
             })
+            .attr("num",i)
             .on("mouseenter",function () {
                 d3.select(this).select("circle")
                     .attr("r",0.012*height);
@@ -171,6 +172,11 @@ matchinfo = function (svg,field,data,width,height) {
                 seq = new Sequence(field.fieldGroup, data[id]);
                 seq.draw_path("link", 0, 1);
                 seq.draw_node("node", 10, "white", 1, that.onTransition, id);
+            })
+            .on("dblclick",function () {
+                let time0 = data[d3.select(this).attr("num")].startTime,
+                    time1 = data[d3.select(this).attr("num")].endTime;
+                videoPlayer.playPart(time0,time1);
             });
         g.append("circle")
             .attr("id",function()
