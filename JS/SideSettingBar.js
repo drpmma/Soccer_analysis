@@ -218,7 +218,7 @@ sideSettingBar.prototype.CreateOptions = function() {
         name: "sequence_duration",
         min: 0,
         max: 2000,
-        value: 500,
+        value: 0,
         g: this.sequenceSetting,
         step: 10,
         callback: function(k) {

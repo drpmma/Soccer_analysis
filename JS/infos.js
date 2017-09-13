@@ -36,7 +36,7 @@ Infos = function(svg, x, y, width, height, data) {
         .attr("y", 1)
         .attr("width", this.width-2)
         .attr("height", this.height-2)
-        .attr("style", "fill:none; stroke:grey; stroke-width: 0.1%");
+        .attr("style", "fill:rgb(255,255,255); stroke:grey; stroke-width: 0.1%");
     this.infosGroup.append("g")
         .attr("id", "name")
         .attr("transform", "translate(" + (+this.lft) + "," + (+this.up)  + ")")
