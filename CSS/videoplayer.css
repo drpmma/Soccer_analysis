@@ -1,0 +1,45 @@
+#video_player {
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    width: 25%;
+
+    border-color: black;
+    border-width: 1px;
+}
+
+.panel_video {
+    border-color: black;
+    border-width: 1px;
+}
+
+.panel_video_head {
+    background-color: rgb(36,40,51);
+    cursor: move;
+
+    display: table;
+
+    width: 100%;
+}
+.panel_video_title {
+    color: #ccc;
+    display: table-cell;
+}
+.panel_video_min {
+    color: #ccc;
+    display: table-cell;
+    float:right;
+
+    margin: auto 10px auto 10px;
+
+    cursor: pointer;
+}
+.panel_video_close {
+    color: #ccc;
+    display: table-cell;
+    float:right;
+
+    margin: auto 5px auto 10px;
+
+    cursor: pointer;
+}

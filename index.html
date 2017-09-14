@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="CSS/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="CSS/bootstrap_dialog.css" type="text/css" />
     <link rel="stylesheet" href="CSS/shortcut.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/ShotVis.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/videoplayer.css" type="text/css" />
     <script type = "text/javascript" src = "LIB/d3/d3.js"></script>
     <script type = "text/javascript" src = "LIB/d3/d3.layout.cloud.js"></script>
     <script src="LIB/jQuery/jquery.min.js"></script>
@@ -46,30 +48,30 @@
 </head>
 <body>
     <!--导航栏-->
-    <nav class="navbar navbar-inverse" style="margin-bottom:0;">
+    <nav class="navbar navbar-inverse" style="margin-bottom:0;box-shadow:rgba(0,0,0,0.3492) 0 0 10px 0;border-width:0;">
         <div class="container-fluid">
             <div class="row box">
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navbar-header">
+                <div id="vir_navigationHead" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navbar-header">
                     <a id="vir_navigationHead_img" class="navbar-brand" href="#">
                         <img alt="brand" src="./img/soccer.png"/>
                     </a>
                     <a id="vir_navigationHead_txt" class="navbar-brand" href="#">足球可视化系统</a>
                 </div>
-                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                <div id="vir_navigationMatch" class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
                     <ul class="nav navbar-nav navbar-match">
                         <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                            <a style="float:left"></a>
-                            <a style="float:right"></a>
+                            <a style="float:left" id="vir_nav_team0"></a>
+                            <a style="float:right" id="vir_nav_score0"></a>
                         </li>
-                        <li class="disabled navigationTextVS col-md-2" id="nav_vs"></li>
+                        <li class="disabled navigationTextVS col-md-2" id="vir_nav_vs"></li>
                         <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                            <a style="float:left"></a>
-                            <a style="float:right"></a>
+                            <a style="float:left" id="vir_nav_score1"></a>
+                            <a style="float:right" id="vir_nav_team1"></a>
                         </li>
                     </ul>
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextDate"></div>
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextHelp" data-toggle="modal" data-target="#help_manual">
+                <div id="vir_navigationDate" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextDate"></div>
+                <div id="vir_navigationHelp" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextHelp" data-toggle="modal" data-target="#help_manual">
                     <a id="vir_navigation_help_txt" class="navbar-brand" href="#">帮助手册</a>
                     <a id="vir_navigation_help_img" class="navbar-brand" href="#">
                         <img alt="brand" src="img/help.png"/>
@@ -205,7 +207,20 @@
         </div><!-- /.modal -->
     </div>
 
-    <div id="video_player"></div>
+    <div id="video_player">
+        <div class="panel panel_video">
+            <div class="panel-heading panel_video_head">
+                <p class="panel_video_title">实战视频</p>
+                <span class="panel_video_min glyphicon glyphicon-minus"></span>
+            </div>
+            <div id="collapse_video" class="panel-collapse collapse in">
+                <div class="panel-body" id="video_body">
+                    <video id="VideoPlayer" src="data/video/cvk.mkv" style="width:100%;" controls="controls"></video>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         let navigation = new navigationBar();
@@ -225,9 +240,11 @@
         let oldtype=-1;
         let click=-1;
         let data_select=new dataselect();
-        //let videoPlayer = new Video();
+        let videoPlayer = new Video();
+        console.log("aend");
         width = document.getElementById("svg_div").getBoundingClientRect().width;
         height = document.getElementById("svg_div").getBoundingClientRect().height;
+
         model();
     </script>
 
