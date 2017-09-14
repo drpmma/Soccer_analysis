@@ -8,7 +8,8 @@ Infos = function(svg, x, y, width, height, data) {
     this.width = width;
     this.height = height;
     this.data = data;
-    this.infoNum = data[0].stats.length;
+    // this.infoNum = data[0].stats.length;
+    this.infoNum=9;
     this.limit = new Array(this.infoNum);
     for(var i = 0; i < this.infoNum; i++)
     {
@@ -35,8 +36,8 @@ Infos = function(svg, x, y, width, height, data) {
         .attr("x", 1)
         .attr("y", 1)
         .attr("width", this.width-2)
-        .attr("height", this.height-2)
-        .attr("style", "fill:rgb(255,255,255); stroke:grey; stroke-width: 0.1%");
+        .attr("height", this.height*0.52)
+        .attr("style", "fill:rgb(36,40,51); stroke:none; stroke-width: 0.1%");
     this.infosGroup.append("g")
         .attr("id", "name")
         .attr("transform", "translate(" + (+this.lft) + "," + (+this.up)  + ")")
@@ -44,8 +45,9 @@ Infos = function(svg, x, y, width, height, data) {
         .attr("height", this.nameHeight)
         .append("text")
         .attr("x", 0)
-        .attr("y", this.hg-this.hjj)
-        .attr("style", "font-size:"+((this.hg)*1)+"px")
+        .attr("y", this.hg-this.hjj-0.02*this.height)
+        .attr("fill","white")
+        .attr("style", "font-size:"+((this.hg)*0.6)+"px")
         .text("");
 
 
@@ -64,7 +66,7 @@ Infos = function(svg, x, y, width, height, data) {
                 temp = "射门：射偏";
                 break;
             case 3:
-                temp = "射门：失去机会";
+                temp = "射门：错失";
                 break;
             case 4:
                 temp = "射门：立柱";
@@ -170,10 +172,10 @@ Info = function(g, num, max, title) {
     this.maxValue = max;
     this.valueTitle = title;
     this.currentValue = 0;
-    this.rect_x = (g.width - g.lft - g.rt)*0.5;
-    this.rect_y = 0;
-    this.rect_width = (g.width - g.lft - g.rt)*0.5;
-    this.rect_height = g.hg;
+    this.rect_x = (g.width - g.lft - g.rt)*0.35;
+    this.rect_y = g.hg*0.1;
+    this.rect_width = (g.width - g.lft - g.rt)*0.6;
+    this.rect_height = g.hg*0.5;
     this.rect_rx = this.rect_width*0.07;
     this.rect_ry = this.rect_height*0.5;
 
@@ -185,8 +187,8 @@ Info = function(g, num, max, title) {
 
     this.infoGroup.append("text") //title
         .attr("x", 0)
-        .attr("y", g.hg*0.85)
-        .attr("style", "font-size:"+(g.hg*0.8)+"px; font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif")
+        .attr("y", g.hg*0.5)
+        .attr("style", "font-size:"+(g.hg*0.4)+"px;fill:rgb(255,255,255); font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif ")
         .text(this.valueTitle);
 
     this.infoGroup.append("rect") //frame
@@ -196,7 +198,7 @@ Info = function(g, num, max, title) {
         .attr("height",this.rect_height)
         .attr("rx",this.rect_rx)
         .attr("ry",this.rect_ry)
-        .attr("style","fill:none; stroke:black; stroke-width:1;");
+        .attr("style","fill:rgb(255,255,255); stroke:black; stroke-width:1;");
 
     this.infoGroup.append("rect") //value
         .attr("id","value")
@@ -209,13 +211,13 @@ Info = function(g, num, max, title) {
         .attr("height",this.rect_height-1)
         .attr("rx",this.rect_rx-0.5)
         .attr("ry",this.rect_ry-0.5)
-        .attr("style","fill:steelblue; stroke:none;");
+        .attr("style","fill:rgb(128,128,128); stroke:none;");
 
     this.infoGroup.append("text") //num
         .attr("id","num")
         .attr("x", this.rect_x+5)
-        .attr("y", g.hg*0.85)
-        .attr("style", "font-size:"+(g.hg*0.9)+"px")
+        .attr("y", g.hg*0.5)
+        .attr("style", "font-size:"+(g.hg*0.5)+"px")
         .text(this.currentValue);
 };
 
