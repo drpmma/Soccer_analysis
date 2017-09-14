@@ -15,17 +15,17 @@ sideSettingBar = function() {
             if(sideSetting.soh === 1) {
                 stgbar.animate({left:'-25%'},duration,easing);
                 mnwid.animate({left:'0'},duration,easing);
-                mn.animate({width:'5px',height:'33px'},duration/2,easing,function(){
+                mn.animate({width:'5px',height:'23px'},duration/2,easing,function(){
                     mn[0].src = 'img/menu_in.png';
-                    mn.animate({width:'30px',height:'33px'},duration/2,easing);
+                    mn.animate({width:'20px',height:'23px'},duration/2,easing);
                 });
                 sideSetting.soh = 0;
             } else {
                 mnwid.animate({left: '25%'},duration,easing);
                 stgbar.animate({left:'0'},duration,easing);
-                mn.animate({width:'5px',height:'33px'},duration/2,easing,function(){
+                mn.animate({width:'5px',height:'23px'},duration/2,easing,function(){
                     mn[0].src = 'img/menu_out.png';
-                    mn.animate({width:'30px',height:'33px'},duration/2,easing);
+                    mn.animate({width:'20px',height:'23px'},duration/2,easing);
                 });
                 sideSetting.soh = 1;
             }
