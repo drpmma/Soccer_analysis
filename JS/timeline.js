@@ -2,9 +2,9 @@
  * Created by zf on 2017/7/27.
  */
 var x_smallfield = 0.02
-var x_timeline = 0.12
+var x_timeline = 0.13
 var x_width = 0.094
-var y_timeline = 0.75
+var y_timeline = 0.73
 var y_height = 0.02
 var width_smallfield=0.07
 var height_smallfield=0.075
@@ -69,9 +69,9 @@ timeline= function (svg,width,height) {
         //     .attr("stroke-width", "1px")
         this.g_timeline.append('text')
             .attr("x",(x_timeline + i * x_width) * width)
-            .attr('y',(y_timeline+y_height*2)*height)
-            .attr('fill',"black")
-            .attr('font-size',"100%")
+            .attr('y',(y_timeline+y_height*2.2)*height)
+            .attr('fill',"rgb(255,255,255)")
+            .attr('font-size',0.025*height)
             .attr('text-align',"center" )
             .html(i*15);
     }

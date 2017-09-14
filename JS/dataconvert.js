@@ -34,12 +34,12 @@ dataselect.prototype.main=function (value) {
         svg.attr("width", width).attr("height", height);
         createDefs();
         drawback();
-        mainfield = new Field(svg, 0.12*width, 0.011*height, 0.94*0.65*width, 0.70*height, "mainfield", 0, 0,1);
-        infos = new Infos(svg, 0.78*width, 0.37*height, 0.15*width, 0.6*height, data.players.team0);
+        mainfield = new Field(svg, x_timeline*width, 0.011*height, 0.94*0.65*width, 0.70*height, "mainfield", 0, 0,1);
+        infos = new Infos(svg, 0.78*width, 0.46*height, 0.18*width, 0.52*height, data.players.team0);
         pm = new PlayersManager(data.players.team0);
         var time_line=new timeline(svg,width,height);
         f3= new matchinfo(svg,mainfield,data.sequences,width,height);
-        var f2 = new Field(svg, 0.78*width, 0.01*height, 0.15*width, 0.35*height, "playerfield", 1, 1,1);
+        var f2 = new Field(svg, 0.78*width, 0.01*height, 0.18*width, 0.45*height, "playerfield", 1, 1,1);
         var players = new Players(f2, data.players.team0);
         // setting = new Setting(0.2*width, 0.86*height, 0.62*width, 0.112*height);
     }
