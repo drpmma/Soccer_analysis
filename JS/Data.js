@@ -380,21 +380,57 @@ function getEventName(eid) {
     }
 }
 
+// function getEventColor(eid) {
+//     switch (eid) {
+//         case E_PASS:
+//         case E_RUN:
+//             return "black";
+//         case E_SHOT_MISS:
+//             return "red";
+//         case E_SHOT_POST:
+//             return "pink";
+//         case E_SHOT_SAVED:
+//             return "blue";
+//         case E_SHOT_GOAL:
+//             return "green";
+//         case E_SHOT_CHANCE_MISSED:
+//             return "orange";
+//         case E_CORNER:
+//             return "pink";
+//         case E_SPECIAL_TAKE_ON:
+//         case E_SPECIAL_GOOD_SKILL:
+//             return "orange";
+//         case E_DEF_TACKLE:
+//             return "purple";
+//         case E_DEF_INTERCEPTION:
+//             return "orange";
+//         case E_DUPLICATE:
+//             return "gray";
+//         case E_LONG_RUN:
+//             return "gray";
+//         case E_AERIAL_DUEL:
+//             return "steelblue";
+//         case E_FOUL:
+//             return "brown";
+//         default:
+//             throw "unknown eid " + eid;
+//     }
+// }
 function getEventColor(eid) {
     switch (eid) {
         case E_PASS:
         case E_RUN:
             return "black";
         case E_SHOT_MISS:
-            return "red";
+            return "rgb(255,188,115)";
         case E_SHOT_POST:
-            return "pink";
+            return "rgb(85,175,188)";
         case E_SHOT_SAVED:
-            return "blue";
+            return "rgb(136,201,90)";
         case E_SHOT_GOAL:
-            return "green";
+            return "rgb(237,28,36)";
         case E_SHOT_CHANCE_MISSED:
-            return "orange";
+            return "rgb(126,102,145)";
         case E_CORNER:
             return "pink";
         case E_SPECIAL_TAKE_ON:
