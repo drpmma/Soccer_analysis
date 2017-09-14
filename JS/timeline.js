@@ -1,8 +1,8 @@
 /**
  * Created by zf on 2017/7/27.
  */
-var x_smallfield = 0.02
-var x_timeline = 0.12
+var x_smallfield = 0.04
+var x_timeline = 0.14
 var x_width = 0.094
 var y_timeline = 0.75
 var y_height = 0.02
