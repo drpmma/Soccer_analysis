@@ -43,3 +43,7 @@
 
     cursor: pointer;
 }
+
+#video_body {
+    padding: 0;
+}
