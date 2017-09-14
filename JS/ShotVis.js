@@ -755,16 +755,16 @@ ShotVis.prototype.setPostY = function (y) {
 ShotVis.prototype.getShotColor = function (shot_type) {
     switch(shot_type) {
         case "goal":
-            return "green";
+            return getEventColor(E_SHOT_GOAL);
         case "post":
-            return "pink";
+            return getEventColor(E_SHOT_POST);
         case "saved":
-            return "blue";
+            return getEventColor(E_SHOT_SAVED);
         case "missed":
-            return "red";
+            return getEventColor(E_SHOT_MISS);
         default:
 //            console.log("unknown name for shot: " + d);
-            return "yellow";
+            return getEventColor(E_SHOT_CHANCE_MISSED);
     }
 }
 

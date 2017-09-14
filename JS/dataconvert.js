@@ -41,6 +41,7 @@ dataselect.prototype.main=function (value) {
         f3= new matchinfo(svg,mainfield,data.sequences,width,height);
         var f2 = new Field(svg, 0.78*width, 0.01*height, 0.18*width, 0.45*height, "playerfield", 1, 1,1);
         var players = new Players(f2, data.players.team0);
+        tips();
         // setting = new Setting(0.2*width, 0.86*height, 0.62*width, 0.112*height);
     }
 }
