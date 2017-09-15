@@ -20,7 +20,7 @@ function tips() {
         "<p style='margin-top:5%;margin-bottom:0'>　短传球</p>" +
         "<div style='position:relative;top:3%;width:30%;height:12%;stroke:none;border-radius:3px;float:left;margin-top: 3%'>" +
         "   <svg>" +
-        "       <path stroke-width='2px' stroke='black' d='M0 8 Q 17.5 0 35 8' stroke-dasharray='3,3' fill='none'></path>" +
+        "       <path stroke-width='2px' stroke='black' d='M0 8 Q 17.5 0 35 8' stroke-dasharray='7,7' fill='none'></path>" +
         "   </svg>"+
         "</div>" +
         "<p style='margin-top:5%;margin-bottom:0'>　长传球</p>" +

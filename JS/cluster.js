@@ -1182,9 +1182,9 @@ function repaintPath(id, style, duration, delay) {
                     stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
                 switch(style)
                 {
-                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
+                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "3px"; break;
                     case 0: stroke = "gray"; stroke_width = "1px"; break;
-                    case 1: stroke_width = "2px"; break;
+                    case 1: stroke_width = "3px"; break;
                     case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
                     case 3: stroke = "green"; stroke_width = "3px"; break;
                 }
@@ -1246,9 +1246,9 @@ function repaintPath(id, style, duration, delay) {
                     stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
                 switch(style)
                 {
-                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
+                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "3px"; break;
                     case 0: stroke = "gray"; stroke_width = "1px"; break;
-                    case 1: stroke_width = "2px"; break;
+                    case 1: stroke_width = "3px"; break;
                     case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
                     case 3: stroke = "green"; stroke_width = "3px"; break;
                 }

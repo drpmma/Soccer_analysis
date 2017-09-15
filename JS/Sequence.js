@@ -605,7 +605,7 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
             if(gray==1)
                 return "10px";
             else
-                return "1px"
+                return "3px"
         })
         .attr("fill", "none")
         .attr("class", function(d){

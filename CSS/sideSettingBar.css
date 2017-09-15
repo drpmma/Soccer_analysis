@@ -1,3 +1,9 @@
+#settingBar {
+    margin-top: 2px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 .setting_list {
     overflow: auto;
     max-height: 200px;

@@ -420,7 +420,7 @@ function getEventColor(eid) {
     switch (eid) {
         case E_PASS:
         case E_RUN:
-            return "black";
+            return "rgb(36,40,45)";
         case E_SHOT_MISS:
             return "rgb(255,188,115)";
         case E_SHOT_POST:
