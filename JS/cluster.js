@@ -981,7 +981,7 @@ Cluster.prototype.matrixVis = function() {
 };
 
 Cluster.prototype.shoot = function() {
-    var wid = +this.y_scale(35), hei = +this.x_scale(27.5), pad = 2;
+    var wid = +this.x_scale(21), hei = +this.x_scale(30), pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
