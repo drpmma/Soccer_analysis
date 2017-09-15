@@ -96,13 +96,19 @@ body {
 }
 
 .visuShotsSlider line {
-    stroke: red;
+    stroke: rgb(36,40,51);
     stroke-width: 10;
     cursor: pointer;
 }
 
 .visuShotsSlider rect {
-    fill: white;
+    fill: rgb(36,40,51);
+}
+
+.visuShotsBrushing rect {
+    fill: rgb(36,40,51);
+    stroke-width: 2px;
+    stroke: white;
 }
 
 .visuShotsFilterModes, .visuShotsVisuModes, .visuShotsBrushing{
@@ -130,12 +136,13 @@ body {
 
 .modes_text, .filters_text, .stats_text{
     /*font-size: 9px;*/
-    font-family:'Trebuchet MS',Arial, Helvetica;
-    fill:white;
+    font-family:"Source Han Serif Medium";
+    font-weight: bolder;
+    fill:black;
     stroke-width:0;
 }
 
-.modes_selected, .orders_selected{
+.orders_selected{
     fill:red;
 }
 

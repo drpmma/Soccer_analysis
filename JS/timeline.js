@@ -4,7 +4,7 @@
 var x_smallfield = 0.04
 var x_timeline = 0.14
 var x_width = 0.094
-var y_timeline = 0.73
+var y_timeline = 0.72
 var y_height = 0.02
 var width_smallfield=0.07
 var height_smallfield=0.075
@@ -102,12 +102,12 @@ matchinfo = function (svg,field,data,width,height) {
             .on("mouseenter",function () {
                 d3.select(this).select("circle")
                     .attr("r",0.012*height);
-                d3.select(this).select("#rect_g").attr("fill-opacity","0.5")
-                d3.select(this).select("#align_g").attr("fill","gray").attr("fill-opacity","0.5")
+                d3.select(this).select("#rect_g").attr("fill-opacity","0.3")
+                d3.select(this).select("#align_g").attr("fill","gray").attr("fill-opacity","0.3")
                 x=d3.select(this).select("circle")
                     .attr("cx");
                 id=parseInt(d3.select(this).select("circle").attr("id").substring(15));
-                d3.select(this).select("#arc_g").attr("fill","gray").attr("fill-opacity","0.5")
+                d3.select(this).select("#arc_g").attr("fill","gray").attr("fill-opacity","0.3")
                 if(that.onTransition[id] === 0) {
                     that.repaint(d3.select(this), id, x);
                 }
@@ -147,13 +147,13 @@ matchinfo = function (svg,field,data,width,height) {
                     d3.select("#Sequence").select(name).select(name2).attr("fill-opacity",0).attr("fill","gray").attr("id","arc_g")
                     d3.select("#Sequence").select(name).select(name3).attr("fill-opacity",0).attr("fill","gray").attr("id","align_g")
                 }
-                d3.select(this).select("#rect_g").attr("fill-opacity","0.5").attr("fill","red").attr("id",function () {
+                d3.select(this).select("#rect_g").attr("fill-opacity","0.6").attr("fill","rgb(36,40,51)").attr("id",function () {
                     return "rect_g_click"+id
                 })
-                d3.select(this).select("#align_g").attr("fill-opacity","0.5").attr("fill","red").attr("id",function () {
+                d3.select(this).select("#align_g").attr("fill-opacity","0.6").attr("fill","rgb(36,40,51)").attr("id",function () {
                     return "align_g_click"+id
                 })
-                d3.select(this).select("#arc_g").attr("fill-opacity","0.5").attr("fill","red").attr("id",function () {
+                d3.select(this).select("#arc_g").attr("fill-opacity","0.6").attr("fill","rgb(36,40,51)").attr("id",function () {
                     return "arc_g_click"+id
                 })
                 console.log("id clicl",id, click)
@@ -228,10 +228,27 @@ matchinfo.prototype.nodeMoveAnimation = function (oriField, desField, desSequenc
 matchinfo.prototype.repaint = function (selection, id, x) {
     g_mouse_field = selection.append("g")
         .attr("id","mouse_field");
-    let phase_field = new Field(g_mouse_field, x - 0.04 * this.width, (y_timeline-0.1) * this.height,
+    g_mouse_field.append("rect")
+        .attr("x",x-width_smallfield/2*this.width-5)
+        .attr("y",(y_timeline-height_smallfield-0.03)*this.height-5)
+        .attr("width", width_smallfield * this.width+10)
+        .attr("height",this.height*height_smallfield+10)
+        .attr("rx","6")
+        .attr("ry","6")
+        .attr("fill","rgb(49,36,51)")
+        // .attr("fill","rgb(220,223,232)")
+    g_mouse_field.append("path")
+        .attr("d",()=> {
+            return "M"+(x)+" "+(y_timeline-0.01)*this.height+"l-30 -17 l 60 0 Z";
+        })
+        // .attr("stroke","rgb(49,36,51)")
+        .attr("fill","rgb(49,36,51)")
+    let phase_field = new Field(g_mouse_field, x - width_smallfield/2 * this.width, (y_timeline-height_smallfield-0.03) * this.height,
         width_smallfield * this.width, height_smallfield * this.height, "click", 0, 0, 1)
     let phase_seq = new Sequence(phase_field.fieldGroup, this.data[id]);
     phase_seq.draw_node("node", 2, "black", 0);
+
+
 
     return {field:phase_field, seq:phase_seq};
 }

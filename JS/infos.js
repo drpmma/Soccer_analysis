@@ -33,10 +33,10 @@ Infos = function(svg, x, y, width, height, data) {
         .attr("width", width)
         .attr("height", height);
     this.infosGroup.append("rect")
-        .attr("x", 1)
-        .attr("y", 1)
+        .attr("x", 0)
+        .attr("y", 0.05*this.height)
         .attr("width", this.width-2)
-        .attr("height", this.height*0.52)
+        .attr("height", this.height*0.95)
         .attr("style", "fill:rgb(36,40,51); stroke:none; stroke-width: 0.1%");
     this.infosGroup.append("g")
         .attr("id", "name")
