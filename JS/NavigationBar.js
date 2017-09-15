@@ -13,8 +13,8 @@ navigationBar.prototype.setTitle = function(team0, team1, score0, score1, year, 
         '<a id="navigation_date_txt" class="navbar-brand" href="#">' +
         year+'-'+month+'-'+day+
         '</a>' +
-        '<a id="navigation_date_img" class="navbar-brand" href="#">\n' +
-        '<img alt="brand" src="img/date.png"/>\n' +
+        '<a id="navigation_date_img" class="navbar-brand" href="#">' +
+        '<span class="glyphicon glyphicon-time"></span>' +
         '</a>';
     $('#vir_nav_team0')[0].innerHTML = team0;
     $('#vir_nav_score0')[0].innerHTML = score0;
@@ -25,7 +25,7 @@ navigationBar.prototype.setTitle = function(team0, team1, score0, score1, year, 
         '<a id="vir_navigation_date_txt" class="navbar-brand" href="#">' +
         year+'-'+month+'-'+day+
         '</a>' +
-        '<a id="vir_navigation_date_img" class="navbar-brand" href="#">\n' +
-        '<img alt="brand" src="img/date.png"/>\n' +
+        '<a id="vir_navigation_date_img" class="navbar-brand" href="#">' +
+        '<span class="glyphicon glyphicon-time"></span>' +
         '</a>';
 };

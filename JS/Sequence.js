@@ -489,7 +489,7 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
         .attr("class", function (d) {
             return "link " + getEventName(d.eid);
         })
-        .on("mouseover", function(){console.log("abc")});
+        .on("mouseover", function(){});
     temp.append("path")
         .attr("d", function(d){
             // source and target are duplicated for straight lines

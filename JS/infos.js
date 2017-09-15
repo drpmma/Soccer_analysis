@@ -146,7 +146,7 @@ Infos.prototype.changeValues = function(pid) {
                 .duration(this.changeDuration)
                 .text(this.data[i].name + " - " + this.data[i].jersey + " " + this.data[i].position);
 
-            for (var j = 0; j < this.data[i].stats.length; j++)
+            for (var j = 0; j < this.infoNum; j++)
                 this.info[j].changeValue(this.data[i].stats[j].nb);
         }
     }

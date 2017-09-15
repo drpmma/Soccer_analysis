@@ -13,7 +13,7 @@ sideSettingBar = function() {
             let mn = $('#menu_text img');
             let duration = 500, easing = "swing";
             if(sideSetting.soh === 1) {
-                stgbar.animate({left:'-25%'},duration,easing);
+                stgbar.animate({left:'-16.667%'},duration,easing);
                 mnwid.animate({left:'0'},duration,easing);
                 mn.animate({width:'5px',height:'23px'},duration/2,easing,function(){
                     mn[0].src = 'img/menu_in.png';
@@ -21,7 +21,7 @@ sideSettingBar = function() {
                 });
                 sideSetting.soh = 0;
             } else {
-                mnwid.animate({left: '25%'},duration,easing);
+                mnwid.animate({left: '16.667%'},duration,easing);
                 stgbar.animate({left:'0'},duration,easing);
                 mn.animate({width:'5px',height:'23px'},duration/2,easing,function(){
                     mn[0].src = 'img/menu_out.png';
