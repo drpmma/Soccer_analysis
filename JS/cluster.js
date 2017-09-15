@@ -688,7 +688,7 @@ Cluster.prototype.nodeLinkAll = function() {
 
 Cluster.prototype.hivePlot = function() {
     var num = this.playerNum;
-    this.r_step = +this.r_scale(1);
+    this.r_step = +this.r_scale(0.5);
     this.r_point = +this.r_scale(0.4);
     this.r_node = +this.r_scale(1.2);
     this.r_center = +this.r_scale(1);
