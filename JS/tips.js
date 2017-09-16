@@ -13,25 +13,25 @@ tips = function() {
 
     document.getElementById("tips_line").innerHTML =
         "<div style='position:relative;top:3%;width:30%;height:12%;stroke:none;border-radius:3px;float:left;margin-top: 3%'>" +
-        "   <svg>" +
+        "   <svg style='width:100%;height:100%;'>" +
         "       <path stroke-width='2px' stroke='black' d='M0 5L35 5' stroke-dasharray='3,3'></path>" +
         "   </svg>"+
         "</div>" +
         "<p style='margin-top:5%;margin-bottom:0'>　短传球</p>" +
         "<div style='position:relative;top:3%;width:30%;height:12%;stroke:none;border-radius:3px;float:left;margin-top: 3%'>" +
-        "   <svg>" +
+        "   <svg style='width:100%;height:100%;'>" +
         "       <path stroke-width='2px' stroke='black' d='M0 8 Q 17.5 0 35 8' stroke-dasharray='7,7' fill='none'></path>" +
         "   </svg>"+
         "</div>" +
         "<p style='margin-top:5%;margin-bottom:0'>　长传球</p>" +
         "<div style='position:relative;top:3%;width:30%;height:12%;stroke:none;border-radius:3px;float:left;margin-top: 3%'>" +
-        "   <svg>" +
+        "   <svg style='width:100%;height:100%;'>" +
         "       <path stroke-width='1px' stroke='black' d='M0 5L35 5'></path>" +
         "   </svg>"+
         "</div>" +
         "<p style='margin-top:5%;margin-bottom:0'>　带球</p>" +
         "<div style='position:relative;top:3%;width:30%;height:12%;stroke:none;border-radius:3px;float:left;margin-top: 3%'>" +
-        "   <svg>" +
+        "   <svg style='width:100%;height:100%;'>" +
         "       <path stroke-width='1px' stroke='"+this.data[0].color+"' d='M0 1L35 1'></path>" +
         "       <path stroke-width='1px' stroke='"+this.data[1].color+"' d='M0 3L35 3'></path>" +
         "       <path stroke-width='1px' stroke='"+this.data[2].color+"' d='M0 5L35 5'></path>" +
