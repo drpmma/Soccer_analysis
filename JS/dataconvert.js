@@ -6,7 +6,7 @@ dataselect = function () {
     this.width = document.getElementById("svg_div").getBoundingClientRect().width;
     this.height = document.getElementById("svg_div").getBoundingClientRect().height;
 
-    this.main("./data/MatchData_a.json");
+    this.main("./data/MatchData_ChinaVsQatar.json");
 }
 dataselect.prototype.datachoose = function () {
     d3.select("#screen").remove();
