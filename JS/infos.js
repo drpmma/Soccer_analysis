@@ -77,10 +77,10 @@ Infos = function(svg, x, y, width, height, data) {
             case 6:
                 temp = "角球：获得";
                 break;
-            case 7:
+            case 8:
                 temp = "传球：成功";
                 break;
-            case 8:
+            case 7:
                 temp = "传球：失败";
                 break;
             case 9:
