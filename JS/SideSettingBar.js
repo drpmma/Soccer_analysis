@@ -140,8 +140,8 @@ sideSettingBar.prototype.sequenceChangeBtn = function() {
 };
 sideSettingBar.prototype.dataChangeBtn = function() {
     let data_name = new Array();
-    data_name[0] = "./data/MatchData_合并.json";
-    data_name[1] = "./data/dumpData_t1_m483676_agg0.json";
+    data_name[0] = "./data/MatchData_b.json";
+    data_name[1] = "./data/MatchData_test.json";
     data_name[2] = "./data/dumpData_t120_m483683_agg0.json";
     data_name[3] = "./data/dumpData_t186_m456391_agg0.json";
     data_name[4] = "./data/dumpData_t178_m483675_agg0.json";
