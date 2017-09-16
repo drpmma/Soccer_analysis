@@ -11,6 +11,8 @@
         },
         "team0": "10000",
         "team1": "10001",
+        "team0_name": "中国",
+        "team1_name": "卡塔尔",
         "score0": "2",
         "score1": "1",
         "video": {

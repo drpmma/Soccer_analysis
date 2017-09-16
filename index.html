@@ -54,7 +54,9 @@
     <script type="text/javascript" src="JS/Sequence.js"></script>
     <script type="text/javascript" src="JS/video.js"></script>
     <script type="text/javascript" src="JS/background.js"></script>
+    <script type="text/javascript" src="JS/sleepfunction.js"></script>
     <script type="text/javascript" src="JS/tips.js"></script>
+    <script type="text/javascript" src="JS/FileManager.js"></script>
 
     <link rel="stylesheet" href="CSS/UnifrakturMaguntia.css">
     <link rel="stylesheet" href="CSS/jqmath-0.4.0.css">
@@ -247,8 +249,9 @@
     </div>
 
     <script>
+        let fm = new filesManager();
         let navigation = new navigationBar();
-        let sideSetting = new sideSettingBar();
+        let sideSetting;
         let helps = new Helps();
         let data;
         let infos;
@@ -263,7 +266,7 @@
         let view_transform = 0;
         let oldtype = -1;
         let click = -1;
-        let data_select = new dataselect();
+        let data_select;
         let videoPlayer = new Video();
         let tip = new tips();
         console.log("aend");
@@ -305,6 +308,7 @@
     <script type="text/javascript" src="JS/model.js"></script>
     <script type="text/javascript" src="JS/tips.js"></script>
     <script type="text/javascript" src="JS/toolbar.js"></script>
+    <script type="text/javascript" src="JS/FileManager.js"></script>
     <script type="text/javascript" src="JS/video.js"></script>
 </body>
 

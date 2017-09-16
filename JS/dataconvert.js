@@ -6,7 +6,7 @@ dataselect = function () {
     this.width = document.getElementById("svg_div").getBoundingClientRect().width;
     this.height = document.getElementById("svg_div").getBoundingClientRect().height;
 
-    this.main("./data/MatchData_ChinaVsQatar.json");
+    this.main(fm.getFilePath(0));
 }
 dataselect.prototype.datachoose = function () {
     d3.select("#screen").remove();
@@ -20,6 +20,9 @@ dataselect.prototype.main=function (value) {
     d3.queue().defer(d3.json, value).await(main);
     function main(error, jsondata) {
         if (error) throw error;
+        navigation.setTitle(jsondata.matchinfo.team0_name,jsondata.matchinfo.team1_name,
+            jsondata.matchinfo.score0,jsondata.matchinfo.score1,
+            jsondata.matchinfo.date.year,jsondata.matchinfo.date.month,jsondata.matchinfo.date.day);
         time=0;
         view_time=0;
         view_transform=0;

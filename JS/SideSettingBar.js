@@ -139,19 +139,12 @@ sideSettingBar.prototype.sequenceChangeBtn = function() {
     console.log("sequenceChangeBtn")
 };
 sideSettingBar.prototype.dataChangeBtn = function() {
-    let data_name = new Array();
-    data_name[0] = "./data/MatchData_ChinaVsUzbekistan.json";
-    data_name[1] = "./data/MatchData_ChinaVsQatar.json";
-    // data_name[2] = "./data/dumpData_t120_m483683_agg0.json";
-    // data_name[3] = "./data/dumpData_t186_m456391_agg0.json";
-    // data_name[4] = "./data/dumpData_t178_m483675_agg0.json";
-    // data_name[5] = "./data/dumpData_t186_m486612_agg0.json";
     d3.select("#screen").remove();
-    data_select.main(data_name[this.dataListSel]);
+    data_select.main(fm.getFilePath(this.dataListSel));
     console.log("dataChangeBtn")
 };
 sideSettingBar.prototype.dataUpdateBtn = function() {
-    console.log("dataUpdateBtn")
+    fm.loadFile();
 };
 
 sideSettingBar.prototype.CreateOptions = function() {
@@ -265,12 +258,8 @@ sideSettingBar.prototype.CreateOptions = function() {
     this.sequenceStyleSel = 0;
 
     this.dataListOptions = new Array();
-    this.dataListOptions[0] = "中国vs乌兹别克斯坦";
-    this.dataListOptions[1] = "中国vs卡塔尔";
-    // this.dataListOptions[2] = "数据3";
-    // this.dataListOptions[3] = "数据4";
-    // this.dataListOptions[4] = "数据5";
-    // this.dataListOptions[5] = "数据6";
+    for(let i = 0; i < fm.fileNum; i++)
+        this.dataListOptions[i] = fm.getFileName(i);
     this.dataListSel = 0;
 };
 sideSettingBar.prototype.CreateElements = function() {

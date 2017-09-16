@@ -11,6 +11,8 @@
         },
         "team0": "10000",
         "team1": "10001",
+        "team0_name": "中国",
+        "team1_name": "乌兹别克",
         "score0": "1",
         "score1": "0",
         "video": {

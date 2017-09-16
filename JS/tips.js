@@ -42,5 +42,3 @@ tips = function() {
         "<p style='margin-top:5%;margin-bottom:0'>　射门</p>";
     console.log(this.data);
 }
-
-
