@@ -39,22 +39,22 @@ Data.prototype.dataHandle = function () {
         this.players.team0[i].events = new Array();
     }
 
-    for (let sequence of this.sequences) {
-        console.log(sequence)
-        if(sequence.startTime.min >= 56){
-            for(let action of sequence.actions){
-                action.pos.x = 100 - action.pos.x
-                action.pos.y = 100 - action.pos.y
-                if(action.qualifiers.length !== 0){
-                    for(let qualifier of action.qualifiers){
-                        if(qualifier.qid == Q_SHOT_BLOCKED_X || qualifier.qid == Q_SHOT_BLOCKED_Y 
-                            || qualifier.qid == Q_SHOT_GOAL_MOUTH_Y)
-                        qualifier.value = 100 - qualifier.value
-                    }
-                } 
-            }
-        }
-    }
+    // for (let sequence of this.sequences) {
+    //     console.log(sequence)
+    //     if(sequence.startTime.min >= 56){
+    //         for(let action of sequence.actions){
+    //             action.pos.x = 100 - action.pos.x
+    //             action.pos.y = 100 - action.pos.y
+    //             if(action.qualifiers.length !== 0){
+    //                 for(let qualifier of action.qualifiers){
+    //                     if(qualifier.qid == Q_SHOT_BLOCKED_X || qualifier.qid == Q_SHOT_BLOCKED_Y 
+    //                         || qualifier.qid == Q_SHOT_GOAL_MOUTH_Y)
+    //                     qualifier.value = 100 - qualifier.value
+    //                 }
+    //             } 
+    //         }
+    //     }
+    // }
 
     for (let i = 0; i < this.sequences.length; i++) {
         let sequence = this.sequences[i];
