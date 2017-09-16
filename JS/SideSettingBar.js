@@ -168,7 +168,7 @@ sideSettingBar.prototype.CreateOptions = function() {
         name: "video_buffer_time",
         min: 0,
         max: 60,
-        value: 5,
+        value: 1,
         g: this.showSetting,
         step: 1,
         callback: function(k) {

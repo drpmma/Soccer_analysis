@@ -2,7 +2,7 @@
     position: absolute;
     left: 100px;
     top: 100px;
-    width: 25%;
+    width: 50%;
 
     border-color: black;
     border-width: 1px;
@@ -34,7 +34,7 @@
 
     cursor: pointer;
 }
-.panel_video_close {
+.panel_video_repeat {
     color: #ccc;
     display: table-cell;
     float:right;

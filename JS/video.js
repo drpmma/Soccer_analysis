@@ -1,7 +1,7 @@
 Video = function () {
     let that = this;
 
-    this.bufferTime = 5;
+    this.bufferTime = 1;
 
     this.player = document.getElementById('VideoPlayer');
 
@@ -11,6 +11,7 @@ Video = function () {
     this.pause = 0;
 
     this.minEvent();
+    this.repeatEvent();
     this.moveEvent();
     this.dblclickEvent();
 
@@ -63,6 +64,15 @@ Video.prototype.minEvent = function() {
 
         if(video_body.hasClass("in")) video_body.removeClass("in")
         else video_body.addClass("in");
+    })
+};
+Video.prototype.repeatEvent = function() {
+    let that = this;
+    let temp = $('.panel_video_repeat');
+    temp.click(function () {
+        that.pause = 1;
+        that.player.currentTime = parseInt(that.time[0]).toString();
+        that.player.play();
     })
 };
 Video.prototype.moveEvent = function() {
