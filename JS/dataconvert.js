@@ -53,5 +53,6 @@ dataselect.prototype.main=function (value) {
         width = document.getElementById("svg_div").getBoundingClientRect().width;
         height = document.getElementById("svg_div").getBoundingClientRect().height;
         f3= new matchinfo(svg,mainfield,data.sequences,width,height);
+        f3.addFilters();
     }
 }

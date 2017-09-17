@@ -26,6 +26,17 @@ body {
     scrollbar-highlight-color: purple;
     scrollbar-shadow-color: black;
 }
+.part .footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+
+    border-width: 2px 0 0 0;
+    border-color: rgb(153,153,153);
+    border-style: solid;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
 .part::-webkit-scrollbar {
     width: 13px;
     height: 13px;
@@ -89,7 +100,7 @@ body {
     vertical-align: middle;
 }
 
-#sequence {
+#sequences {
     position: absolute;
     left: 3%;
     top: 0.1%;
