@@ -2,7 +2,13 @@
  * Created by WuJiang on 2017/7/30.
  */
 
-Infos = function(svg, x, y, width, height, data) {
+Infos = function(data) {
+    let svg = d3.select("#player_info").append("svg").attr("width","100%").attr("height","100%");;
+    let x = document.getElementById("player_info").getBoundingClientRect().width * 0.02;
+    let y = document.getElementById("player_info").getBoundingClientRect().height * 0.02;
+    let width = document.getElementById("player_info").getBoundingClientRect().width * 0.96;
+    let height = document.getElementById("player_info").getBoundingClientRect().height * 0.96;
+
     this.x = x;
     this.y = y;
     this.width = width;

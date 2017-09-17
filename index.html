@@ -199,12 +199,22 @@
                         <img src="img/menu_out.png" style="width:20px;height:23px;"/><br>设<br>置<br>栏
                     </div>
                 </div>
-                <div id="shortcut">
-                    <div id="tips">
-                        <div id="tips_color"></div>
-                        <div id="tips_line"></div>
+                <div id="sequence" class="part">
+                </div>
+                <div id="center" class="part">
+                    <div id="shortcut">
+                        <div id="tips">
+                            <div id="tips_color"></div>
+                            <div id="tips_line"></div>
+                        </div>
+                        <div id="toolbar"></div>
                     </div>
-                    <div id="toolbar"></div>
+                </div>
+                <div id="team" class="part">
+
+                </div>
+                <div id="player_info" class="part">
+
                 </div>
             </div>
         </div>
@@ -270,7 +280,6 @@
         let data_select;
         let videoPlayer = new Video();
         let tip = new tips();
-        console.log("aend");
         width = document.getElementById("svg_div").getBoundingClientRect().width;
         height = document.getElementById("svg_div").getBoundingClientRect().height;
 

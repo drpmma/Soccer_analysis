@@ -38,12 +38,20 @@ dataselect.prototype.main=function (value) {
         createDefs();
         drawback();
         mainfield = new Field(svg, x_timeline*width, 0.011*height, 0.94*0.65*width, 0.70*height, "mainfield", 0, 0,1);
-        infos = new Infos(svg, 0.78*width, 0.46*height, 0.18*width, 0.52*height, data.players.team0);
-        pm = new PlayersManager(data.players.team0);
+
         var time_line=new timeline(svg,width,height);
-        f3= new matchinfo(svg,mainfield,data.sequences,width,height);
-        var f2 = new Field(svg, 0.78*width, 0.01*height, 0.18*width, 0.45*height, "playerfield", 1, 1,1);
+
+        infos = new Infos(data.players.team0);
+        pm = new PlayersManager(data.players.team0);
+
+        let svg_player = d3.select("#team").append("svg").attr("width","100%").attr("height","100%");
+        width = document.getElementById("team").getBoundingClientRect().width;
+        height = document.getElementById("team").getBoundingClientRect().height;
+        var f2 = new Field(svg_player, 0.02*width, 0.02*height, 0.96*width, 0.96*height, "playerfield", 1, 1,1);
         var players = new Players(f2, data.players.team0);
-        // setting = new Setting(0.2*width, 0.86*height, 0.62*width, 0.112*height);
+
+        width = document.getElementById("svg_div").getBoundingClientRect().width;
+        height = document.getElementById("svg_div").getBoundingClientRect().height;
+        f3= new matchinfo(svg,mainfield,data.sequences,width,height);
     }
 }
