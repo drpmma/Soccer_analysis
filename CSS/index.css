@@ -6,8 +6,7 @@ html, body
 }
 
 body {
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .part {
@@ -55,7 +54,7 @@ body {
 {
     position: absolute;
     left: 16.667%;
-    height: 92%;
+    height: 95%;
     background-color: whitesmoke;
 }
 
@@ -92,7 +91,7 @@ body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 92%;
+    height: 95%;
 }
 
 .visuShotsSlider line {

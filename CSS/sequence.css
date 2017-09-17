@@ -1,0 +1,13 @@
+#sequence_filter {
+    position: absolute;
+    top: 82%;
+    left: 3.6%;
+    width: 9.2%;
+    height: 18%;
+}
+
+.seq_flt_cb {
+    padding-left: 10px;
+    color: #ccc;
+    line-height: 25px;
+}

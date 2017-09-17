@@ -3,6 +3,7 @@
     left: 100px;
     top: 100px;
     width: 50%;
+    z-index: 999;
 
     border-color: black;
     border-width: 1px;

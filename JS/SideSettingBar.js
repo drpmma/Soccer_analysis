@@ -84,20 +84,6 @@ sideSettingBar.prototype.sequenceStyleSelect = function(k) {
     console.log("sequenceStyleSelect"+k);
     this.sequenceStyleSel = k;
 };
-sideSettingBar.prototype.sequenceTypeSelect = function(k) {
-    console.log("sequenceTypeSelect" + k);
-    this.sequenceTypeSel = +k;
-    let type;
-    switch (+k) {
-        case 0: type = ATK_ALL; break;
-        case 1: type = ATK_CENTER; break;
-        case 2: type = ATK_SIDE; break;
-        case 3: type = ATK_TRANSFER; break;
-        case 4: type = ATK_BREAKAWAY; break;
-        case 5: type = ATK_PLACE_KICK; break;
-    }
-    f3.filterType(type);
-};
 sideSettingBar.prototype.dataListSelect = function(k) {
     console.log("dataListSelect"+k);
     this.dataListSel = k;
@@ -271,15 +257,6 @@ sideSettingBar.prototype.CreateOptions = function() {
     this.sequenceStyleOptions[8] = "饼图";
     this.sequenceStyleSel = 0;
 
-    this.sequenceTypeOptions = new Array();
-    this.sequenceTypeOptions[0] = "全部";
-    this.sequenceTypeOptions[1] = "中路进攻";
-    this.sequenceTypeOptions[2] = "边路进攻";
-    this.sequenceTypeOptions[3] = "进攻点转移";
-    this.sequenceTypeOptions[4] = "快速反击";
-    this.sequenceTypeOptions[5] = "定位球进攻";
-    this.sequenceTypeSel = 0;
-
     this.dataListOptions = new Array();
     for(let i = 0; i < fm.fileNum; i++)
         this.dataListOptions[i] = fm.getFileName(i);
@@ -309,7 +286,6 @@ sideSettingBar.prototype.CreateElements = function() {
 
     this.AddSlider(this.sequenceTimeParams);
     this.AddSelection("序列样式",this.sequenceStyleOptions,this.sequenceStyleSel,"default",this.sequenceSetting,function(k){that.sequenceStyleSelect(k)});
-    this.AddSelection("序列类型筛选",this.sequenceTypeOptions,this.sequenceTypeSel,"default",this.sequenceSetting,function(k){that.sequenceTypeSelect(k)});
     temp = this.AddButtonToolBar(this.sequenceSetting);
     this.AddButton("变换序列样式","default",this.AddButtonGroup(temp),function(){that.sequenceChangeBtn()});
 
