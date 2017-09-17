@@ -41,7 +41,7 @@
     height: 20px;
     border-radius: 3px;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.6), inset 0 -18px 15px -10px rgba(0, 0, 0, 0.05);
-    padding: 4px 0px;
+    padding: 2px 0;
     text-align: center;
     color: #496F7A;
 }
