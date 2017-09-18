@@ -290,6 +290,11 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
         .attr("size", r)
         .on("mouseover", function(){d3.select(this).style("cursor", "pointer")})
         .on("click", function(d) {pm.reChoose(d.pid);})
+        .on("dblclick",function (d,i) {
+            let time0 = d.time,
+                time1 = this.sequence.endTime;
+            videoPlayer.playPart(time0,time1);
+        });
         .append("circle")
         .attr("x",0)
         .attr("y",0)
