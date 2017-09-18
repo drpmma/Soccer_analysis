@@ -6,8 +6,7 @@ html, body
 }
 
 body {
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .part {
@@ -16,7 +15,7 @@ body {
 
     background-color: rgb(36,40,51);
 
-    opacity: 0.5;
+    /*opacity: 0.5;*/
 
     scrollbar-3dlight-color: red;
     scrollbar-arrow-color: orange;
