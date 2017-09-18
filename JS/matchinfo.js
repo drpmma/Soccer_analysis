@@ -1,7 +1,8 @@
 matchinfo.prototype.addFilters = function() {
     d3.select("#sequences").append("div")
         .attr("id","seq_filter")
-        .attr("class","part footer");
+        .attr("class","part footer")
+        .attr("style","overflow-y: auto");
 
     this.filterList = new Array(5);
     this.filterList[0] = {
