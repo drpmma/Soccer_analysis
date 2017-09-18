@@ -25,6 +25,17 @@ body {
     scrollbar-highlight-color: purple;
     scrollbar-shadow-color: black;
 }
+.part .header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+
+    border-width: 2px 0 0 0;
+    border-color: rgb(153,153,153);
+    border-style: solid;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
 .part .footer {
     position: absolute;
     bottom: 0;

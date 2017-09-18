@@ -1,3 +1,9 @@
+matchinfo.prototype.addBody = function() {
+    d3.select("#sequences").append("div")
+        .attr("id","seq_body")
+        .attr("class","part header");
+};
+
 matchinfo.prototype.addFilters = function() {
     d3.select("#sequences").append("div")
         .attr("id","seq_filter")
@@ -27,7 +33,6 @@ matchinfo.prototype.addFilters = function() {
     for(let i = 0; i < this.filterList.length; i++)
         this.addFilter(this.filterList[i]);
 };
-
 matchinfo.prototype.addFilter = function(params) {
     d3.select("#seq_filter")
         .append("input")

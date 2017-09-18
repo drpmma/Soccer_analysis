@@ -78,6 +78,8 @@ timeline= function (svg,width,height) {
 };
 
 matchinfo = function (svg,field,data,width,height) {
+    this.addBody();
+
     this.svg=svg;
     this.field=field;
     this.data=data;
