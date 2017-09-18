@@ -9,7 +9,7 @@
 
 #seq_filter input[type="checkbox"] + label {
     cursor: pointer;
-    font-size: 1em;
+    font-size: 80%;
 }
 
 [id^="seq_filter_"] + label {
@@ -23,7 +23,7 @@
     width: 100%;
     height: 15%;
     overflow: hidden;
-    font-size: 1em !important;
+    font-size: 80%;
     color: #ccc;
     -webkit-transition: all 0.1s linear, color 0 linear;
     transition: all 0.1s linear, color 0 linear;
