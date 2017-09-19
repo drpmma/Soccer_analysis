@@ -1,3 +1,3 @@
 function model() {
-    videoPlayer.setVideo("data/video/cvk.mkv");
+    videoPlayer.setVideo("video/cvk.mkv");
 }

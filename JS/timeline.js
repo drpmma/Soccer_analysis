@@ -182,9 +182,18 @@ matchinfo = function (svg,field,data,width,height) {
                 seq.draw_node("node", 10, "white", 1, that.onTransition, id);
             })
             .on("dblclick",function () {
-                let time0 = data[d3.select(this).attr("num")].startTime,
-                    time1 = data[d3.select(this).attr("num")].endTime;
-                videoPlayer.playPart(time0,time1);
+                let num = parseInt(d3.select(this).attr("num"));
+
+                if(videoPlayer.inSpecialArray(num)){
+                    videoPlayer.setVideo(`video/${num}.mkv`)
+                    videoPlayer.player.play();
+                }
+                else{
+                    videoPlayer.setVideo(`video/cvk.mkv`)
+                    let time0 = data[d3.select(this).attr("num")].startTime,
+                        time1 = data[d3.select(this).attr("num")].endTime;
+                    videoPlayer.playPart(time0,time1);
+                }
             });
         g.append("circle")
             .attr("id",function()
