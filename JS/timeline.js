@@ -183,13 +183,13 @@ matchinfo = function (svg,field,data,width,height) {
             })
             .on("dblclick",function () {
                 let num = parseInt(d3.select(this).attr("num"));
-
+                const folderPath = process.cwd();
                 if(videoPlayer.inSpecialArray(num)){
-                    videoPlayer.setVideo(`video/${num}.mkv`)
+                    videoPlayer.setVideo(`${folderPath}/video/${num}.mkv`)
                     videoPlayer.player.play();
                 }
                 else{
-                    videoPlayer.setVideo(`video/cvk.mkv`)
+                    videoPlayer.setVideo(`${folderPath}/video/cvk.mkv`)
                     let time0 = data[d3.select(this).attr("num")].startTime,
                         time1 = data[d3.select(this).attr("num")].endTime;
                     videoPlayer.playPart(time0,time1);
