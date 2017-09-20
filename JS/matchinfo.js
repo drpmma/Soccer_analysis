@@ -1,7 +1,7 @@
 matchinfo.prototype.addBody = function() {
-    d3.select("#sequences").append("div")
-        .attr("id","seq_body")
-        .attr("class","part header");
+    // d3.select("#sequences").append("div")
+    //     .attr("id","seq_body")
+    //     .attr("class","part header");
 };
 
 matchinfo.prototype.addFilters = function() {
@@ -37,9 +37,7 @@ matchinfo.prototype.addFilter = function(params) {
     d3.select("#seq_filter")
         .append("input")
         .attr("type","checkbox")
-        .attr("id","seq_filter_"+params.num)
-        .attr("width","0")
-        .attr("height","0");
+        .attr("id","seq_filter_"+params.num);
     d3.select("#seq_filter")
         .append("label")
         .attr("for","seq_filter_"+params.num)
