@@ -1,7 +1,7 @@
 matchinfo.prototype.addBody = function() {
-    d3.select("#sequences").append("div")
-        .attr("id","seq_body")
-        .attr("class","part header");
+    // d3.select("#sequences").append("div")
+    //     .attr("id","seq_body")
+    //     .attr("class","part header");
 };
 
 matchinfo.prototype.addFilters = function() {
