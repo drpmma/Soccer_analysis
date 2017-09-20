@@ -1,3 +1,86 @@
+var type = new Array();
+type[0]={
+    status:0,
+    name:"ATK_CENTER"
+}
+type[1]={
+    status:0,
+    name:"ATK_SIDE"
+}
+type[2]={
+    status:0,
+    name:"ATK_TRANSFER"
+}
+type[3]={
+    status:0,
+    name:"ATK_BREAKAWAY"
+}
+type[4]={
+    status:0,
+    name:"ATK_BREAKAWAY"
+}
+function filter() {
+    var sequence= new Array(data.sequences.length);
+    let temp=0;
+    for(var i=0;i<5;i++)
+    {
+        if(type[i].status ==1)
+        {
+            temp=1;
+            break;
+        }
+    }
+    for(var i =0;i<sequence.length;i++)
+        sequence[i] = 0;
+    if(temp==0)
+    {
+        for(var i =0;i<sequence.length;i++)
+            sequence[i] = 1;
+    }
+    for(var num=0; num<5;num++)
+    {
+        if(type[num].status ==1)
+        {
+            var name = "#seq_filter_"+num;
+            for(var i =0;i<sequence.length;i++)
+            {
+                if(data.sequences[i].type[type[num].name] == true)
+                    sequence[i]=1;
+                if(data.sequences[i].type[type[num].name] == false)
+                    sequence[i]=0;
+            }
+        }
+    }
+    console.log("sequence",sequence);
+    let g_sequence = d3.select("#Sequence").selectAll("g").remove();
+    for(let num=0;num<data.sequences.length;num++) {
+        if(sequence[num]==1)
+        {
+            d3.select("#Sequence").append("g").attr("id",function () {
+                return "g_sequence"+(num+1);
+            })
+        }
+    }
+    let count =0;
+    for(let num=0;num<data.sequences.length;num++) {
+        if(sequence[num]==1)
+        {
+            let name = "#g_sequence" + (num + 1);
+            let g_sequence = d3.select("#Sequence").select(name)
+            let smallqurt= new Field(g_sequence,x_smallfield*width,(count++*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
+            g_sequence.append("rect")
+                .attr("id","rect_g")
+                .attr("x",x_smallfield*width)
+                .attr("y",(num*0.08+0.01)*height)
+                .attr("width",width_smallfield*width)
+                .attr("height",height_smallfield*height)
+                .attr("fill","gray")
+                .attr("fill-opacity","0")
+            let phase_small=new Sequence(smallqurt.fieldGroup,data.sequences[num]);
+            phase_small.draw_node("node",2,"black",2);
+        }
+    }
+}
 matchinfo.prototype.addBody = function() {
     // d3.select("#sequences").append("div")
     //     .attr("id","seq_body")
@@ -39,7 +122,12 @@ matchinfo.prototype.addFilter = function(params) {
         .attr("type","checkbox")
         .attr("id","seq_filter_"+params.num)
         .attr("width","0")
-        .attr("height","0");
+        .attr("height","0")
+        .on("click",function () {
+            var num = parseInt(d3.select(this).attr("id").substring(11));
+            type[num].status=1-type[num].status;
+            filter();
+        });
     d3.select("#seq_filter")
         .append("label")
         .attr("for","seq_filter_"+params.num)

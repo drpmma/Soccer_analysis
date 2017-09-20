@@ -527,6 +527,13 @@
             "endTime": {
                 "min": "9",
                 "sec": "27.8"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":true,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -613,6 +620,13 @@
             "endTime": {
                 "min": "19",
                 "sec": "5.6"
+            },
+            "type":{
+                "ATK_CENTER":true,
+                "ATK_SIDE":false,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -818,6 +832,13 @@
             "endTime": {
                 "min": "20",
                 "sec": "48.1"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":true,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -1017,6 +1038,13 @@
             "endTime": {
                 "min": "30",
                 "sec": "5.3"
+            },
+            "type":{
+                "ATK_CENTER":true,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -1116,6 +1144,13 @@
             "endTime": {
                 "min": "32",
                 "sec": "17.3"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -1345,6 +1380,13 @@
             "endTime": {
                 "min": "42",
                 "sec": "23.8"
+            },
+            "type":{
+                "ATK_CENTER":true,
+                "ATK_SIDE":false,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -1536,6 +1578,13 @@
             "endTime": {
                 "min": "45",
                 "sec": "37.5"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -1588,6 +1637,13 @@
             "endTime": {
                 "min": "61",
                 "sec": "35.6"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":false,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":true
             }
         },
         {
@@ -1727,6 +1783,13 @@
             "endTime": {
                 "min": "70",
                 "sec": "14.0"
+            },
+            "type":{
+                "ATK_CENTER":true,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -1813,6 +1876,13 @@
             "endTime": {
                 "min": "71",
                 "sec": "0.2"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":false,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":true
             }
         },
         {
@@ -1925,6 +1995,13 @@
             "endTime": {
                 "min": "82",
                 "sec": "12.7"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -2074,6 +2151,13 @@
             "endTime": {
                 "min": "95",
                 "sec": "51.4"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         }
     ]
