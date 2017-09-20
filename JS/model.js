@@ -1,3 +1,4 @@
 function model() {
-    videoPlayer.setVideo("data/video/cvk.mkv");
+    const folderPath = process.cwd();
+    videoPlayer.setVideo(`${folderPath}/video/cvk.mkv`);
 }

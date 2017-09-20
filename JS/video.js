@@ -1,6 +1,8 @@
 Video = function () {
     let that = this;
 
+    this.specialArray = [2, 5, 6, 10];
+
     this.bufferTime = 1;
 
     this.player = document.getElementById('VideoPlayer');
@@ -24,6 +26,14 @@ Video = function () {
         }
     });
 };
+
+Video.prototype.inSpecialArray = function (element) {
+    for(let e of this.specialArray){
+        if(e === element)
+            return true
+    }
+    return false
+}
 
 Video.prototype.setVideo = function (path) {
     if(document.getElementById("VideoPlayer").hasAttribute("src"))
