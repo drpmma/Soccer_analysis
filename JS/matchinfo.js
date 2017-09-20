@@ -120,9 +120,9 @@ matchinfo.prototype.addFilter = function(params) {
     d3.select("#seq_filter")
         .append("input")
         .attr("type","checkbox")
-        .attr("id","seq_filter_"+params.num)
         .attr("width","0")
         .attr("height","0")
+        .attr("id","seq_filter_"+params.num)
         .on("click",function () {
             var num = parseInt(d3.select(this).attr("id").substring(11));
             type[num].status=1-type[num].status;
