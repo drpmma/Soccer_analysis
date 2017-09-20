@@ -294,7 +294,7 @@ Sequence.prototype.draw_node = function (group, r, color, isTransition, onTransi
             let time0 = d.time,
                 time1 = this.sequence.endTime;
             videoPlayer.playPart(time0,time1);
-        });
+        })
         .append("circle")
         .attr("x",0)
         .attr("y",0)

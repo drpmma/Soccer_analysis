@@ -365,6 +365,13 @@
             "endTime": {
                 "min": "77",
                 "sec": "18.5"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":true,
+                "ATK_BREAKAWAY":true,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -518,6 +525,13 @@
             "endTime": {
                 "min": "86",
                 "sec": "35.3"
+            },
+            "type":{
+                "ATK_CENTER":true,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         },
         {
@@ -628,6 +642,13 @@
             "endTime": {
                 "min": "42",
                 "sec": "2.8"
+            },
+            "type":{
+                "ATK_CENTER":false,
+                "ATK_SIDE":true,
+                "ATK_TRANSFER":false,
+                "ATK_BREAKAWAY":false,
+                "ATK_PLACE_KICK":false
             }
         }
     ]

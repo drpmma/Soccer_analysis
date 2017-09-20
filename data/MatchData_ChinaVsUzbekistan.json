@@ -529,7 +529,7 @@
                 "sec": "27.8"
             },
             "type":{
-                "ALT_CENTER":false,
+                "ATK_CENTER":false,
                 "ATK_SIDE":true,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":true,
@@ -622,7 +622,7 @@
                 "sec": "5.6"
             },
             "type":{
-                "ALT_CENTER":true,
+                "ATK_CENTER":true,
                 "ATK_SIDE":false,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,
@@ -834,7 +834,7 @@
                 "sec": "48.1"
             },
             "type":{
-                "ALT_CENTER":false,
+                "ATK_CENTER":false,
                 "ATK_SIDE":true,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":true,
@@ -1040,7 +1040,7 @@
                 "sec": "5.3"
             },
             "type":{
-                "ALT_CENTER":true,
+                "ATK_CENTER":true,
                 "ATK_SIDE":true,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,
@@ -1146,7 +1146,7 @@
                 "sec": "17.3"
             },
             "type":{
-                "ALT_CENTER":false,
+                "ATK_CENTER":false,
                 "ATK_SIDE":true,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,
@@ -1382,7 +1382,7 @@
                 "sec": "23.8"
             },
             "type":{
-                "ALT_CENTER":true,
+                "ATK_CENTER":true,
                 "ATK_SIDE":false,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,
@@ -1580,7 +1580,7 @@
                 "sec": "37.5"
             },
             "type":{
-                "ALT_CENTER":false,
+                "ATK_CENTER":false,
                 "ATK_SIDE":true,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,
@@ -1639,7 +1639,7 @@
                 "sec": "35.6"
             },
             "type":{
-                "ALT_CENTER":false,
+                "ATK_CENTER":false,
                 "ATK_SIDE":false,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,
@@ -1785,7 +1785,7 @@
                 "sec": "14.0"
             },
             "type":{
-                "ALT_CENTER":true,
+                "ATK_CENTER":true,
                 "ATK_SIDE":true,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,
@@ -1878,7 +1878,7 @@
                 "sec": "0.2"
             },
             "type":{
-                "ALT_CENTER":false,
+                "ATK_CENTER":false,
                 "ATK_SIDE":false,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,
@@ -1997,7 +1997,7 @@
                 "sec": "12.7"
             },
             "type":{
-                "ALT_CENTER":false,
+                "ATK_CENTER":false,
                 "ATK_SIDE":true,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,
@@ -2153,7 +2153,7 @@
                 "sec": "51.4"
             },
             "type":{
-                "ALT_CENTER":false,
+                "ATK_CENTER":false,
                 "ATK_SIDE":true,
                 "ATK_TRANSFER":false,
                 "ATK_BREAKAWAY":false,

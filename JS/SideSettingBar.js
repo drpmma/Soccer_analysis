@@ -152,8 +152,17 @@ sideSettingBar.prototype.sequenceChangeBtn = function() {
     f3.viewtransform(this.sequenceStyleSel,this.sequenceTimeParams.value);
     console.log("sequenceChangeBtn")
 };
+sideSettingBar.prototype.clear =function () {
+    d3.select("#sequences").select("#sequence").remove();
+    d3.select("#sequences").select("#seq_filter").remove();
+    d3.select("#center").select("#shortcut").select("#tips_color").select("*").remove();
+    d3.select("#center").select("#shortcut").select("#tips_line").select("*").remove();
+    d3.select("#center").selectAll("svg").remove();
+    d3.select("#team").select("*").remove();
+    d3.select("#player_info").select("*").remove();
+}
 sideSettingBar.prototype.dataChangeBtn = function() {
-    d3.select("#screen").remove();
+    this.clear();
     data_select.main(fm.getFilePath(this.dataListSel));
     console.log("dataChangeBtn")
 };

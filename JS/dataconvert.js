@@ -9,7 +9,7 @@ dataselect = function () {
     this.main(fm.getFilePath(0));
 }
 dataselect.prototype.datachoose = function () {
-    d3.select("#screen").remove();
+    d3.select("#").remove();
     var sel=document.getElementById("datachoose");
     console.log(sel.options)
     var value=sel.options[sel.selectedIndex].value;
@@ -33,26 +33,26 @@ dataselect.prototype.main=function (value) {
         data = new Data(jsondata);
         width = document.getElementById("svg_div").getBoundingClientRect().width;
         height = document.getElementById("svg_div").getBoundingClientRect().height;
-        var svg = d3.select("#svg_div").append("svg").attr("id","screen");
-        svg.attr("width", width).attr("height", height);
         createDefs();
         drawback();
-        mainfield = new Field(svg, x_timeline*width, 0.011*height, 0.94*0.65*width, 0.70*height, "mainfield", 0, 0,1);
-
-        var time_line=new timeline(svg,width,height);
+        var div=d3.select("#svg_div");
+        var main_div=d3.select("#svg_div").select("#center").append("svg").attr("transform","translate(0,0)").attr("width",0.7*width).attr("height",0.72*height)
+        mainfield = new Field(main_div, 0*width, 0.011*height, 0.94*0.65*width, 0.70*height, "mainfield", 0, 0,1);
+        var time_line=new timeline(div,width,height,data.sequences,mainfield);
 
         infos = new Infos(data.players.team0);
         pm = new PlayersManager(data.players.team0);
-
+        onTransition = new Array(data.sequences.length);
+        for(let i = 0; i < onTransition.length; i++)
+            onTransition[i] = 0;
         let svg_player = d3.select("#team").append("svg").attr("width","100%").attr("height","100%");
         width = document.getElementById("team").getBoundingClientRect().width;
         height = document.getElementById("team").getBoundingClientRect().height;
         var f2 = new Field(svg_player, 0.02*width, 0.02*height, 0.96*width, 0.96*height, "playerfield", 1, 1,1);
         var players = new Players(f2, data.players.team0);
-
         width = document.getElementById("svg_div").getBoundingClientRect().width;
         height = document.getElementById("svg_div").getBoundingClientRect().height;
-        f3= new matchinfo(svg,mainfield,data.sequences,width,height);
+        f3= new sequenceinfo(div,mainfield,data.sequences,width,height);
         f3.addFilters();
     }
 }

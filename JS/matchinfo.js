@@ -1,51 +1,51 @@
-matchinfo.prototype.addBody = function() {
-    d3.select("#sequences").append("div")
-        .attr("id","seq_body")
-        .attr("class","part header");
-};
-
-matchinfo.prototype.addFilters = function() {
-    d3.select("#sequences").append("div")
-        .attr("id","seq_filter")
-        .attr("class","part footer");
-
-    this.filterList = new Array(5);
-    this.filterList[0] = {
-        num: 0,
-        content: "中路进攻"
-    };
-    this.filterList[1] = {
-        num: 1,
-        content: "边路进攻"
-    };
-    this.filterList[2] = {
-        num: 2,
-        content: "进攻点转移"
-    };
-    this.filterList[3] = {
-        num: 3,
-        content: "快速反击"
-    };
-    this.filterList[4] = {
-        num: 4,
-        content: "定位球进攻"
-    };
-    for(let i = 0; i < this.filterList.length; i++)
-        this.addFilter(this.filterList[i]);
-};
-matchinfo.prototype.addFilter = function(params) {
-    d3.select("#seq_filter")
-        .append("input")
-        .attr("type","checkbox")
-        .attr("id","seq_filter_"+params.num)
-        .attr("width","0")
-        .attr("height","0");
-    d3.select("#seq_filter")
-        .append("label")
-        .attr("for","seq_filter_"+params.num)
-        .append("span")
-        .text(params.content);
-};
+// sequenceinfo.prototype.addBody = function() {
+//     d3.select("#sequences").append("div")
+//         .attr("id","seq_body")
+//         .attr("class","part header");
+// };
+//
+// sequenceinfo.prototype.addFilters = function() {
+//     d3.select("#sequences").append("div")
+//         .attr("id","seq_filter")
+//         .attr("class","part footer");
+//
+//     this.filterList = new Array(5);
+//     this.filterList[0] = {
+//         num: 0,
+//         content: "中路进攻"
+//     };
+//     this.filterList[1] = {
+//         num: 1,
+//         content: "边路进攻"
+//     };
+//     this.filterList[2] = {
+//         num: 2,
+//         content: "进攻点转移"
+//     };
+//     this.filterList[3] = {
+//         num: 3,
+//         content: "快速反击"
+//     };
+//     this.filterList[4] = {
+//         num: 4,
+//         content: "定位球进攻"
+//     };
+//     for(let i = 0; i < this.filterList.length; i++)
+//         this.addFilter(this.filterList[i]);
+// };
+// sequenceinfo.prototype.addFilter = function(params) {
+//     d3.select("#seq_filter")
+//         .append("input")
+//         .attr("type","checkbox")
+//         .attr("id","seq_filter_"+params.num)
+//         .attr("width","0")
+//         .attr("height","0");
+//     d3.select("#seq_filter")
+//         .append("label")
+//         .attr("for","seq_filter_"+params.num)
+//         .append("span")
+//         .text(params.content);
+// };
 
 
 
