@@ -754,7 +754,7 @@ function redrawPitch(ComputeResult, MethodName, MethodLayer) {
 
 
 
-        d3.select("g").selectAll("field")
+        d3.select("#mainfield").selectAll("field")
             .data(ComputeResult)
             .enter()
             .append("circle")
@@ -785,7 +785,7 @@ function redrawPitch(ComputeResult, MethodName, MethodLayer) {
             });
 
 
-        d3.select("g")
+        d3.select("#mainfield")
             .append("path")
             .attr("class","hylink")
             .attr("d",line_generator(ComputeResult))
@@ -838,7 +838,7 @@ function redrawPitch(ComputeResult, MethodName, MethodLayer) {
 
 
 
-        d3.select("g")
+        d3.select("#mainfield")
             .append("path")
             .attr("class","hylink")
             .attr("d",line_generator(ComputeResult))

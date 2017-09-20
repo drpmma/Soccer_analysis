@@ -199,6 +199,7 @@ matchinfo = function (svg,field,data,width,height) {
             .attr("cy",(y_timeline+0.01)*height)
             .attr("r",0.008*height)
             .attr("fill",function () {
+                // alert("111")
                 let len=data[i].actions.length -1;
                 let color=getEventColor(data[i].actions[len].eid);
                 return color;

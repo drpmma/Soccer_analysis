@@ -234,7 +234,7 @@ sideSettingBar.prototype.CreateOptions = function() {
 
     this.abstractMethods = new Array();
     this.abstractMethods = ["简化","平均聚合","中位聚合"];
-    this.abstractMethodSel = 0;
+    this.abstractMethodSel = 1;
 
     this.playerStyleOptions = new Array();
     this.playerStyleOptions[0] = "圆";

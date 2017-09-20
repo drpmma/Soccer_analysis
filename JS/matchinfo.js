@@ -37,16 +37,18 @@ function filter() {
         for(var i =0;i<sequence.length;i++)
             sequence[i] = 1;
     }
+    temp=0;
     for(var num=0; num<5;num++)
     {
         if(type[num].status ==1)
         {
+            temp+=1;
             var name = "#seq_filter_"+num;
             for(var i =0;i<sequence.length;i++)
             {
-                if(data.sequences[i].type[type[num].name] == true)
+                if(data.sequences[i].type[type[num].name] == true && temp===1)
                     sequence[i]=1;
-                if(data.sequences[i].type[type[num].name] == false)
+                if(data.sequences[i].type[type[num].name] == false )
                     sequence[i]=0;
             }
         }
