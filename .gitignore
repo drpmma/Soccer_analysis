@@ -1,7 +1,10 @@
 /.idea
 /node_modules
 /.eslintrc.js
-/package.json
 /3.0.0
 /4.1.1
 /test
+/data/video
+/npm-debug.log
+/SoccerStories-win32-x64*
+/video

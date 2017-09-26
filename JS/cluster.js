@@ -9,7 +9,8 @@ ClusterManager = function(field, sequence) {
         .attr("id", "clusterGroup")
         .attr("transform", "translate(0,0)")
         .attr("width", this.field.fieldGroup.attr("width"))
-        .attr("height", this.field.fieldGroup.attr("height"));
+        .attr("height", this.field.fieldGroup.attr("height"))
+        .attr("opacity", 1);
     this.clusterLimit = this.clusterGroup.append("g")
         .attr("id","clusterLayoutLimit")
         .attr("transform", "translate(0,0)")
@@ -285,6 +286,13 @@ ClusterManager.prototype.relayout_layout = function() {
         this.clusters[i].resetPos(this.clustersGeometry[i].x,this.clustersGeometry[i].y,this.changeDuration,i*this.changeDuration);
 };
 
+ClusterManager.prototype.show = function(duration) {
+    this.clusterGroup.transition().duration(duration).attr("opacity", 1);
+};
+ClusterManager.prototype.hide = function(duration) {
+    this.clusterGroup.transition().duration(duration).attr("opacity", 0);
+};
+
 Cluster = function(start, end, type, num) {
     console.log(start,end);
     var that = this;
@@ -352,6 +360,7 @@ Cluster = function(start, end, type, num) {
     function dragmove() {
         var width = d3.select(this).attr("width")/2, height = d3.select(this).attr("height")/2;
         var dx, dy;
+        var rex, rey;
         currentx = (+currentx) + (+d3.event.dx); currenty = (+currenty) + (+d3.event.dy);
         d3.select(this)
             .attr("transform", function() {
@@ -417,6 +426,8 @@ Cluster = function(start, end, type, num) {
         if(start>=1) repaintPath(start-1, 1, 0);
         if(that.type == CT_Shoot) for(i = start; i < end; i++) repaintPath(i, 2, 0);
         else if(that.type == CT_Centre) for(i = start; i < end; i++) repaintPath(i, 3, 0);
+        else if(that.type == CT_Matrix) for(i = start; i < end; i++) repaintPath(i, path_matrix, 0);
+        else if(that.type == CT_Hive_Plot) for(i = start; i < end; i++) repaintPath(i, path_hiveplot, 0, 0, {cx:rex+width,cy:rey+height});
         else for(i = start; i < end; i++) repaintPath(i, 0, 0);
         if(end != seq.nodes.length-1) repaintPath(end, 1, 0);
     }
@@ -434,13 +445,17 @@ Cluster = function(start, end, type, num) {
                                             .attr("style","stroke:steelblue; fill:white; stroke-width:3;")})
         .on("mouseout", function(){if(that.isChosen == 0)
                                         d3.select(this).select("#clusterrect"+that.num)
-                                            .attr("style","stroke:black; fill:white; stroke-width:1;")})
+                                            .attr("style","stroke:rgb(128,128,128); fill:white; stroke-width:1;")})
         .on("click", function(){cm.chooseCluster(that.num)})
+        .on("dblclick", function(){
+            let time0 = that.sequence.nodes[that.start].time, time1 = that.sequence.nodes[that.end].time;
+            videoPlayer.playPart(time0,time1);
+        })
         .call(drag)
         .append("rect")
         .attr("id","clusterrect" + this.num)
         .attr("x",0).attr("y",0).attr("width",0).attr("height",0)
-        .attr("style","stroke:black; fill:white; stroke-width:1;")
+        .attr("style","stroke:rgb(128,128,128); fill:white; stroke-width:1;")
         .attr("opacity", 0);
     this.cg.select("#cluster"+this.num).append("g").attr("id","subClusterGroup"+this.num).attr("opacity",0);
 
@@ -641,7 +656,7 @@ Cluster.prototype.nodeLinkAll = function() {
         .attr("height",currenthei);
 
     var tempf = new Field(this.cg.select("#subClusterGroup"+this.num), pad, pad, wid, hei, "clusterfield"+this.num, 0, 1,1);
-    var tempp = new Players(tempf, data.players);
+    var tempp = new Players(tempf, data.players.team0);
 
     for(var i = this.start; i <= this.end; i++)
     {
@@ -673,12 +688,12 @@ Cluster.prototype.nodeLinkAll = function() {
 
 Cluster.prototype.hivePlot = function() {
     var num = this.playerNum;
-    var r_step = +this.r_scale(1);
-    var r_point = +this.r_scale(0.4);
-    var r_node = +this.r_scale(1.2);
-    var r_center = +this.r_scale(1);
-    var currentwid = 2*(r_center+num*r_step+2*r_node);
-    var currenthei = 2*(r_center+num*r_step+2*r_node);
+    this.r_step = +this.r_scale(0.5);
+    this.r_point = +this.r_scale(0.4);
+    this.r_node = +this.r_scale(1.2);
+    this.r_center = +this.r_scale(1);
+    var currentwid = 2*(this.r_center+(this.end-this.start)*this.r_step+2*this.r_node);
+    var currenthei = 2*(this.r_center+(this.end-this.start)*this.r_step+2*this.r_node);
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
     var currenty=(+this.cg.select("#cluster"+this.num).attr("y"))+this.cg.select("#cluster"+this.num).attr("height")/2-currenthei/2;
 
@@ -702,35 +717,35 @@ Cluster.prototype.hivePlot = function() {
         .attr("height",currenthei);
     for(var i = 0; i < num; i++)
     {
-        var coor1 = coor_change(2*i*Math.PI/num, r_center),
-            coor2 = coor_change(2*i*Math.PI/num, r_center+num*r_step),
-            coor3 = coor_change(2*i*Math.PI/num, r_center+num*r_step+r_node);
+        var coor1 = coor_change(2*i*Math.PI/num, this.r_center),
+            coor2 = coor_change(2*i*Math.PI/num, this.r_center+(this.end-this.start)*this.r_step),
+            coor3 = coor_change(2*i*Math.PI/num, this.r_center+(this.end-this.start)*this.r_step+this.r_node);
         this.cg.select("#subClusterGroup"+this.num)
             .append("line")
             .attr("x1",coor1.x+currentwid/2).attr("y1",coor1.y+currenthei/2)
             .attr("x2",coor2.x+currentwid/2).attr("y2",coor2.y+currenthei/2)
-            .attr("style","stroke:black;stroke-width:1;");
+            .attr("style","stroke:rgb(128,128,128);stroke-width:1;");
         this.cg.select("#subClusterGroup"+this.num)
             .append("circle")
             .attr("cx",coor3.x+currentwid/2).attr("cy",coor3.y+currenthei/2)
-            .attr("r",r_node)
-            .attr("style","fill:none;stroke:black;stroke-width:1;");
+            .attr("r",this.r_node)
+            .attr("style","fill:rgb(36,40,51);stroke:rgb(128,128,128);stroke-width:1;");
         this.cg.select("#subClusterGroup"+this.num)
             .append("text")
             .attr("x",coor3.x+currentwid/2).attr("y",coor3.y+currenthei/2)
-            .attr("style","text-anchor: middle; dominant-baseline: middle; font-size:"+r_node)
+            .attr("style","fill: #ccc; text-anchor: middle; dominant-baseline: middle; font-size:"+this.r_node)
             .text(pm.findJerseyByPid(this.player[i].pid));
     }
 
     for(i = this.start; i <= this.end; i++)
     {
-        var coor = coor_change(2*this.playerIndex[i-this.start]*Math.PI/num, r_center+(i-this.start)*r_step);
+        var coor = coor_change(2*this.playerIndex[i-this.start]*Math.PI/num, this.r_center+(i-this.start)*this.r_step);
         resetNodePos(i, coor.x+currentwid/2+currentx, coor.y+currenthei/2+currenty, this.changeDuration, this.changeDuration);
-        resetNodeSize(i, r_point, this.changeDuration, this.changeDuration);
+        resetNodeSize(i, this.r_point, this.changeDuration, this.changeDuration);
         hideNodeText(i, this.changeDuration, this.changeDuration);
     }
     if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration, this.changeDuration*2);
-    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration, this.changeDuration*2)
+    for(i = this.start; i < this.end; i++) repaintPath(i, path_hiveplot, this.changeDuration, this.changeDuration*2, {cx:currentx+currentwid/2,cy:currenty+currenthei/2});
     if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration, this.changeDuration*2);
 
     this.cg.select("#cluster"+this.num)
@@ -894,11 +909,8 @@ Cluster.prototype.matrixVis = function() {
                     var color;
                     var times;
                     if(i==j) {
-                        if( that.player[i].pid == that.sequence.nodes[that.start].pid ||
-                            that.player[i].pid == that.sequence.nodes[that.end].pid)
-                            color = chooseColorByTimes(-1);
-                        else color = chooseColorByTimes(-2);
-                        return "stroke:black;stroke-width:1;"+"fill:"+color+";";
+                        color = chooseColorByTimes(-1);
+                        return "fill:"+color+";";
                     }
                     else {
                         times = 0;
@@ -915,10 +927,10 @@ Cluster.prototype.matrixVis = function() {
                 .attr("width",0)
                 .attr("height",0)
                 .transition().duration(this.changeDuration)
-                .attr("x",i*size+pad)
-                .attr("y",j*size+pad)
-                .attr("width",size)
-                .attr("height",size);
+                .attr("x",i*size+pad+1)
+                .attr("y",j*size+pad+1)
+                .attr("width",size-2)
+                .attr("height",size-2);
         }
 
         this.cg.select("#subClusterGroup"+this.num)
@@ -934,11 +946,11 @@ Cluster.prototype.matrixVis = function() {
         for(j = 0; j < num; j++)
             if(this.sequence.nodes[i].pid == this.player[j].pid) break;
         resetNodePos(i, j*size+pad+currentx+size/2, j*size+pad+currenty+size/2, this.changeDuration,this.changeDuration);
-        resetNodeSize(i,size/2,this.changeDuration,this.changeDuration);
+        resetNodeSize(i,0,this.changeDuration,this.changeDuration);
         hideNodeText(i, this.changeDuration,this.changeDuration);
     }
     if(this.start >= 1) repaintPath(this.start-1,1,this.changeDuration,this.changeDuration*2);
-    for(i = this.start; i < this.end; i++) repaintPath(i, 0, this.changeDuration,this.changeDuration*2)
+    for(i = this.start; i < this.end; i++) repaintPath(i, path_matrix, this.changeDuration,this.changeDuration*2)
     if(this.end != seq.nodes.length-1) repaintPath(this.end,1,this.changeDuration,this.changeDuration*2);
 
     this.cg.select("#cluster"+this.num)
@@ -949,17 +961,16 @@ Cluster.prototype.matrixVis = function() {
         .attr("opacity", 1);
 
     function chooseColorByTimes(times) {
-        if(times>=3) level = 2;
+        if(times>=2) level = 2;
         else if(times>=1) level = 1;
         else level = times;
 
         switch (level)
         {
-            case -1:r =   0; g = 255; b =   0; break;
-            case -2:r = 255; g = 255; b = 255; break;
-            case 0: r = 127; g = 127; b = 127; break;
-            case 1: r =   0; g =   0; b = 255; break;
-            case 2: r = 255; g =   0; b =   0; break;
+            case -1:r = 255; g = 255; b = 255; break;
+            case 0: r = 179; g = 179; b = 179; break;
+            case 1: r = 115; g = 115; b = 115; break;
+            case 2: r =  51; g =  51; b =  51; break;
         }
         return "rgb("+r+","+g+","+b+")";
     }
@@ -969,7 +980,7 @@ Cluster.prototype.matrixVis = function() {
 };
 
 Cluster.prototype.shoot = function() {
-    var wid = +this.y_scale(35), hei = +this.x_scale(27.5), pad = 2;
+    var wid = +this.x_scale(21), hei = +this.x_scale(30), pad = 2;
     var currentwid = wid+2*pad;
     var currenthei = hei+2*pad;
     var currentx=(+this.cg.select("#cluster"+this.num).attr("x"))+this.cg.select("#cluster"+this.num).attr("width")/2-currentwid/2;
@@ -1066,7 +1077,7 @@ Cluster.prototype.dechosen = function() {
     this.cg.select("#clusterrect"+this.num)
         .transition()
         .duration(200)
-        .attr("style", "stroke:black; fill:white; stroke-width:1;");
+        .attr("style", "stroke:rgb(128,128,128); fill:white; stroke-width:1;");
 };
 
 Cluster.prototype.getGeometry = function() {
@@ -1111,7 +1122,6 @@ function resetNodePos(id, x, y, duration, delay) {
         .duration(duration)
         .attr("transform","translate("+x+","+y+")");
 }
-
 function resetNodeSize(id, r, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id)
@@ -1142,7 +1152,6 @@ function resetNodeSize(id, r, duration, delay) {
         .duration(duration)
         .attr("style","text-anchor:middle; dominant-baseline:middle; font-size:"+r+"px;");
 }
-
 function hideNodeText(id, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
@@ -1150,7 +1159,6 @@ function hideNodeText(id, duration, delay) {
         .transition().delay(delay).duration(duration)
         .attr("opacity",0);
 }
-
 function showNodeText(id, duration, delay) {
     if(delay == undefined) delay = 0;
     d3.select("#mainfield").select("#node_container").select("#node"+id).select("text")
@@ -1158,8 +1166,7 @@ function showNodeText(id, duration, delay) {
         .transition().delay(delay).duration(duration)
         .attr("opacity",1);
 }
-
-function repaintPath(id, style, duration, delay) {
+function repaintPath(id, style, duration, delay, params) {
     if(delay == undefined) delay = 0;
     if(duration != 0)
     {
@@ -1174,11 +1181,12 @@ function repaintPath(id, style, duration, delay) {
                     stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
                 switch(style)
                 {
-                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
-                    case 0: stroke = "gray"; stroke_width = "1px"; break;
-                    case 1: stroke_width = "2px"; break;
+                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "3px"; break;
+                    case 0: case path_hiveplot: stroke = "gray"; stroke_width = "1px"; break;
+                    case 1: stroke_width = "3px"; break;
                     case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
                     case 3: stroke = "green"; stroke_width = "3px"; break;
+                    case path_matrix: stroke = "black"; stroke_width = "0"; break;
                 }
                 return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
             })
@@ -1209,7 +1217,7 @@ function repaintPath(id, style, duration, delay) {
                     case 3:{
                         return line([{x: x_source, y: y_source}, {x: x_target, y: y_target}]);
                     }
-                    case 0: {
+                    case 0: case path_matrix:{
                         return line(getArc(
                             x_source,
                             y_source,
@@ -1223,6 +1231,9 @@ function repaintPath(id, style, duration, delay) {
                             "C" + x_target + " " + y_source +
                             " " + x_source + " " + y_target +
                             " " + x_target + " " + y_target;
+                    }
+                    case path_hiveplot: {
+                        return getArc_hiveplot(x_source,y_source,x_target,y_target,params.cx,params.cy);
                     }
                 }
             })
@@ -1238,11 +1249,12 @@ function repaintPath(id, style, duration, delay) {
                     stroke_width = d3.select("#mainfield").select("#path_container").select("#linkPath"+id).attr("stroke-width");
                 switch(style)
                 {
-                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "2px"; break;
-                    case 0: stroke = "gray"; stroke_width = "1px"; break;
-                    case 1: stroke_width = "2px"; break;
+                    case -1: stroke = getEventColor(seq.links[id].eid); stroke_width = "3px"; break;
+                    case 0: case path_hiveplot: stroke = "gray"; stroke_width = "1px"; break;
+                    case 1: stroke_width = "3px"; break;
                     case 2: stroke = getEventColor(seq.links[id].eid); stroke_width = "5px"; break;
                     case 3: stroke = "green"; stroke_width = "3px"; break;
+                    case path_matrix: stroke = "black"; stroke_width = "0"; break;
                 }
                 return "stroke:" + stroke + "; stroke-width:" + stroke_width + "; fill: none;";
             })
@@ -1273,7 +1285,7 @@ function repaintPath(id, style, duration, delay) {
                     case 3:{
                         return line([{x: x_source, y: y_source}, {x: x_target, y: y_target}]);
                     }
-                    case 0: {
+                    case 0: case path_matrix:{
                         return line(getArc(
                             x_source,
                             y_source,
@@ -1288,7 +1300,57 @@ function repaintPath(id, style, duration, delay) {
                             " " + x_source + " " + y_target +
                             " " + x_target + " " + y_target;
                     }
+                    case path_hiveplot: {
+                        return getArc_hiveplot(x_source,y_source,x_target,y_target,params.cx,params.cy);
+                    }
                 }
             });
     }
+
+    function getArc_hiveplot(psx,psy,ptx,pty,pcx,pcy) {
+        let sx = +psx, sy = +psy, tx = +ptx, ty = +pty, cx = +pcx, cy = +pcy;
+        console.log(sx,sy,tx,ty,cx,cy);
+        let rs = +Math.sqrt((sx-cx)*(sx-cx)+(sy-cy)*(sy-cy)),
+            rt = +Math.sqrt((tx-cx)*(tx-cx)+(ty-cy)*(ty-cy));
+        let angs = +Math.acos((sx-cx)/rs),
+            angt = +Math.acos((tx-cx)/rt);
+        if(sy-cy<0) angs = Math.PI*2-angs;
+        if(ty-cy<0) angt = -angt;
+        angt -= Math.PI*4;
+        while(Math.abs(angs-angt) > Math.PI)
+            angt += Math.PI*2;
+        let path = "M"+sx+" "+sy;
+        let d = Math.abs(angt-angs) * rt;
+        let step = d/20;
+        let angc = angs, rc = rs, angd, angp, rp;
+        let px = sx, py = sy;
+        while(px != tx || py != ty) {
+            if(+Math.sqrt((px-tx)*(px-tx)+(py-ty)*(py-ty)) <= step) {
+                px = tx; py = ty;
+            }
+            else if(angc.toFixed(3) === angs.toFixed(3) && angc.toFixed(3) === angt.toFixed(3)) {
+                px = tx; py = ty;
+            }
+            else {
+                angd = step / rc;
+                if(angt > angc) angp = angc + angd;
+                else angp = angc - angd;
+
+                rd = Math.abs(angd / (angt - angs) * (rt - rs));
+                rp = rc + rd;
+
+                px = Math.cos(angp) * rp + cx;
+                py = Math.sin(angp) * rp + cy;
+
+                angc = angp;
+                rc = rp;
+            }
+            path += "L"+px+" "+py;
+            console.log(angp, rp, px, py);
+        }
+        return path;
+    }
 }
+
+var path_matrix = 100;
+var path_hiveplot = 101;

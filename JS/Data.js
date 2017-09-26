@@ -3,31 +3,94 @@ Data = function (_data) {
     this.matchInfos = _data.matchInfos;
     this.matrixPass = _data.matrixPass;
     this.players = _data.players;
-    this.computePlayersStats();
     this.sequences = _data.sequences;
+
+    this.dataHandle();
+
+    this.computePlayersStats();
+
     console.log(_data);
     StoreSequence(_data.sequences);
-    _data.sequences.forEach(function(seq){
-        seq.actions.forEach(function(action){
-            if(action.eid == E_DEF_CLEARANCE) {
+    _data.sequences.forEach(function (seq) {
+        seq.actions.forEach(function (action) {
+            if (action.eid == E_DEF_CLEARANCE) {
                 console.log("converting Clearance to Pass");
                 action.eid = E_PASS;
                 var endX, endY;
-                action.qualifiers.forEach(function(qual){
-                    if(qual.qid == Q_PASS_END_X) endX = true;
-                    if(qual.qid == Q_PASS_END_Y) endY = true;
+                action.qualifiers.forEach(function (qual) {
+                    if (qual.qid == Q_PASS_END_X) endX = true;
+                    if (qual.qid == Q_PASS_END_Y) endY = true;
                 });
-                if(!endX) {
+                if (!endX) {
                     console.log("adding missing qualifier endX");
-                    action.qualifiers.push({qid: Q_PASS_END_X, value: action.x});
+                    action.qualifiers.push({ qid: Q_PASS_END_X, value: action.x });
                 }
-                if(!endY){
+                if (!endY) {
                     console.log("adding missing qualifier endY");
-                    action.qualifiers.push({qid: Q_PASS_END_Y, value: action.y});
+                    action.qualifiers.push({ qid: Q_PASS_END_Y, value: action.y });
                 }
             }
         });
     });
+}
+
+Data.prototype.dataHandle = function () {
+    for (let i = 0; i < this.players.team0.length; i++) {
+        this.players.team0[i].events = new Array();
+    }
+
+    // for (let sequence of this.sequences) {
+    //     console.log(sequence)
+    //     if(sequence.startTime.min >= 56){
+    //         for(let action of sequence.actions){
+    //             action.pos.x = 100 - action.pos.x
+    //             action.pos.y = 100 - action.pos.y
+    //             if(action.qualifiers.length !== 0){
+    //                 for(let qualifier of action.qualifiers){
+    //                     if(qualifier.qid == Q_SHOT_BLOCKED_X || qualifier.qid == Q_SHOT_BLOCKED_Y 
+    //                         || qualifier.qid == Q_SHOT_GOAL_MOUTH_Y)
+    //                     qualifier.value = 100 - qualifier.value
+    //                 }
+    //             } 
+    //         }
+    //     }
+    // }
+
+    for (let i = 0; i < this.sequences.length; i++) {
+        let sequence = this.sequences[i];
+
+        for (let j = 0; j < sequence.actions.length; j++) {
+            let action = sequence.actions[j];
+            action.eid = +action.eid;
+            action.x = +action.pos.x;
+            action.y = +action.pos.y;
+
+            for (let k = 0; k < this.players.team0.length; k++)
+                if (this.players.team0[k].pid == action.pid) this.players.team0[k].events.push(action);
+            for (let k = 0; k < action.qualifiers.length; k++)
+                action.qualifiers[k].qid = +action.qualifiers[k].qid;
+            if (action.eid == E_PASS && j != sequence.actions.length - 1) {
+                let flag1 = 0, flag2 = 0;
+                for (let k = 0; k < action.qualifiers.length; k++) {
+                    let qualifier = action.qualifiers[k];
+
+                    if (qualifier.qid == Q_PASS_END_X) flag1 = 1;
+                    if (qualifier.qid == Q_PASS_END_Y) flag2 = 1;
+                }
+                if (flag1 == 0)
+                    action.qualifiers.push({
+                        qid: Q_PASS_END_X,
+                        value: sequence.actions[j + 1].pos.x
+                    })
+                if (flag2 == 0)
+                    action.qualifiers.push({
+                        qid: Q_PASS_END_Y,
+                        value: sequence.actions[j + 1].pos.y
+                    })
+            }
+        }
+    }
+
 }
 
 var ConstAllSequences = [];
@@ -39,109 +102,109 @@ function PassSequence() {
     return ConstAllSequences;
 }
 
-Data.prototype.computePlayersStats = function(){
-    for(var i = 0; i < this.players.length; i++)
+Data.prototype.computePlayersStats = function () {
+    for (var i = 0; i < this.players.team0.length; i++)
     //this.players.forEach(function(player)
     {
-        this.players[i].stats = computePlayerStat(this.players[i]);
+        this.players.team0[i].stats = computePlayerStat(this.players.team0[i]);
     };
 
 
-    function computePlayerStat(player){
+    function computePlayerStat(player) {
 
         var stats = [
-            {event: "shots:goal", nb: 0},//1
-            {event: "shots:saved", nb: 0},//2
-            {event: "shots:missed", nb: 0},//3
-            {event: "shots:chance missed", nb: 0},//4
-            {event: "shots:post", nb: 0},//5
-            {event: "corners:given", nb: 0},//6
-            {event: "corners:obtained", nb: 0},//7
-            {event: "passes:success", nb: 0},//8
-            {event: "passes:failed", nb: 0},//9
-            {event: "fouls:commited", nb: 0},//10
-            {event: "fould:suffered", nb: 0},//11
-            {event: "interceptions", nb: 0},//12
-            {event: "tackles:success", nb: 0},//13
-            {event: "tackles:failed", nb: 0},//14
-            {event: "aerial duel:lost", nb: 0},//15
-            {event: "aerial duel:won", nb: 0},//16
-            {event: "lost ball", nb: 0},//17
-            {event: "dribble:success", nb: 0},//18
-            {event: "dribble:failed", nb: 0},//19
-            {event: "cards:yellow", nb: 0},//20
-            {event: "cards:red", nb: 0}//21
+            { event: "shots:goal", nb: 0 },//1
+            { event: "shots:saved", nb: 0 },//2
+            { event: "shots:missed", nb: 0 },//3
+            { event: "shots:chance missed", nb: 0 },//4
+            { event: "shots:post", nb: 0 },//5
+            { event: "corners:given", nb: 0 },//6
+            { event: "corners:obtained", nb: 0 },//7
+            { event: "passes:success", nb: 0 },//8
+            { event: "passes:failed", nb: 0 },//9
+            { event: "fouls:commited", nb: 0 },//10
+            { event: "fould:suffered", nb: 0 },//11
+            { event: "interceptions", nb: 0 },//12
+            { event: "tackles:success", nb: 0 },//13
+            { event: "tackles:failed", nb: 0 },//14
+            { event: "aerial duel:lost", nb: 0 },//15
+            { event: "aerial duel:won", nb: 0 },//16
+            { event: "lost ball", nb: 0 },//17
+            { event: "dribble:success", nb: 0 },//18
+            { event: "dribble:failed", nb: 0 },//19
+            { event: "cards:yellow", nb: 0 },//20
+            { event: "cards:red", nb: 0 }//21
         ];
 
-        function getStatFromName(name){
-            for(var s in stats){
-                if(stats[s].event == name) return stats[s];
+        function getStatFromName(name) {
+            for (var s in stats) {
+                if (stats[s].event == name) return stats[s];
             }
-            throw "can't find stat with name "+name;
+            throw "can't find stat with name " + name;
         }
 
-        if(player.events){
-            player.events.forEach(function(event){
-                switch(event.eid){
+        if (player.events) {
+            player.events.forEach(function (event) {
+                switch (event.eid) {
                     case E_PASS:
-                        if(event.outcome == 1) getStatFromName("passes:success").nb ++;
-                        else getStatFromName("passes:failed").nb ++;
+                        if (event.outcome == 1) getStatFromName("passes:success").nb++;
+                        else getStatFromName("passes:failed").nb++;
                         break;
                     case E_PASS_OFFSIDE:
-                        getStatFromName("passes:failed").nb ++;
+                        getStatFromName("passes:failed").nb++;
                         break;
                     case E_SHOT_GOAL:
-                        getStatFromName("shots:goal").nb ++;
+                        getStatFromName("shots:goal").nb++;
                         break;
                     case E_SHOT_MISS:
-                        getStatFromName("shots:missed").nb ++;
+                        getStatFromName("shots:missed").nb++;
                         break;
                     case E_SHOT_CHANCE_MISSED:
-                        getStatFromName("shots:chance missed").nb ++;
+                        getStatFromName("shots:chance missed").nb++;
                         break;
                     case E_SHOT_SAVED:
-                        getStatFromName("shots:saved").nb ++;
+                        getStatFromName("shots:saved").nb++;
                         break;
                     case E_SHOT_POST:
-                        getStatFromName("shots:post").nb ++;
+                        getStatFromName("shots:post").nb++;
                         break;
                     case E_CORNER:
-                        if(event.outcome == 1) getStatFromName("corners:given").nb ++;
-                        else getStatFromName("corners:obtained").nb ++;
+                        if (event.outcome == 1) getStatFromName("corners:given").nb++;
+                        else getStatFromName("corners:obtained").nb++;
                         break;
                     case E_DEF_TACKLE:
-                        getStatFromName("tackles:success").nb ++;
+                        getStatFromName("tackles:success").nb++;
                         break;
                     case E_ERROR_CHALLENGE:
-                        getStatFromName("tackles:failed").nb ++;
+                        getStatFromName("tackles:failed").nb++;
                         break;
                     case E_FOUL:
-                        if(event.outcome == 1) getStatFromName("fould:suffered").nb ++;
-                        else getStatFromName("fouls:commited").nb ++;
+                        if (event.outcome == 1) getStatFromName("fould:suffered").nb++;
+                        else getStatFromName("fouls:commited").nb++;
                         break;
                     case E_DEF_INTERCEPTION:
-                        getStatFromName("interceptions").nb ++;
+                        getStatFromName("interceptions").nb++;
                         break;
                     case E_AERIAL_DUEL:
-                        if(event.outcome == 1) getStatFromName("aerial duel:won").nb ++;
-                        else getStatFromName("aerial duel:lost").nb ++;
+                        if (event.outcome == 1) getStatFromName("aerial duel:won").nb++;
+                        else getStatFromName("aerial duel:lost").nb++;
                         break;
                     case E_ERROR_DISPOSSESSED:
-                        getStatFromName("lost ball").nb ++;
+                        getStatFromName("lost ball").nb++;
                         break;
                     case E_SPECIAL_TAKE_ON:
-                        if(event.outcome == 1) getStatFromName("dribble:success").nb ++;
-                        else getStatFromName("dribble:failed").nb ++;
+                        if (event.outcome == 1) getStatFromName("dribble:success").nb++;
+                        else getStatFromName("dribble:failed").nb++;
                         break;
                     case E_FOUL_CARD:
-                        for(var q in event.qualifiers){
+                        for (var q in event.qualifiers) {
                             var qual = event.qualifiers[q];
-                            if(qual.qid == Q_FOUL_YELLOW_CARD || qual.qid == Q_FOUL_YELLOW_CARD_SECOND){
-                                getStatFromName("cards:yellow").nb ++;
+                            if (qual.qid == Q_FOUL_YELLOW_CARD || qual.qid == Q_FOUL_YELLOW_CARD_SECOND) {
+                                getStatFromName("cards:yellow").nb++;
                                 break;
                             }
-                            else if(qual.qid == Q_FOUL_RED_CARD){
-                                getStatFromName("cards:red").nb ++;
+                            else if (qual.qid == Q_FOUL_RED_CARD) {
+                                getStatFromName("cards:red").nb++;
                                 break;
                             }
                         }
@@ -150,6 +213,8 @@ Data.prototype.computePlayersStats = function(){
 
 
                     //events to ignore
+                    case E_RUN:
+                    case E_LONG_RUN:
                     case E_BALL_OUT:
                     case 49://Ball recovery
                     case 61://ball touch
@@ -170,7 +235,7 @@ Data.prototype.computePlayersStats = function(){
                         break;
 
 
-                    default: console.log("warning, unknown eid "+event.eid+" when parsing stats for "+JSON.stringify(event));
+                    default: console.log("warning, unknown eid " + event.eid + " when parsing stats for " + JSON.stringify(event));
 
                 }
             });
@@ -181,40 +246,40 @@ Data.prototype.computePlayersStats = function(){
 
 };
 
-function distance(o1, o2){
-    return Math.sqrt((o1.x-o2.x)*((o1.x-o2.x))+(o1.y-o2.y)*((o1.y-o2.y)));
+function distance(o1, o2) {
+    return Math.sqrt((o1.x - o2.x) * ((o1.x - o2.x)) + (o1.y - o2.y) * ((o1.y - o2.y)));
 }
 
 var MIN_DIST_LONG_RUN = 20;
 
 
-function isLongRunAndPass(action, previous_action){
-    if(previous_action==undefined || previous_action.eid != E_PASS) return false;
+function isLongRunAndPass(action, previous_action) {
+    if (previous_action == undefined || previous_action.eid != E_PASS) return false;
 
     var run_orig = getPassDestPosition(previous_action),
-        run_dest = {x: action.x, y:action.y};
+        run_dest = { x: action.x, y: action.y };
 
     return run_dest.x > 50 && Math.abs(run_orig.x - run_dest.x) > MIN_DIST_LONG_RUN;
 }
 
 var MIN_DIST_SHOW_RUN = 8;
 
-function ignorePassRun(passDest, passOrig){
-    return distance(passDest,passOrig) < MIN_DIST_SHOW_RUN;
+function ignorePassRun(passDest, passOrig) {
+    return distance(passDest, passOrig) < MIN_DIST_SHOW_RUN;
 }
 
 var MIN_DIST_LONG_PASS = 30;
 
-function isLongPass(action,source){
-    if(action.eid != E_PASS) return false;
-    return distance(getPassDestPosition(action), {x:source.x, y:source.y}) > MIN_DIST_LONG_PASS;
+function isLongPass(action, source) {
+    if (action.eid != E_PASS) return false;
+    return distance(getPassDestPosition(action), { x: source.x, y: source.y }) > MIN_DIST_LONG_PASS;
 }
 
-function getPassDestPosition(action){
-    if(action.eid != E_PASS) throw "action must be a pass !" +JSON.stringify(action);
+function getPassDestPosition(action) {
+    if (action.eid != E_PASS) throw "action must be a pass !" + JSON.stringify(action);
     var endX, endY;
-    for(var q in action.qualifiers){
-        switch(action.qualifiers[q].qid){
+    for (var q in action.qualifiers) {
+        switch (action.qualifiers[q].qid) {
             case Q_PASS_END_X:
                 endX = action.qualifiers[q].value;
                 break;
@@ -225,15 +290,15 @@ function getPassDestPosition(action){
             //do nothing
         }
     }
-    if(endX != undefined && endY != undefined) return {x: parseFloat(endX), y: parseFloat(endY)};
-    else throw "Unknown pass destination in "+JSON.stringify(action);
+    if (endX != undefined && endY != undefined) return { x: parseFloat(endX), y: parseFloat(endY) };
+    else throw "Unknown pass destination in " + JSON.stringify(action);
 }
 
-function getShotDestination(action){
-    if(C_SHOT.indexOf(action.eid)==-1) throw "action must be a shot ! "+JSON.stringify(action);
+function getShotDestination(action) {
+    if (C_SHOT.indexOf(action.eid) == -1) throw "action must be a shot ! " + JSON.stringify(action);
     var mouthY, mouthZ, blockedX, blockedY;
-    for(var q in action.qualifiers){
-        switch(action.qualifiers[q].qid){
+    for (var q in action.qualifiers) {
+        switch (action.qualifiers[q].qid) {
             case Q_SHOT_GOAL_MOUTH_Y:
                 mouthY = action.qualifiers[q].value;
                 break;
@@ -250,16 +315,16 @@ function getShotDestination(action){
             //do nothing
         }
     }
-    if(mouthY != undefined && mouthZ != undefined) return {type: SHOT_DEST_TYPE_MOUTH, y: parseFloat(mouthY), z: parseFloat(mouthZ)};
-    else if(blockedX != undefined && blockedY != undefined) return {type: SHOT_DEST_TYPE_BLOCKED, x: parseFloat(blockedX), y: parseFloat(blockedY)};
-    else{
-        console.log("Unknown shot mouth position in "+JSON.stringify(action));
-        return {type: SHOT_DEST_TYPE_BLOCKED, x: parseFloat(action.x), y: parseFloat(action.y)};
+    if (mouthY !== undefined && mouthZ !== undefined) return { type: SHOT_DEST_TYPE_MOUTH, y: parseFloat(mouthY), z: parseFloat(mouthZ) };
+    else if (blockedX !== undefined && blockedY !== undefined) return { type: SHOT_DEST_TYPE_BLOCKED, x: parseFloat(blockedX), y: parseFloat(blockedY) };
+    else {
+        console.log("Unknown shot mouth position in " + JSON.stringify(action));
+        return { type: SHOT_DEST_TYPE_BLOCKED, x: parseFloat(action.x), y: parseFloat(action.y) };
     }
 }
 
-function getEventName(eid){
-    switch(eid){
+function getEventName(eid) {
+    switch (eid) {
         case -1: return "E_DUPLICATE";
         case 1000: return "E_LONG_RUN";
         case 1001: return "E_RUN";
@@ -311,25 +376,61 @@ function getEventName(eid){
         case 5: return "E_BALL_OUT";
         case 6: return "E_CORNER";
 
-        default: throw "Unknown eid: "+eid;
+        default: throw "Unknown eid: " + eid;
     }
 }
 
-function getEventColor(eid){
-    switch(eid){
+// function getEventColor(eid) {
+//     switch (eid) {
+//         case E_PASS:
+//         case E_RUN:
+//             return "black";
+//         case E_SHOT_MISS:
+//             return "red";
+//         case E_SHOT_POST:
+//             return "pink";
+//         case E_SHOT_SAVED:
+//             return "blue";
+//         case E_SHOT_GOAL:
+//             return "green";
+//         case E_SHOT_CHANCE_MISSED:
+//             return "orange";
+//         case E_CORNER:
+//             return "pink";
+//         case E_SPECIAL_TAKE_ON:
+//         case E_SPECIAL_GOOD_SKILL:
+//             return "orange";
+//         case E_DEF_TACKLE:
+//             return "purple";
+//         case E_DEF_INTERCEPTION:
+//             return "orange";
+//         case E_DUPLICATE:
+//             return "gray";
+//         case E_LONG_RUN:
+//             return "gray";
+//         case E_AERIAL_DUEL:
+//             return "steelblue";
+//         case E_FOUL:
+//             return "brown";
+//         default:
+//             throw "unknown eid " + eid;
+//     }
+// }
+function getEventColor(eid) {
+    switch (eid) {
         case E_PASS:
         case E_RUN:
-            return "black";
+            return "rgb(36,40,45)";
         case E_SHOT_MISS:
-            return "red";
+            return "rgb(255,188,115)";
         case E_SHOT_POST:
-            return "pink";
+            return "rgb(85,175,188)";
         case E_SHOT_SAVED:
-            return "blue";
+            return "rgb(136,201,90)";
         case E_SHOT_GOAL:
-            return "green";
+            return "rgb(237,28,36)";
         case E_SHOT_CHANCE_MISSED:
-            return "orange";
+            return "rgb(126,102,145)";
         case E_CORNER:
             return "pink";
         case E_SPECIAL_TAKE_ON:
@@ -348,32 +449,32 @@ function getEventColor(eid){
         case E_FOUL:
             return "brown";
         default:
-            throw "unknown eid "+eid;
+            throw "unknown eid " + eid;
     }
 }
 
 var line = d3.line()
-    .x(function (d) {return d.x})
-    .y(function (d) {return d.y})
+    .x(function (d) { return d.x })
+    .y(function (d) { return d.y })
     .curve(d3.curveBasis);
 
-function getArc(sx,sy,tx,ty,r){
+function getArc(sx, sy, tx, ty, r) {
     var pivot1 = {
         x: sx + (tx - sx) / 4 + (ty - sy) / r,
         y: sy + (ty - sy) / 4 + (sx - tx) / r
     };
     var pivot2 = {
-        x: sx + 3*(tx - sx) / 4 + (ty - sy) / r,
-        y: sy + 3*(ty - sy) / 4 + (sx - tx) / r
+        x: sx + 3 * (tx - sx) / 4 + (ty - sy) / r,
+        y: sy + 3 * (ty - sy) / 4 + (sx - tx) / r
     };
 
     return [
-        {x:sx, y:sy}, {x:pivot1.x, y:pivot1.y},
-        {x:pivot2.x, y:pivot2.y},
-        {x:tx, y:ty}];
+        { x: sx, y: sy }, { x: pivot1.x, y: pivot1.y },
+        { x: pivot2.x, y: pivot2.y },
+        { x: tx, y: ty }];
 }
 
-function getPassCategory(pass, source){
+function getPassCategory(pass, source) {
     //rebuild the event to check if a centre
     var rebuiltAction = {
         eid: pass.eid,
@@ -382,18 +483,18 @@ function getPassCategory(pass, source){
         y: source.y
     };
 
-    if(isCorner(rebuiltAction)){
+    if (isCorner(rebuiltAction)) {
         return SUB_CHAIN_TYPE_PASS_CORNER;
     }
-    if(isCentreAndNotCorner(rebuiltAction)) {
+    if (isCentreAndNotCorner(rebuiltAction)) {
         return SUB_CHAIN_TYPE_PASS_CENTRE;
     }
 
 
     //else
-    for(var q in pass.qualifiers){
+    for (var q in pass.qualifiers) {
         var qual = pass.qualifiers[q];
-        switch(qual.qid){
+        switch (qual.qid) {
             //long passes
             case Q_PASS_LONG:
             case Q_PASS_CROSS:
@@ -429,18 +530,18 @@ function getPassCategory(pass, source){
     return SUB_CHAIN_TYPE_PASS_STANDARD;
 }
 
-function isCentreAndNotCorner(action, fromRight){
-    if(action.eid != E_PASS) return false;
+function isCentreAndNotCorner(action, fromRight) {
+    if (action.eid != E_PASS) return false;
 
     //if a corner, return false
-    if(isCorner(action)) return false;
+    if (isCorner(action)) return false;
 
-    if(!posInCentreOriginArea(action.x, action.y))return false;
+    if (!posInCentreOriginArea(action.x, action.y)) return false;
     var dest = getPassDestPosition(action);
     //console.log("dest",dest);
-    if(!posInCentreDestinationArea(dest.x, dest.y))return false;
+    if (!posInCentreDestinationArea(dest.x, dest.y)) return false;
 
-    if(fromRight != undefined) {
+    if (fromRight != undefined) {
         if (fromRight) {
             return (action.y <= 50);
         }
@@ -450,18 +551,18 @@ function isCentreAndNotCorner(action, fromRight){
 
 }
 
-function isCorner(action, fromRight){
-    if(action.eid != E_PASS) return false;
+function isCorner(action, fromRight) {
+    if (action.eid != E_PASS) return false;
     var is_corner = false;
-    for(var q in action.qualifiers){
+    for (var q in action.qualifiers) {
         var qual = action.qualifiers[q];
-        if(qual.qid == Q_PASS_CORNER){
+        if (qual.qid == Q_PASS_CORNER) {
             is_corner = true;
             break;
         }
     }
-    if(is_corner){
-        if(fromRight != undefined) {
+    if (is_corner) {
+        if (fromRight != undefined) {
             if (fromRight) {
                 return (action.y <= 50);
             }
@@ -472,24 +573,24 @@ function isCorner(action, fromRight){
     return false;
 }
 
-function posInCentreOriginArea(x,y){
-    return x >= 80 && (y <= 30 || y >= 70 );
+function posInCentreOriginArea(x, y) {
+    return x >= 80 && (y <= 30 || y >= 70);
 }
 
-function posInCentreDestinationArea(x,y){
-    return x >= 70 && y >= 20 && y <= 80 ;
+function posInCentreDestinationArea(x, y) {
+    return x >= 70 && y >= 20 && y <= 80;
 }
 
-function isShot(action){
+function isShot(action) {
     return C_SHOT.indexOf(action.eid) != -1;
 }
 
-function catchEvent(){
-    if(d3.event)d3.event.stopPropagation();
+function catchEvent() {
+    if (d3.event) d3.event.stopPropagation();
 }
 
 function createDefs() {
-//add the arrow marker
+    //add the arrow marker
     var defs = d3.select("svg").append("defs");
     defs.append("svg:marker")
         .attr("id", "arrowHead")
@@ -502,35 +603,35 @@ function createDefs() {
         .attr("d", "M0,0 V8 L6,4 Z")
         .attr("fill", "black");
 
-//the shadow for aerial passes
+    //the shadow for aerial passes
     var s = defs.append("svg:filter")
-        .attr("id","shadow-pass");
+        .attr("id", "shadow-pass");
     s.append("svg:feOffset")//Shadow Offset
-        .attr("dx","0")
-        .attr("dy","0");
+        .attr("dx", "0")
+        .attr("dy", "0");
     s.append("svg:feGaussianBlur")//Shadow Blur
-        .attr("result","offset-blur")
-        .attr("stdDeviation","2");
+        .attr("result", "offset-blur")
+        .attr("stdDeviation", "2");
     s.append("svg:feFlood")//Color & Opacity
-        .attr("flood-color","black")
-        .attr("flood-opacity","1")
-        .attr("result","color");
+        .attr("flood-color", "black")
+        .attr("flood-opacity", "1")
+        .attr("result", "color");
     s.append("svg:feComposite")//Clip color inside shadow
-        .attr("operator","in")
-        .attr("in","color")
-        .attr("in2","offset-blur")
-        .attr("result","shadow");
+        .attr("operator", "in")
+        .attr("in", "color")
+        .attr("in2", "offset-blur")
+        .attr("result", "shadow");
     s.append("svg:feComposite")//Clip color inside shadow
-        .attr("operator","over")
-        .attr("in","SourceGraphic")
-        .attr("in2","shadow");
+        .attr("operator", "over")
+        .attr("in", "SourceGraphic")
+        .attr("in2", "shadow");
 
     /*
      <rect width="90" height="90" stroke="green" stroke-width="3"
      fill="yellow" filter="url(#f1)" />
      */
 
-//the "sine" path for waves along path
+    //the "sine" path for waves along path
     var f = defs.append("svg:font")
         .attr("id", "fontWaves")
         .attr("horiz-adv-x", 100);
@@ -538,29 +639,29 @@ function createDefs() {
         .attr("font-family", "fontWaves")
         .attr("units-per-em", 100);
     f.append("svg:missing-glyph")
-        .attr("horiz-adv-x",100);
+        .attr("horiz-adv-x", 100);
     f.append("svg:glyph")
         .attr("unicode", "a")
-        .attr("horiz-adv-x",25)
-        .attr("d","M 0 0 C10 10 15 15 26 15 ");
+        .attr("horiz-adv-x", 25)
+        .attr("d", "M 0 0 C10 10 15 15 26 15 ");
     f.append("svg:glyph")
         .attr("unicode", "b")
-        .attr("horiz-adv-x",25)
-        .attr("d","M 0 15 C10 15 15 10 26 0 ");
+        .attr("horiz-adv-x", 25)
+        .attr("d", "M 0 15 C10 15 15 10 26 0 ");
     f.append("svg:glyph")
         .attr("unicode", "c")
-        .attr("horiz-adv-x",25)
-        .attr("d","M 0 0 C10 -10 15 -15 26 -15 ");
+        .attr("horiz-adv-x", 25)
+        .attr("d", "M 0 0 C10 -10 15 -15 26 -15 ");
     f.append("svg:glyph")
         .attr("unicode", "d")
-        .attr("horiz-adv-x",25)
-        .attr("d","M 0 -15 C10 -15 15 -10 26 0 ");
+        .attr("horiz-adv-x", 25)
+        .attr("d", "M 0 -15 C10 -15 15 -10 26 0 ");
 
     var gradientValues = [
-        {color:"#840000", offset:"0%", opacity:0.3},
-        {color:"#840000", offset:"20%", opacity:0.2},
-        {color:"#FF0000", offset:"50%", opacity:0.1},
-        {color:"#FF0000", offset:"100%", opacity:0}
+        { color: "#840000", offset: "0%", opacity: 0.3 },
+        { color: "#840000", offset: "20%", opacity: 0.2 },
+        { color: "#FF0000", offset: "50%", opacity: 0.1 },
+        { color: "#FF0000", offset: "100%", opacity: 0 }
     ];
     var gradient = defs.append("svg:radialGradient")
         .attr("id", "radialGradientSpray")
@@ -568,7 +669,7 @@ function createDefs() {
         .attr("cy", "50%")
         .attr("r", "50%");
 
-    for(var v in gradientValues){
+    for (var v in gradientValues) {
         gradient.append("svg:stop")
             .attr("offset", gradientValues[v].offset)
             .attr("stop-color", gradientValues[v].color)
@@ -679,7 +780,7 @@ var Q_PASS_CHIPPED = 155;
 var Q_PASS_LAY_OFF = 156;
 var Q_PASS_LAUNCH = 157;
 var Q_PASS_FLICK_ON = 168;
-var Q_PASS_PULL_BACK= 195;
+var Q_PASS_PULL_BACK = 195;
 var Q_PASS_SWITCH_OF_PLAY = 196;
 var Q_PASS_ASSIST = 210;
 
@@ -893,7 +994,7 @@ var Q_CONDITIONS_LIGHTINGS = 48;
 
 var C_PASS = [E_PASS, E_PASS_OFFSIDE];
 var C_SHOT = [E_SHOT_MISS, E_SHOT_POST, E_SHOT_SAVED, E_SHOT_GOAL, E_SHOT_CHANCE_MISSED];
-var C_FOUL = [E_FOUL, E_FOUL_THROW_IN,E_FOUL_CARD];
+var C_FOUL = [E_FOUL, E_FOUL_THROW_IN, E_FOUL_CARD];
 var C_DEF = [E_DEF_TACKLE, E_DEF_INTERCEPTION, E_DEF_CLEARANCE];
 var C_ERROR = [E_ERROR_TURNOVER, E_ERROR_CHALLENGE, E_ERROR_DISPOSSESSED, E_ERROR_ERROR];
 var C_SPECIAL = [E_SPECIAL_TAKE_ON, E_SPECIAL_GOOD_SKILL];

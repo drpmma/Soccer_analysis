@@ -4,7 +4,7 @@ ShotVis = function (sequence, clusterGroup, width, height, pad, shotNum, endNum,
     this.width = width;
     this.height = height;
     this.pad = pad;
-    this.panelHeight = height / 4;
+    this.panelHeight = height / 2.8;
     this.shotNode = this.sequence.nodes[shotNum];
     this.shotNum = shotNum;
     this.endNode = this.sequence.nodes[endNum];
@@ -13,10 +13,10 @@ ShotVis = function (sequence, clusterGroup, width, height, pad, shotNum, endNum,
     this.currentY = currentY;
 
     this.filterModesArray = [
-        {name: "goal", selected:true},
-        {name: "post", selected:true},
-        {name: "saved", selected:true},
-        {name: "missed", selected:true}
+        {name: "goal", selected: true},
+        {name: "post", selected: true},
+        {name: "saved", selected: true},
+        {name: "missed", selected: true}
     ];
 
     this.visuModesArray = ["dots", "spray"];
@@ -60,7 +60,7 @@ ShotVis.prototype.drawHalfField = function () {
     var that = this;
 
     this.fieldWidth = this.width;
-    this.fieldHeight = 0.5 * this.height;
+    this.fieldHeight = 0.4 * this.height;
 
     this.field = new Field(this.clusterGroup, this.pad, this.pad + this.height - this.fieldHeight - this.panelHeight,
         this.fieldWidth, this.fieldHeight, "clusterField", 0, 0, 0);
@@ -81,14 +81,14 @@ ShotVis.prototype.drawHalfField = function () {
 
 }
 
-ShotVis.prototype.drawPosition = function(duration){
+ShotVis.prototype.drawPosition = function (duration) {
     var endX, endY;
     var shot_dest = getShotDestination(this.sequence.links[this.sequence.links.length - 1]);
-    if(shot_dest.type == SHOT_DEST_TYPE_MOUTH){
+    if (shot_dest.type == SHOT_DEST_TYPE_MOUTH) {
         endX = this.setPostX(shot_dest.y);
         endY = this.setPostY(shot_dest.z);
     }
-    else{
+    else {
         endX = this.resetX(this.endNode.y);
         endY = this.resetY(this.endNode.x);
     }
@@ -121,7 +121,7 @@ ShotVis.prototype.drawPost = function () {
     this.post_x_scale = d3.scaleLinear().domain([34.6, 65.4]).range([0, 100]).clamp(true);
     this.post_y_scale = d3.scaleLinear().domain([0, 100]).range([0, 100]).clamp(true);
     this.post = new Field(this.clusterGroup, this.pad, 0, this.fieldWidth, this.distanceHeight,
-                "fieldPost", 0, 0, 0);
+        "fieldPost", 0, 0, 0);
     this.postWidth = this.post_x_scale(54.8) - this.post_x_scale(45.2);
     this.postHeight = this.post_y_scale(38);
     var rect = this.post.draw_rect(this.post_x_scale(45.2), 100 - this.postHeight, this.postWidth, this.postHeight);
@@ -130,7 +130,7 @@ ShotVis.prototype.drawPost = function () {
 
 ShotVis.prototype.drawShots = function () {
     var that = this;
-    if(this.shots == undefined){
+    if (this.shots == undefined) {
         this.shots = this.clusterGroup.append("g")
             .attr("class", "shotContext")
             .selectAll(".shots_shots")
@@ -152,7 +152,7 @@ ShotVis.prototype.drawShots = function () {
         });
     this.shots.each(function (d) {
         var mouth = that.getMouth(d);
-        if(mouth != null){
+        if (mouth != null) {
             d3.select(this).append("circle")
                 .attr("class", "shotNode")
                 .attr("transform", function () {
@@ -183,19 +183,20 @@ ShotVis.prototype.drawShots = function () {
                 })
                 .attr("stroke-width", 2);
         }
-        else{
+        else {
             var blocked = that.getBlocked(d);
-            if(blocked != null){
+            if (blocked != null) {
             }
-            else{
+            else {
             }
         }
 
     })
 }
 
-ShotVis.prototype.getShotType = function(shot){
-    switch(shot.eid){
+ShotVis.prototype.getShotType = function (shot) {
+    console.log(shot, E_SHOT_MISS, E_SHOT_POST, E_SHOT_SAVED, E_SHOT_GOAL, E_SHOT_CHANCE_MISSED);
+    switch (shot.eid) {
         case E_SHOT_MISS:
             return "missed";
             break;
@@ -212,57 +213,57 @@ ShotVis.prototype.getShotType = function(shot){
             return "chance_missed";
             break;
         default:
-            throw "Unknown shot event type: "+shot.eid;
+            throw "Unknown shot event type: " + shot.eid;
     }
 };
 
-ShotVis.prototype.getBlocked = function(d){
+ShotVis.prototype.getBlocked = function (d) {
     var blockedX = undefined;
     var blockedY = undefined;
-    for(var q in d.qualifiers){
+    for (var q in d.qualifiers) {
         var qual = d.qualifiers[q];
-        if(qual.qid == Q_SHOT_BLOCKED_X){
+        if (qual.qid == Q_SHOT_BLOCKED_X) {
             blockedX = qual.value;
         }
-        else if(qual.qid == Q_SHOT_BLOCKED_Y){
+        else if (qual.qid == Q_SHOT_BLOCKED_Y) {
             blockedY = qual.value;
         }
     }
-    if(blockedX != undefined && blockedY != undefined)return [blockedX, blockedY];
+    if (blockedX != undefined && blockedY != undefined) return [blockedX, blockedY];
     else return null;
 };
 
-ShotVis.prototype.getMouth = function(d){
+ShotVis.prototype.getMouth = function (d) {
     var mouthY = undefined;
     var mouthZ = undefined;
-    for(var q in d.qualifiers){
+    for (var q in d.qualifiers) {
         var qual = d.qualifiers[q];
-        if(qual.qid == Q_SHOT_GOAL_MOUTH_Y){
+        if (qual.qid == Q_SHOT_GOAL_MOUTH_Y) {
             mouthY = qual.value;
         }
-        else if(qual.qid == Q_SHOT_GOAL_MOUTH_Z){
+        else if (qual.qid == Q_SHOT_GOAL_MOUTH_Z) {
             mouthZ = qual.value;
         }
     }
-    if(mouthY != undefined && mouthZ != undefined)return [mouthY, mouthZ];
+    if (mouthY != undefined && mouthZ != undefined) return [mouthY, mouthZ];
     else return null;
 };
 
 ShotVis.prototype.modeSetting = function () {
-    this.barWidth = this.width / 20;
+    this.barWidth = this.width / 7;
     this.settingPad = this.height / 40;
     this.settingMove = this.width / 4;
-    this.fontSize = this.barWidth;
+    this.fontSize = this.barWidth / 2.8;
 }
 
 ShotVis.prototype.drawStats = function () {
     var that = this;
 
     this.stats = [
-        {type:"goal", nb:0},
-        {type:"post", nb:0},
-        {type:"saved", nb:0},
-        {type:"missed", nb:0}
+        {type: "goal", nb: 0},
+        {type: "post", nb: 0},
+        {type: "saved", nb: 0},
+        {type: "missed", nb: 0}
     ];
 
     this.statsPanel = this.clusterGroup.append("g")
@@ -276,42 +277,65 @@ ShotVis.prototype.drawStats = function () {
         .attr("height", this.panelHeight)
         .attr("rx", 2 * this.pad)
         .style("stroke-width", 0)
-        .style("fill", "grey");
+        .style("fill", "rgb(36,40,51)");
 
     this.statsGroups = this.statsPanel.selectAll(".visuShotsStats")
         .data(this.stats)
         .enter()
         .append("g")
         .attr("class", "visuShotsStats")
-        .attr("transform", function(d,i){
-            return "translate(" + [(that.settingMove * i), 0] + ")";
+        .attr("transform", function (d, i) {
+            return "translate(" + [(that.barWidth * 1.2 * i), 0] + ")";
         });
 
     this.statsBarScale = d3.scaleLinear()
-        .domain([0, d3.max(this.stats, function(d){return d.nb})])
+        .domain([0, d3.max(this.stats, function (d) {
+            return d.nb
+        })])
         .range([0, this.panelHeight / 3]);
 
     this.statsGroups.append("rect")
-        .attr("class", function(d){return "shot_bar_"+d.type;})
+        .attr("class", (d) => "white_bar")
         .attr("x", this.barWidth / 2)
-        .attr("y", function(d){return (that.panelHeight / 3 + that.settingPad - that.statsBarScale(d.nb))})//this.panelHeight)
+        .attr("y", function (d) {
+            return that.settingPad
+        })//this.panelHeight)
         .attr("width", this.barWidth)
-        .attr("height", function(d){return that.statsBarScale(d.nb);})
+        .attr("height", this.panelHeight / 3)
+        .attr("rx", this.pad)
+        .attr("fill", function (d) {
+            return "white"
+        });
+
+    this.statsGroups.append("rect")
+        .attr("class", function (d) {
+            return "shot_bar shot_" + d.type;
+        })
+        .attr("x", this.barWidth / 2)
+        .attr("y", function (d) {
+            return (that.panelHeight / 3 + that.settingPad - that.statsBarScale(d.nb))
+        })//this.panelHeight)
+        .attr("width", this.barWidth)
+        .attr("height", function (d) {
+            return that.statsBarScale(d.nb);
+        })
         .attr("rx", this.pad)
         .attr("fill", function (d) {
             return that.getShotColor(d.type);
         });
 
-    var totalShots = d3.sum(this.stats, function(d){return d.nb});
+    var totalShots = d3.sum(this.stats, function (d) {
+        return d.nb
+    });
 
-    this.statsGroups.append("text")
-        .text(function(d){return d.nb + "("+ ( totalShots != 0 ? parseInt((d.nb/totalShots)*100) : 0 )+"%)"})
-        .attr("text-anchor", "start")
-        .attr("class", "stats_text")
-        .attr("font-size", this.fontSize)
-        .attr("x", 2 * this.barWidth)
-        .attr("y", this.height / 10)
-        .attr("fill", "white");
+    // this.statsGroups.append("text")
+    //     .text(function(d){return d.nb + "("+ ( totalShots != 0 ? parseInt((d.nb/totalShots)*100) : 0 )+"%)"})
+    //     .attr("text-anchor", "start")
+    //     .attr("class", "stats_text")
+    //     .attr("font-size", this.fontSize)
+    //     .attr("x", 2 * this.barWidth)
+    //     .attr("y", this.height / 10)
+    //     .attr("fill", "white");
 
     this.totalShotsGroup = this.clusterGroup.selectAll(".visuShotsTotalShots")
         .data([totalShots])
@@ -328,9 +352,11 @@ ShotVis.prototype.drawStats = function () {
         .attr("height", this.height / 18);
 
     this.totalShotsGroup.append("text")
-        .text(function(d){return d})
+        .text(function (d) {
+            return d
+        })
         .attr("text-anchor", "middle")
-        .attr("class","stats_text")
+        .attr("class", "stats_text")
         .style("font-size", this.height / 20)
         .style("fill", "black")
         .attr("x", this.barWidth)
@@ -341,7 +367,7 @@ ShotVis.prototype.drawModes = function () {
     var that = this;
 
     this.filterModesPanel = this.clusterGroup.append("g")
-        .attr("class","filterModes")
+        .attr("class", "filterModes")
         .attr("transform", "translate(" + [this.pad, this.height - this.panelHeight] + ")");
 
     this.filterModes = this.filterModesPanel.selectAll("g.visuShotsModes")
@@ -349,47 +375,53 @@ ShotVis.prototype.drawModes = function () {
         .enter()
         .append("g")
         .attr("class", "visuShotsFilterModes")
-        .attr("transform", function(d, i){return "translate(" + [(that.settingMove * i), 4.5 * that.settingPad] + ")";})
+        .attr("transform", function (d, i) {
+            return "translate(" + [(that.barWidth * 1.2 * i), 2.5 * that.settingPad] + ")";
+        })
         .on("click", clickFilterMode)
         .on("mouseover", overFilterMode);
 
     this.filterModes
         .append("rect")
         .attr("x", this.barWidth / 2)
-        .attr("y", this.settingPad)
+        .attr("y", this.barWidth)
         .attr("rx", this.pad)
         .attr("width", this.barWidth)
-        .attr("height", this.barWidth);
+        .attr("height", this.barWidth / 2);
 
     this.filterModes
         .append("text")
         .attr("class", "filters_text")
-        .text(function(d){return that.getShotName(d.name)})
-        .attr("text-anchor", "start")
-        .attr("x", 2 * this.barWidth)
-        .attr("y", this.height / 20)
+        .text(function (d) {
+            return that.getShotName(d.name)
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", this.barWidth)
+        .attr("y", this.barWidth * 1.4)
         .attr("font-size", this.fontSize);
 
-    function clickFilterMode(d){
+    function clickFilterMode(d) {
         catchEvent();
         d.selected = !d.selected;
         that.clickFilterMode();
     }
 
-    function overFilterMode(){
+    function overFilterMode() {
         d3.select(this).style("cursor", "pointer");
     }
 
     this.visuModesPanel = this.clusterGroup.append("g")
-        .attr("class","visualModes")
-        .attr("transform", "translate("+ [this.pad, this.height - this.panelHeight] +")");
+        .attr("class", "visualModes")
+        .attr("transform", "translate(" + [this.pad, this.height - this.panelHeight] + ")");
 
     this.visuModes = this.visuModesPanel.selectAll("g.visuShotsVisuModes")
         .data(this.visuModesArray)
         .enter()
         .append("g")
         .attr("class", "visuShotsVisuModes")
-        .attr("transform", function(d,i){return "translate(" + [that.settingMove * i, 8 * that.settingPad] + ")";})
+        .attr("transform", function (d, i) {
+            return "translate(" + [that.barWidth * 1.3 * i, 10.5 * that.settingPad] + ")";
+        })
         .on("click", clickVisuMode)
         .on("mouseover", overVisuMode);
 
@@ -397,27 +429,30 @@ ShotVis.prototype.drawModes = function () {
         .append("rect")
         .attr("x", this.barWidth / 2)
         .attr("y", 0)
-        .attr("rx", this.pad)
-        .attr("width", this.barWidth)
-        .attr("height", this.barWidth);
+        .attr("rx", 2 * this.pad)
+        .attr("width", (d, i) => i === 0 ? this.barWidth * 1.2 : this.barWidth * 4.8)
+        .attr("height", this.barWidth / 1.5);
 
     this.visuModes
         .append("text")
-        .text(function(d){return that.getModeName(d)})
+        .text(function (d) {
+            return that.getModeName(d)
+        })
         .attr("class", "modes_text")
-        .attr("text-anchor", "start")
-        .attr("x", 2 * this.barWidth)
-        .attr("y", this.height / 40)
+        .attr("text-anchor", "middle")
+        .attr("x", this.barWidth * 1.1)
+        .attr("y", this.barWidth / 3)
+        .attr("dominant-baseline", "middle")
         .attr("font-size", this.fontSize);
 
     var sliderParams = {
-        width: this.settingMove * 0.8,
-        height: this.barWidth,
+        width: this.settingMove * 1.8,
+        height: this.pad * 2,
         padding: this.pad,
         parent: this.visuModesPanel,
-        sliderClass:"visuShotsSlider",
-        x: this.settingMove * 2,
-        y: this.height / 5,
+        sliderClass: "visuShotsSlider",
+        x: this.barWidth * 3.1,
+        y: this.barWidth * 2.85,
         rootSVG: that.clusterGroup,
         parentVisu: this,
         slider_range: [0, 50]
@@ -427,24 +462,24 @@ ShotVis.prototype.drawModes = function () {
     var max_spray_radius = 40;
     this.spray_radius_scale = d3.scaleLinear()
         .domain(this.sliderSpray.slider_range)
-        .range([min_spray_radius,max_spray_radius]);
+        .range([min_spray_radius, max_spray_radius]);
     this.sprayRadius = this.spray_radius_scale(0);
     this.changeSprayRadius(0);
 
 
-    function clickVisuMode(d){
+    function clickVisuMode(d) {
         catchEvent();
         that.clickVisuMode(d);
     }
 
-    function overVisuMode(){
+    function overVisuMode() {
         d3.select(this).style("cursor", "pointer");
     }
 
     // the "brush" mode
     this.brushing = this.visuModesPanel
         .append("g")
-        .attr("transform", "translate(" + [that.settingMove * 3, 8 * this.settingPad] + ")")
+        .attr("transform", "translate(" + [that.barWidth * 5, 3 * this.settingPad] + ")")
         .attr("class", "visuShotsBrushing")
         .on("click", clickBrushing)
         .on("mouseover", overBrushing);
@@ -453,20 +488,18 @@ ShotVis.prototype.drawModes = function () {
         .append("rect")
         .attr("x", this.barWidth / 2)
         .attr("y", 0)
-        .attr("rx", this.pad)
-        .attr("width", this.barWidth)
-        .attr("height", this.barWidth);
-
+        .attr("rx", this.pad * 3)
+        .attr("width", this.barWidth * 1.2)
+        .attr("height", this.barWidth * 1.2);
     this.brushing
-        .append("text")
-        .text("筛选")
-        .attr("class", "modes_text")
-        .attr("text-anchor", "start")
-        .attr("x", 2 * this.barWidth)
-        .attr("y", this.height / 40)
-        .style("font-size", this.fontSize);
+        .append("image")
+        .attr("x", this.barWidth * 0.6)
+        .attr("y", this.barWidth / 10)
+        .attr("xlink:href", "img/filiter.png")
+        .attr("height", this.barWidth)
+        .attr("width", this.barWidth)
 
-    function clickBrushing(){
+    function clickBrushing() {
         catchEvent();
         that.brush = !that.brush;
         d3.select(this).select("rect").classed("modes_selected", function () {
@@ -475,49 +508,55 @@ ShotVis.prototype.drawModes = function () {
         that.clickBrushing();
     }
 
-    function overBrushing(){
+    function overBrushing() {
         d3.select(this).style("cursor", "pointer");
     }
 }
 
 ShotVis.prototype.getModeName = function (name) {
-    switch(name){
-        case "dots": return "点图";
-        case "spray": return "雾图";
+    switch (name) {
+        case "dots":
+            return "点图";
+        case "spray":
+            return "雾图";
     }
 }
 
 ShotVis.prototype.getShotName = function (name) {
-    switch(name){
-        case "goal": return "进球";
-        case "post": return "门柱";
-        case "saved": return "扑出";
-        case "missed": return "偏出";
+    switch (name) {
+        case "goal":
+            return "进球";
+        case "post":
+            return "门柱";
+        case "saved":
+            return "扑出";
+        case "missed":
+            return "偏出";
     }
 }
 
-ShotVis.prototype.changeSprayRadius = function(val){
-    if(this.visuMode == "spray"){
+ShotVis.prototype.changeSprayRadius = function (val) {
+    if (this.visuMode == "spray") {
         this.sprayRadius = this.spray_radius_scale(val);
         this.shots.selectAll(".shotNode")
             .attr("r", this.sprayRadius);
     }
 };
 
-ShotVis.prototype.filterShots = function(){
+ShotVis.prototype.filterShots = function () {
     var that = this;
     var selectedFilterModes = [];
-    this.filterModesArray.forEach(function(mode){
-        if(mode.selected == true) selectedFilterModes.push(mode.name);
+    this.filterModesArray.forEach(function (mode) {
+        if (mode.selected == true) selectedFilterModes.push(mode.name);
     });
 
     //reset the stats
-    this.stats.forEach(function(stat){
+    this.stats.forEach(function (stat) {
         stat.nb = 0;
     });
 
     //update the shots classes and also update the stats data
-    d3.selectAll(".shots_shots").each(function(d){
+    d3.selectAll(".shots_shots").each(function (d) {
 
         var theShot = d3.select(this);
         //remove the old class
@@ -525,31 +564,31 @@ ShotVis.prototype.filterShots = function(){
         theShot.classed("shot_transparent", false);
         theShot.classed("shot_visible", false);
 
-        if(
+        if (
             // d.time < that.tMin || d.time > that.tMax //if not in the interval ||
-            selectedFilterModes.indexOf(d.shot_type)==-1){ //if not the filtered type of shot{
+        selectedFilterModes.indexOf(d.shot_type) == -1) { //if not the filtered type of shot{
             theShot.classed("shot_hidden", true);
         }
-        else{
+        else {
             var brushedField = that.brushedShotsField != null;
             var brushedMouth = that.brushedShotsMouth != null;
-            if(brushedField && brushedMouth
-                && (that.brushedShotsField.indexOf(d)==-1 || that.brushedShotsMouth.indexOf(d)==-1)//if not brushed by one of the brush
-                || brushedField && that.brushedShotsField.indexOf(d)==-1 //if not brushed in field
-                || brushedMouth && that.brushedShotsMouth.indexOf(d)==-1 //if not brushed in mouth
-            ){
+            if (brushedField && brushedMouth
+                && (that.brushedShotsField.indexOf(d) == -1 || that.brushedShotsMouth.indexOf(d) == -1)//if not brushed by one of the brush
+                || brushedField && that.brushedShotsField.indexOf(d) == -1 //if not brushed in field
+                || brushedMouth && that.brushedShotsMouth.indexOf(d) == -1 //if not brushed in mouth
+            ) {
                 theShot.classed("shot_transparent", true);
             }
-            else{//shot selected, update also the stats
+            else {//shot selected, update also the stats
                 incrementStat(d.shot_type);
                 theShot.classed("shot_visible", true);
             }
         }
     });
 
-    function incrementStat(type){
-        for(var s in that.stats){
-            if(that.stats[s].type == type){
+    function incrementStat(type) {
+        for (var s in that.stats) {
+            if (that.stats[s].type == type) {
                 that.stats[s].nb++;
             }
         }
@@ -557,34 +596,57 @@ ShotVis.prototype.filterShots = function(){
 
     //update the stats
     this.statsBarScale = d3.scaleLinear()
-        .domain([0, d3.max(this.stats, function(d){return d.nb})])
+        .domain([0, d3.max(this.stats, function (d) {
+            return d.nb
+        })])
         .range([0, that.panelHeight / 3]);
-    var totalShots = d3.sum(this.stats, function(d){return d.nb});
+    var totalShots = d3.sum(this.stats, function (d) {
+        return d.nb
+    });
+
+    var maxBarHeight = d3.max(this.stats, (d) => d.nb)
     this.statsGroups
-        .select("rect")
+        .select(".white_bar")
+        .attr("x", this.barWidth / 2)
+        .attr("y", function (d) {
+            return that.settingPad
+        })//this.panelHeight)
+        .attr("width", this.barWidth)
+        .attr("height", this.panelHeight / 3);
+
+    this.statsGroups
+        .select(".shot_bar")
         .transition().duration(600)
-        .attr("y", function(d){return (that.panelHeight / 3 + that.settingPad - that.statsBarScale(d.nb))})
-        .attr("height", function(d){return that.statsBarScale(d.nb);});
+        .attr("y", function (d) {
+            return (that.panelHeight / 3 + that.settingPad - that.statsBarScale(d.nb))
+        })
+        .attr("height", function (d) {
+            return that.statsBarScale(d.nb);
+        });
 
     this.statsGroups
         .select("text")
-        .text(function(d){return d.nb + "("+ ( totalShots != 0 ? parseInt((d.nb/totalShots)*100) : 0 )+"%)"});
+        .text(function (d) {
+            return d.nb + "(" + ( totalShots != 0 ? parseInt((d.nb / totalShots) * 100) : 0 ) + "%)"
+        });
 
     this.totalShotsGroup
         .data([totalShots])
         .select("text")
         //.transition().duration(600)
-        .text(function(d){return d});
+        .text(function (d) {
+            return d
+        });
 
 };
 
-ShotVis.prototype.clickBrushing = function(){
+ShotVis.prototype.clickBrushing = function () {
     catchEvent();
     var that = this;
     //activate the brushing
-    if(this.brush){
-        var fieldBrushScale = [[2 *that.pad, that.distanceHeight + that.splitWidth + that.pad],
-                                [that.width, that.height - that.panelHeight]];
+    if (this.brush) {
+        var fieldBrushScale = [[2 * that.pad, that.distanceHeight + that.splitWidth + that.pad],
+            [that.width, that.height - that.panelHeight]];
         //brush on the field
         this.clusterGroup.append("g")
             .attr("class", "brush")
@@ -610,11 +672,11 @@ ShotVis.prototype.clickBrushing = function(){
         function brushmoveField() {
             var e = d3.brushSelection(d3.select("#brushField").node());
             that.brushedShotsField = [];
-            that.shotsField.each(function(d){
+            that.shotsField.each(function (d) {
                 var shotx = that.resetX(d.y) - that.currentX;
                 var shoty = that.resetY(d.x) - that.currentY;
-                if( e[0][0] <= shotx && shotx <= e[1][0]
-                    && e[0][1] <= shoty && shoty <= e[1][1]){
+                if (e[0][0] <= shotx && shotx <= e[1][0]
+                    && e[0][1] <= shoty && shoty <= e[1][1]) {
                     that.brushedShotsField.push(d);
                 }
             });
@@ -624,14 +686,14 @@ ShotVis.prototype.clickBrushing = function(){
         function brushmoveMouth() {
             var e = d3.brushSelection(d3.select("#brushPost").node());
             that.brushedShotsMouth = [];
-            that.shotsField.each(function(d){
+            that.shotsField.each(function (d) {
                 var mouth = that.getMouth(d);
                 console.log("mouth", mouth)
-                if(mouth == null) return;
+                if (mouth == null) return;
                 var mouthx = that.setPostX(mouth[0]) - that.currentX;
                 var mouthy = that.setPostY(mouth[1]) - that.currentY;
-                if( e[0][0] <= mouthx && mouthx <= e[1][0]
-                    && e[0][1] <= mouthy && mouthy <= e[1][1]){
+                if (e[0][0] <= mouthx && mouthx <= e[1][0]
+                    && e[0][1] <= mouthy && mouthy <= e[1][1]) {
                     that.brushedShotsMouth.push(d);
                 }
             });
@@ -639,16 +701,17 @@ ShotVis.prototype.clickBrushing = function(){
         }
 
         function brushendField() {
-            if(d3.brushSelection(d3.select("#brushField").node()) == null) that.brushedShotsField = null;
+            if (d3.brushSelection(d3.select("#brushField").node()) == null) that.brushedShotsField = null;
             that.filterShots();
         }
+
         function brushendMouth() {
-            if(d3.brushSelection(d3.select("#brushPost").node()) == null) that.brushedShotsMouth = null;
+            if (d3.brushSelection(d3.select("#brushPost").node()) == null) that.brushedShotsMouth = null;
             that.filterShots();
         }
     }
     //cancel the brushing
-    else{
+    else {
         //console.log("remove brush");
         this.clusterGroup.selectAll(".brush").remove();
         this.clusterGroup.style("cursor", "default");
@@ -658,36 +721,27 @@ ShotVis.prototype.clickBrushing = function(){
     }
 };
 
-ShotVis.prototype.clickFilterMode = function(){
+ShotVis.prototype.clickFilterMode = function () {
     catchEvent();
-    var that = this;
-    this.filterModes.selectAll("rect")
-        .style("fill", function(d){
-            if(d.selected == true){
-                return that.getShotColor(d.name);
-            }
-            else return "white";
-        });
-
     this.filterShots();
 };
 
-ShotVis.prototype.clickVisuMode = function(mode){
+ShotVis.prototype.clickVisuMode = function (mode) {
     catchEvent();
     //if a new mode
-    if(mode == this.visuMode) return;
+    if (mode == this.visuMode) return;
 
     var that = this;
     this.visuModes.selectAll("rect")
-        .classed("modes_selected", function(d){
-            if(d==mode){
+        .classed("modes_selected", function (d) {
+            if (d == mode) {
                 that.visuMode = d;
                 return true;
             }
             return false;
         });
 
-    switch(this.visuMode){
+    switch (this.visuMode) {
         case "dots":
             this.shots.selectAll(".shotLine")
                 .style("visibility", "visible");
@@ -712,13 +766,13 @@ ShotVis.prototype.clickVisuMode = function(mode){
     this.visuMode = mode;
 };
 
-ShotVis.prototype.getContextShots = function(){
+ShotVis.prototype.getContextShots = function () {
     var shots = [];
 
-    data.players.forEach(function(player){
-        if(player.events == undefined) return;
-        player.events.forEach(function(d){
-            if(isShot(d)){
+    data.players.team0.forEach(function (player) {
+        if (player.events == undefined) return;
+        player.events.forEach(function (d) {
+            if (isShot(d)) {
                 shots.push(d);
             }
         });
@@ -726,105 +780,108 @@ ShotVis.prototype.getContextShots = function(){
     return shots;
 };
 
-ShotVis.prototype.getContextData = function(){
+ShotVis.prototype.getContextData = function () {
     this.context_data = this.getContextShots();
-    for(var s in this.context_data){
+    console.log(this.context_data);
+    for (var s = 0; s < this.context_data.length; s++) {
         this.context_data[s].shot_type = this.getShotType(this.context_data[s]);
     }
 };
 
-ShotVis.prototype.resetX = function(y){
-    return y/100 * this.fieldWidth + this.currentX;
+ShotVis.prototype.resetX = function (y) {
+    return y / 100 * this.fieldWidth + this.currentX;
 };
 
-ShotVis.prototype.resetY = function(x){
-    return (50 - Math.abs(x - 50))/50 * this.fieldHeight + this.currentY
+ShotVis.prototype.resetY = function (x) {
+    return (50 - Math.abs(x - 50)) / 50 * this.fieldHeight + this.currentY
         + this.height - this.fieldHeight - this.panelHeight;
 };
 
 ShotVis.prototype.setPostX = function (x) {
-    return this.currentX + this.post_x_scale(x)/100 * this.width;
+    return this.currentX + this.post_x_scale(x) / 100 * this.width;
 };
 
 ShotVis.prototype.setPostY = function (y) {
-    return this.currentY + (100 - this.post_y_scale(y))/100 * (this.distanceHeight);
+    return this.currentY + (100 - this.post_y_scale(y)) / 100 * (this.distanceHeight);
 };
 
 ShotVis.prototype.getShotColor = function (shot_type) {
-    switch(shot_type) {
+    switch (shot_type) {
         case "goal":
-            return "green";
+            return getEventColor(E_SHOT_GOAL);
         case "post":
-            return "pink";
+            return getEventColor(E_SHOT_POST);
         case "saved":
-            return "blue";
+            return getEventColor(E_SHOT_SAVED);
         case "missed":
-            return "red";
+            return getEventColor(E_SHOT_MISS);
         default:
-            console.log("unknown name for shot: " + d);
-            return "yellow";
+//            console.log("unknown name for shot: " + d);
+            return getEventColor(E_SHOT_CHANCE_MISSED);
     }
 }
 
-function SimpleSlider(params){
+function SimpleSlider(params) {
     this.init(params);
 }
 
-SimpleSlider.prototype.init = function(params){
+SimpleSlider.prototype.init = function (params) {
 
     this.slider_range = params.slider_range;
 
     var slider = params.parent.append("g")
         .attr("class", params.sliderClass)
-        .attr("transform", "translate("+params.x+","+params.y+")");
+        .attr("transform", "translate(" + params.x + "," + params.y + ")");
 
     var rect = slider.append("rect")
         .attr("class", "layer")
         .attr("x", 0)
         .attr("y", 0)
-        .attr("rx", params.padding)
+        .attr("rx", params.padding * 2)
         .attr("width", params.width)
         .attr("height", params.height);
 
     var _dragSliderLine;
 
-    var sliderLine = this.sliderLine = slider.append("line")
-        .attr("x1", 0)
-        .attr("x2", 0)
-        .attr("y1", -params.padding*2)
-        .attr("y2", params.height + params.padding * 2)
-        .on("mousedown", function(){
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-            _dragSliderLine = this;
-            this.style.cursor = "pointer";
-            return false;
-        });
+    var sliderLine = this.sliderLine =
+        slider.append("rect")
+            .attr("x", 0)
+            .attr("y", -3 * params.padding)
+            .attr("rx", 3 * params.padding)
+            .attr("width", 8 * params.padding)
+            .attr("height", 8 * params.padding)
+            .on("mousedown", function () {
+                d3.event.preventDefault();
+                d3.event.stopPropagation();
+                _dragSliderLine = this;
+                this.style.cursor = "pointer";
+                return false;
+            });
 
 
-    sliderLine.on("mouseup", function(){
+    sliderLine.on("mouseup", function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        if (_dragSliderLine != null){
+        if (_dragSliderLine != null) {
             _dragSliderLine.style.cursor = "pointer";
             _dragSliderLine = null;
         }
     });
 
-    rect.on("mousemove", function(){
+    rect.on("mousemove", function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();
 
-        if( _dragSliderLine != null ){
+        if (_dragSliderLine != null) {
             var coordinateX = d3.mouse(this)[0];
-            sliderLine.attr("x1", coordinateX).attr("x2", coordinateX);
-            if(params.parentVisu instanceof ShotVis){
-                params.parentVisu.changeSprayRadius(sliderLine.attr("x1"));
+            sliderLine.attr("x", coordinateX - 15 / 2);
+            if (params.parentVisu instanceof ShotVis) {
+                params.parentVisu.changeSprayRadius(sliderLine.attr("x"));
             }
 
         }
     });
-    rect.on("mouseup", function(){
+    rect.on("mouseup", function () {
         d3.event.stopPropagation();
     })
 };

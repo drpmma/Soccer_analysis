@@ -1,0 +1,29 @@
+#settingBar {
+    margin-top: 2px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.setting_list {
+    overflow: auto;
+    max-height: 200px;
+}
+
+.ui-draggable, .ui-droppable {
+    background-position: top;
+}
+
+.panel_setting {
+    border-color: rgb(180,180,180);
+    margin: 15px 0 0 0;
+}
+
+.panel_setting_head {
+    border-color: rgb(180,180,180);
+    background-color: rgb(153,153,153);
+}
+
+.navbar-setting {
+    overflow: auto;
+    height: 100%;
+}

@@ -375,12 +375,200 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
     var that = this;
     this.path_container = this.field.append("g")
         .attr("id", "path_container");
-    this.path_container.selectAll("g").data(this.links).enter()
+    // this.path_container.selectAll("g").data(this.links).enter()
+    //     .append("g")
+    //     .attr("class", function (d) {
+    //         return "link " + getEventName(d.eid);
+    //     })
+    //     .append("path")
+    //     .attr("stroke-width",0)
+    //     .attr("stroke","white")
+    //     .attr("d", function(d){
+    //         // source and target are duplicated for straight lines
+    //         var x_source = parseFloat(that.x_scale(that.nodes[d.source].x)),
+    //             y_source = parseFloat(that.y_scale(that.nodes[d.source].y)),
+    //             x_target = parseFloat(that.x_scale(that.nodes[d.target].x)),
+    //             y_target = parseFloat(that.y_scale(that.nodes[d.target].y));
+    //         if(isLongPass(d,that.nodes[d.source])){
+    //             return line(getArc(
+    //                 x_source,
+    //                 y_source,
+    //                 x_source,
+    //                 y_source,
+    //                 10
+    //             ));
+    //         }
+    //         else{
+    //             return line([
+    //                 {x:x_source, y:y_source}, {x:x_source, y:y_source},
+    //                 {x:x_source, y:y_source}, {x:x_source, y:y_source}]);
+    //         }
+    //     })
+    //     .attr("id", function (d, i) {
+    //         return group + i;
+    //     })
+    //     .attr("stroke", function (d) {
+    //         if(gray==0)
+    //         return getEventColor(d.eid);
+    //         else
+    //             return "lightgray"
+    //     })
+    //     .attr("stroke-width",function () {
+    //         if(gray==1)
+    //             return "10px";
+    //         else
+    //             return "1px"
+    //     })
+    //     .attr("fill", "none")
+    //     .attr("class", function(d){
+    //         var line_style = "";
+    //         if(gray==1) return "plain"
+    //         if(C_SHOT.indexOf(d.eid)!=-1) line_style = "plain";
+    //         else if(that.nodes[d.source].pid == that.nodes[d.target].pid) {
+    //             if(that.nodes[d.source].unique_id == that.nodes[d.target].unique_id) {
+    //                 line_style = "dotted";
+    //             }
+    //             else line_style = "plain";
+    //         }
+    //         else line_style = "dashed";
+    //
+    //         return line_style;
+    //     })
+    //     .each(function(d){
+    //         if(d.eid == E_RUN || d.eid == E_LONG_RUN) {
+    //             //d3.select(this).style("stroke-opacity",0); TODO - if can fix the squiggly lines, remove the remaining of this function
+    //
+    //             d3.select(this).attr("class","plain");
+    //
+    //             //draw a squiggly line
+    //             var x_source = that.x_scale(that.nodes[d.source].x),
+    //                 y_source = that.y_scale(that.nodes[d.source].y),
+    //                 x_target = that.x_scale(that.nodes[d.target].x),
+    //                 y_target = that.y_scale(that.nodes[d.target].y);
+    //             return line([
+    //                 {x:x_source, y:y_source}, {x:x_source, y:y_source},
+    //                 {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
+    //         }
+    //     })
+    //     .style("filter", function(d){
+    //         if(isLongPass(d,that.nodes[d.source])) return "url(#shadow-pass)";
+    //         return "";
+    //     })
+    //     .attr("id",function(d,i){return "linkPath"+i})
+    //     .attr("d", function(d){
+    //         // source and target are duplicated for straight lines
+    //         var x_source = parseFloat(that.x_scale(that.nodes[d.source].x)),
+    //             y_source = parseFloat(that.y_scale(that.nodes[d.source].y)),
+    //             x_target = parseFloat(that.x_scale(that.nodes[d.target].x)),
+    //             y_target = parseFloat(that.y_scale(that.nodes[d.target].y));
+    //         if(isLongPass(d,that.nodes[d.source])){
+    //             return line(getArc(
+    //                 x_source,
+    //                 y_source,
+    //                 x_target,
+    //                 y_target,
+    //                 10
+    //             ));
+    //         }
+    //         else{
+    //             return line([
+    //                 {x:x_source, y:y_source}, {x:x_source, y:y_source},
+    //                 {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
+    //         }
+    //     })
+    //     .attr("opacity", 0)
+    //     .transition()
+    //     .delay(function (d, i) {
+    //         if(isTransition==2) return durationTime*4;
+    //         return durationTime * (i + 1);
+    //     })
+    //     .duration(durationTime)
+    //     .attr("opacity", 1);
+    let temp = this.path_container.selectAll("g").data(this.links).enter()
         .append("g")
         .attr("class", function (d) {
             return "link " + getEventName(d.eid);
         })
-        .append("path")
+        .on("mouseover", function(){});
+    temp.append("path")
+        .attr("d", function(d){
+            // source and target are duplicated for straight lines
+            var x_source = parseFloat(that.x_scale(that.nodes[d.source].x)),
+                y_source = parseFloat(that.y_scale(that.nodes[d.source].y)),
+                x_target = parseFloat(that.x_scale(that.nodes[d.target].x)),
+                y_target = parseFloat(that.y_scale(that.nodes[d.target].y));
+            if(isLongPass(d,that.nodes[d.source])){
+                return line(getArc(
+                    x_source,
+                    y_source,
+                    x_source,
+                    y_source,
+                    10
+                ));
+            }
+            else{
+                return line([
+                    {x:x_source, y:y_source}, {x:x_source, y:y_source},
+                    {x:x_source, y:y_source}, {x:x_source, y:y_source}]);
+            }
+        })
+        .attr("id", function (d, i) {
+            return group + i + "_bg";
+        })
+        .attr("stroke", function (d) {
+            return "transparent";
+        })
+        .attr("stroke-width",function () {
+            return "20px";
+        })
+        .attr("fill", "none")
+        .attr("class", function(d){
+            return "solid";
+        })
+        .each(function(d){
+            if(d.eid == E_RUN || d.eid == E_LONG_RUN) {
+                //d3.select(this).style("stroke-opacity",0); TODO - if can fix the squiggly lines, remove the remaining of this function
+
+                d3.select(this).attr("class","plain");
+
+                //draw a squiggly line
+                var x_source = that.x_scale(that.nodes[d.source].x),
+                    y_source = that.y_scale(that.nodes[d.source].y),
+                    x_target = that.x_scale(that.nodes[d.target].x),
+                    y_target = that.y_scale(that.nodes[d.target].y);
+                return line([
+                    {x:x_source, y:y_source}, {x:x_source, y:y_source},
+                    {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
+            }
+        })
+        .style("filter", function(d){
+            if(isLongPass(d,that.nodes[d.source])) return "url(#shadow-pass)";
+            return "";
+        })
+        .attr("id",function(d,i){return "linkPath"+i+"_bg"})
+        .attr("d", function(d){
+            // source and target are duplicated for straight lines
+            var x_source = parseFloat(that.x_scale(that.nodes[d.source].x)),
+                y_source = parseFloat(that.y_scale(that.nodes[d.source].y)),
+                x_target = parseFloat(that.x_scale(that.nodes[d.target].x)),
+                y_target = parseFloat(that.y_scale(that.nodes[d.target].y));
+            if(isLongPass(d,that.nodes[d.source])){
+                return line(getArc(
+                    x_source,
+                    y_source,
+                    x_target,
+                    y_target,
+                    10
+                ));
+            }
+            else{
+                return line([
+                    {x:x_source, y:y_source}, {x:x_source, y:y_source},
+                    {x:x_target, y:y_target}, {x:x_target, y:y_target}]);
+            }
+        })
+        .attr("opacity", 0);
+    temp.append("path")
         .attr("stroke-width",0)
         .attr("stroke","white")
         .attr("d", function(d){
@@ -409,7 +597,7 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
         })
         .attr("stroke", function (d) {
             if(gray==0)
-            return getEventColor(d.eid);
+                return getEventColor(d.eid);
             else
                 return "lightgray"
         })
@@ -417,7 +605,7 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
             if(gray==1)
                 return "10px";
             else
-                return "1px"
+                return "3px"
         })
         .attr("fill", "none")
         .attr("class", function(d){
@@ -485,6 +673,7 @@ Sequence.prototype.draw_path = function (group, gray, isTransition) {
         .duration(durationTime)
         .attr("opacity", 1);
 
+
         //console.log(that.nodes);
         CurrentNodes.splice(0,CurrentNodes.length);
         CurrentNodes = that.nodes;
@@ -524,10 +713,11 @@ function ChangeAllFlag() {
 }
 
 function ChangeClusterAlgorithmMode(Mode) {
-    if(Mode == "k-means"){
+    console.log(Mode);
+    if(Mode == 1){
         CLUSTERALGORITHMMODE = "k-means" ;
     }
-    else {
+    else if(Mode == 2){
         CLUSTERALGORITHMMODE = "k-medoids" ;
     }
     console.log(CLUSTERALGORITHMMODE)
@@ -547,7 +737,7 @@ function clearPitch() {
         .duration(500)
         .style("opacity",0);
 
-
+    if(cm != undefined) cm.hide(500);
 
 }
 
@@ -564,7 +754,7 @@ function redrawPitch(ComputeResult, MethodName, MethodLayer) {
 
 
 
-        d3.select("g").selectAll("field")
+        d3.select("#mainfield").selectAll("field")
             .data(ComputeResult)
             .enter()
             .append("circle")
@@ -595,11 +785,11 @@ function redrawPitch(ComputeResult, MethodName, MethodLayer) {
             });
 
 
-        d3.select("g")
+        d3.select("#mainfield")
             .append("path")
             .attr("class","hylink")
             .attr("d",line_generator(ComputeResult))
-            .attr("stroke","blue")
+            .attr("stroke","rgb(36,40,51)")
             .attr("stroke-width",2)
             .attr("fill","none")
             .attr("opacity",0.5)
@@ -648,11 +838,11 @@ function redrawPitch(ComputeResult, MethodName, MethodLayer) {
 
 
 
-        d3.select("g")
+        d3.select("#mainfield")
             .append("path")
             .attr("class","hylink")
             .attr("d",line_generator(ComputeResult))
-            .attr("stroke","blue")
+            .attr("stroke","rgb(36,40,51)")
             .attr("stroke-width",StrokeWidth)
             .attr("fill","none")
             .attr("opacity",0.5)
@@ -675,8 +865,6 @@ function redrawAllPitch(hyAllSequencesNodes, MethodName, MethodLayer) {
         EachNodes = clone(hyAllSequencesNodes[i]);
         redrawPitch(EachNodes, MethodName, MethodLayer)
     }
-
-
 
 
 
@@ -711,10 +899,11 @@ function drawAllOriginalSequences(hyAllSequences) {
 
     }
 
-
+    if(cm != undefined) cm.show(0);
 }
 
 function abstractDraw(value) {
+    console.log(value);
     //console.log(AllFlag);
     //console.log("ClusterAlgorithmMode " + CLUSTERALGORITHMMODE);
     if( CurrentXscale == undefined) {
@@ -722,7 +911,7 @@ function abstractDraw(value) {
     }
 
     var tempAllSequences = PassSequence();
-    console.log(tempAllSequences[5].actions)
+    //console.log(tempAllSequences[5].actions)
     var hyAllSequences = tempAllSequences;
 
     var hyAllSequencesNodes = [];
@@ -755,6 +944,7 @@ function abstractDraw(value) {
                     .transition()
                     .duration(500)
                     .style("opacity",1);
+                if(cm != undefined) cm.show(500);
             }
             break;
         case 10:

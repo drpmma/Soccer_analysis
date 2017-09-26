@@ -1,92 +1,328 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
     <title>足球可视化系统 / SoccerStory</title>
-    <meta charset="utf-8"/>
-    <link rel="stylesheet" href="index.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/NavigationBar.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/docs.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/helps.css" type="text/css" />
-    <link rel="stylesheet" href="./CSS/cluster.css" type="text/css" />
-    <script type = "text/javascript" src = "d3.js"></script>
-    <script type = "text/javascript" src = "d3.layout.cloud.js"></script>
-    <link href="./CSS/bootstrap.css" rel="stylesheet">
-    <script src="./LIB/jquery.min.js"></script>
-    <script src="./LIB/bootstrap.min.js"></script>
-    <script type = "text/javascript" src = "./JS/NavigationBar.js"></script>
-    <script type = "text/javascript" src = "help.js"></script>
-    <script type = "text/javascript" src = "Data.js"></script>
-    <script type = "text/javascript" src = "Field.js"></script>
-    <script type = "text/javascript" src = "player.js"></script>
-    <script type = "text/javascript" src = "infos.js"></script>
-    <script type = "text/javascript" src = "dataconvert.js"></script>
+    <meta charset="utf-8" />
+    <script>
+        // 重命名 Electron 提供的 require
+        window.nodeRequire = require;
+        delete window.require;
+        delete window.exports;
+        delete window.module;
+        const { remote } = nodeRequire('electron')
+        const { Menu, MenuItem } = remote
 
+        const menu = new Menu()
+        menu.append(new MenuItem({ label: 'MenuItem1', click() { console.log('item 1 clicked') } }))
+        menu.append(new MenuItem({ type: 'separator' }))
+        menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }))
 
-    <link rel="stylesheet" href="./CSS/UnifrakturMaguntia.css">
-    <link rel="stylesheet" href="./CSS/jqmath-0.4.0.css">
+        window.addEventListener('contextmenu', (e) => {
+            e.preventDefault()
+            menu.popup(remote.getCurrentWindow())
+        }, false)
+    </script>
+    <link rel="stylesheet" href="CSS/index.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/NavigationBar.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/docs.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/helps.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/cluster.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/sideSettingBar.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/jquery-ui.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/bootstrap_dialog.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/shortcut.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/ShotVis.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/videoplayer.css" type="text/css" />
+    <link rel="stylesheet" href="CSS/matchinfo.css" type="text/css" />
+    <script type="text/javascript" src="LIB/d3/d3.js"></script>
+    <script type="text/javascript" src="LIB/d3/d3.layout.cloud.js"></script>
+    <script src="LIB/jQuery/jquery.min.js"></script>
+    <script src="LIB/jQuery/jquery-ui.js"></script>
+    <script src="LIB/bootstrap/bootstrap.min.js"></script>
+    <script src="LIB/bootstrap/bootstrap_dialog.js"></script>
+    <script type="text/javascript" src="JS/NavigationBar.js"></script>
+    <script type="text/javascript" src="JS/SideSettingBar.js"></script>
+    <script type="text/javascript" src="JS/help.js"></script>
+    <script type="text/javascript" src="JS/Data.js"></script>
+    <script type="text/javascript" src="JS/Field.js"></script>
+    <script type="text/javascript" src="JS/player.js"></script>
+    <script type="text/javascript" src="JS/infos.js"></script>
+    <script type="text/javascript" src="JS/dataconvert.js"></script>
+    <script type="text/javascript" src="JS/model.js"></script>
+    <script type="text/javascript" src="JS/timeline.js"></script>
+    <script type="text/javascript" src="JS/Sequence.js"></script>
+    <script type="text/javascript" src="JS/video.js"></script>
+    <script type="text/javascript" src="JS/background.js"></script>
+    <script type="text/javascript" src="JS/tips.js"></script>
+    <script type="text/javascript" src="JS/FileManager.js"></script>
+    <script type="text/javascript" src="JS/matchinfo.js"></script>
+
+    <link rel="stylesheet" href="CSS/UnifrakturMaguntia.css">
+    <link rel="stylesheet" href="CSS/jqmath-0.4.0.css">
 
     <style>
         .dashed {
-            stroke-dasharray: 5,5;
+            stroke-dasharray: 5, 5;
             fill: none;
             stroke: black;
-            stroke-width: 2;}
+            stroke-width: 2;
+        }
     </style>
 </head>
+
 <body>
-    <div id = "svg_div"></div>
+    <!--导航栏-->
+    <nav class="navbar navbar-inverse" style="margin-bottom:0;box-shadow:rgba(0,0,0,0.3492) 0 0 10px 0;border-width:0;">
+        <div class="container-fluid">
+            <div class="row box">
+                <div id="vir_navigationHead" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navbar-header">
+                    <a id="vir_navigationHead_img" class="navbar-brand" href="#">
+                        <img alt="brand" src="./img/soccer.png"/>
+                    </a>
+                    <a id="vir_navigationHead_txt" class="navbar-brand" href="#">足球可视化系统</a>
+                </div>
+                <div id="vir_navigationMatch" class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                    <ul class="nav navbar-nav navbar-match">
+                        <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                            <a style="float:left" id="vir_nav_team0"></a>
+                            <a style="float:right" id="vir_nav_score0"></a>
+                        </li>
+                        <li class="disabled navigationTextVS col-md-2" id="vir_nav_vs"></li>
+                        <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                            <a style="float:left" id="vir_nav_score1"></a>
+                            <a style="float:right" id="vir_nav_team1"></a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="vir_navigationDate" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextDate"></div>
+                <div id="vir_navigationHelp" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextHelp" data-toggle="modal" data-target="#help_manual">
+                    <a id="vir_navigation_help_txt" class="navbar-brand" href="#">帮助手册</a>
+                    <a id="vir_navigation_help_img" class="navbar-brand" href="#">
+                        <span class="glyphicon glyphicon-question-sign"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom:0;box-shadow:rgba(0,0,0,0.3492) 0 0 10px 0;border-width:0;">
+        <div class="container-fluid">
+            <div class="row box">
+                <div id="navigationHead" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 navbar-header">
+                    <a id="navigationHead_img" class="navbar-brand" href="#">
+                        <img alt="brand" src="./img/soccer.png"/>
+                    </a>
+                    <a id="navigationHead_txt" class="navbar-brand" href="#">足球可视化系统</a>
+                </div>
+                <div id="navigationMatch" class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                    <ul class="nav navbar-nav navbar-match">
+                        <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                            <a style="float:left" id="nav_team0"></a>
+                            <a style="float:right" id="nav_score0"></a>
+                        </li>
+                        <li class="disabled navigationTextVS col-md-2" id="nav_vs"></li>
+                        <li class="navigationTextTeam col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                            <a style="float:left" id="nav_score1"></a>
+                            <a style="float:right" id="nav_team1"></a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="navigationDate" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextDate"></div>
+                <div id="navigationHelp" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 navigationTextHelp" data-toggle="modal" data-target="#help_manual">
+                    <a id="navigation_help_txt" class="navbar-brand" href="#">帮助手册</a>
+                    <a id="navigation_help_img" class="navbar-brand" href="#">
+                        <span class="glyphicon glyphicon-question-sign"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!--主体-->
+    <div class="container-fluid mainwindow" style="margin:0;padding:0;">
+        <div class="row box" style="margin:0;padding:0;height:100%;">
+            <div id="settingBar" class="navbar-setting col-lg-2 col-md-2 col-sm-2 col-xs-2 part" style="margin-bottom:0">
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse_show">显示设置</a>
+                        </h4>
+                    </div>
+                    <div id="collapse_show" class="panel-collapse collapse in">
+                        <div class="panel-body" id="showSetting"></div>
+                    </div>
+                </div>
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse_abstract">抽象化设置</a>
+                        </h4>
+                    </div>
+                    <div id="collapse_abstract" class="panel-collapse collapse in">
+                        <div class="panel-body" id="abstractSetting"></div>
+                    </div>
+                </div>
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse_cluster">聚团设置</a>
+                        </h4>
+                    </div>
+                    <div id="collapse_cluster" class="panel-collapse collapse in">
+                        <div class="panel-body" id="clusterSetting"></div>
+                    </div>
+                </div>
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_sequence">序列设置</a>
+                        </h4>
+                    </div>
+                    <div id="collapse_sequence" class="panel-collapse collapse in">
+                        <div class="panel-body" id="sequenceSetting"></div>
+                    </div>
+                </div>
+                <div class="panel panel_setting">
+                    <div class="panel-heading panel_setting_head">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse_data">数据设置</a>
+                        </h4>
+                    </div>
+                    <div id="collapse_data" class="panel-collapse collapse in">
+                        <div class="panel-body" id="dataSetting"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="svg_div" class="navbar navbar-default col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom:0;float:left">
+                <div id="menu">
+                    <div id="menu_text">
+                        <img src="img/menu_out.png" style="width:20px;height:23px;"/><br>设<br>置<br>栏
+                    </div>
+                </div>
+                <!--<div id="center">-->
+                    <div id="shortcut">
+                        <div id="tips">
+                            <div id="tips_color"></div>
+                            <div id="tips_line"></div>
+                        </div>
+                        <!--<div id="toolbar"></div>-->
+                    </div>
+                <!--</div>-->
+                <div id="sequences">
+
+                </div>
+                <div id="team" class="part">
+
+                </div>
+                <div id="player_info" class="part">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--帮助手册-->
+    <div class="modal fade" id="help_manual" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" id="help_header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        帮助手册
+                    </h4>
+                </div>
+                <div id="help_content" class="modal-body">
+                </div>
+                <div class="modal-footer" id="help_footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+
+    <!--视频-->
+    <div id="video_player">
+        <div class="panel panel_video">
+            <div class="panel-heading panel_video_head">
+                <p class="panel_video_title">实战视频</p>
+                <span class="panel_video_repeat glyphicon glyphicon-repeat"></span>
+                <span class="panel_video_min glyphicon glyphicon-minus"></span>
+            </div>
+            <div id="collapse_video" class="panel-collapse collapse in">
+                <div class="panel-body" id="video_body">
+                    <video id="VideoPlayer" src="video/cvu.mkv" style="width:100%;" controls="controls"></video>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        var nb = new navigationBar();
-        var helps = new Helps();
-        var data;
-        var infos;
-        var pm;
-        var cm;
-        var setting;
-        var seq;
-        var mainfield;
-        var f3;
-        var time=0;
-        var view_time=0;
-        var view_transform=0;
-        var oldtype=-1;
-        var click=-1;
-        var data_select=new dataselect();
+        let fm = new filesManager();
+        let navigation = new navigationBar();
+        let sideSetting;
+        let helps = new Helps();
+        let data;
+        let infos;
+        let pm;
+        let cm;
+        let setting;
+        let seq;
+        let mainfield;
+        let f3;
+        let time = 0;
+        let view_time = 0;
+        let view_transform = 0;
+        let oldtype = -1;
+        let click = -1;
+        let data_select;
+        let videoPlayer = new Video();
+        let tip = new tips();
         width = document.getElementById("svg_div").getBoundingClientRect().width;
         height = document.getElementById("svg_div").getBoundingClientRect().height;
+
+        model();
     </script>
 
     <script type="text/javascript" src="LIB/utils.js"></script>
-    <script src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
-    <script src="./LIB/jqmath-etc-0.4.0.min.js"></script>
-    <script src="./LIB/kmeans.min.js"></script>
-    <!--<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>-->
+    <script src="LIB/jqmath-etc-0.4.0.min.js"></script>
+    <script src="LIB/kmeans.min.js"></script>
     <script src="LIB/recurrent.js"></script>
     <script src="LIB/kmedoids.js"></script>
     <script src="LIB/paper-full.min.js"></script>
     <script language="javascript" type="text/javascript" src="LIB/p5.min.js"></script>
     <script>
-        (function(i,s,o,g,r,a,m){
-            i['GoogleAnalyticsObject']=r;
-            i[r]=i[r]||function(){
-                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();
-            a=s.createElement(o), m=s.getElementsByTagName(o)[0];
-            a.async=1;a.src=g;
-            m.parentNode.insertBefore(a,m)
-        })(window,document,'script','./LIB/analytics.js','ga');
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+            a.async = 1; a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', './LIB/analytics.js', 'ga');
 
         ga('create', 'UA-61361005-1', 'auto');
         ga('send', 'pageview');
-
     </script>
-    <script src = "layerController.js"></script>
-
-    <script type = "text/javascript" src = "Sequence.js"></script>
-    <script type = "text/javascript" src = "cluster.js"></script>
-    <script type = "text/javascript" src = "timeline.js"></script>
-    <script type = "text/javascript" src = "ShotVis.js"></script>
-    <script type = "text/javascript" src = "CentreVis.js"></script>
-    <script type = "text/javascript" src = "dataconvert.js"></script>
-
+    <script src="JS/layerController.js"></script>
+    <script type="text/javascript" src="JS/background.js"></script>
+    <script type="text/javascript" src="JS/Sequence.js"></script>
+    <script type="text/javascript" src="JS/cluster.js"></script>
+    <script type="text/javascript" src="JS/timeline.js"></script>
+    <script type="text/javascript" src="JS/ShotVis.js"></script>
+    <script type="text/javascript" src="JS/CentreVis.js"></script>
+    <script type="text/javascript" src="JS/dataconvert.js"></script>
+    <script type="text/javascript" src="JS/model.js"></script>
+    <script type="text/javascript" src="JS/tips.js"></script>
+    <script type="text/javascript" src="JS/toolbar.js"></script>
+    <script type="text/javascript" src="JS/FileManager.js"></script>
+    <script type="text/javascript" src="JS/video.js"></script>
+    <script type="text/javascript" src="JS/matchinfo.js"></script>
 </body>
-</html>    
+
+</html>
