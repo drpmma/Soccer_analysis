@@ -14,8 +14,8 @@ Video = function () {
 
     this.minEvent();
     this.repeatEvent();
-    this.moveEvent();
-    this.dblclickEvent();
+    //this.moveEvent();
+    //this.dblclickEvent();
 
     this.player.addEventListener("timeupdate", function() {
         if(that.pause === 0) return;
