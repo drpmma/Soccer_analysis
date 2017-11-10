@@ -14,8 +14,8 @@ Video = function () {
 
     this.minEvent();
     this.repeatEvent();
-    this.moveEvent();
-    this.dblclickEvent();
+    // this.moveEvent();
+    // this.dblclickEvent();
 
     this.player.addEventListener("timeupdate", function() {
         if(that.pause === 0) return;
@@ -51,28 +51,40 @@ Video.prototype.playPart = function (time0, time1) {
 
     console.log(this.time[0],this.time[1]);
 
+    let div = $("#video_player");
+    let temp = $('.panel_video_min');
+    let video_body = $('#collapse_video');
+    if(temp.hasClass("glyphicon-plus")) {
+        temp.removeClass("glyphicon-plus");
+        temp.addClass("glyphicon-minus");
+        div.animate({"top":"10%", "left":"10%", "width":"80%"});
+    }
+    if(!video_body.hasClass("in")) video_body.addClass("in");
+
     this.pause = 1;
     this.player.currentTime = parseInt(this.time[0]).toString();
     this.player.play();
 };
 
 Video.prototype.minEvent = function() {
-    let that = this;
+    let div = $("#video_player");
     let temp = $('.panel_video_min');
     let video_body = $('#collapse_video');
-    temp.click(function () {
+    temp.click(()=>{
         if(temp.hasClass("glyphicon-minus")) {
             temp.removeClass("glyphicon-minus");
             temp.addClass("glyphicon-plus");
-            that.player.pause();
+            this.player.pause();
+            div.animate({"top":"81.5%", "left":"65%", "width":"20%"});
         }
         else {
             temp.removeClass("glyphicon-plus");
             temp.addClass("glyphicon-minus");
-            that.player.play();
+            this.player.play();
+            div.animate({"top":"10%", "left":"10%", "width":"80%"});
         }
 
-        if(video_body.hasClass("in")) video_body.removeClass("in")
+        if(video_body.hasClass("in")) video_body.removeClass("in");
         else video_body.addClass("in");
     })
 };
