@@ -51,29 +51,26 @@ function filter() {
                 if(data.sequences[i].type[type[num].name] == false )
                     sequence[i]=0;
             }
+
         }
     }
     console.log("sequence",sequence);
-    let g_sequence = d3.select("#Sequence").selectAll("g").remove();
-    for(let num=0;num<data.sequences.length;num++) {
-        if(sequence[num]==1)
-        {
-            d3.select("#Sequence").append("g").attr("id",function () {
-                return "g_sequence"+(num+1);
-            })
-        }
-    }
+    d3.select("#Sequence").selectAll(".field").remove();
+    d3.select("#Sequence").selectAll("rect").remove();
+    let g_sequence =d3.select("#Sequence");
     let count =0;
     for(let num=0;num<data.sequences.length;num++) {
         if(sequence[num]==1)
         {
+            console.log("num",num+1)
             let name = "#g_sequence" + (num + 1);
-            let g_sequence = d3.select("#Sequence").select(name)
+            let g_sequence = d3.select("#Sequence").select(name);
             let smallqurt= new Field(g_sequence,x_smallfield*width,(count++*0.08+0.01)*height,width_smallfield*width,height_smallfield*height,"smallfield"+num,0,0,1);
             g_sequence.append("rect")
                 .attr("id","rect_g")
+                .attr("id","rect_g")
                 .attr("x",x_smallfield*width)
-                .attr("y",(num*0.08+0.01)*height)
+                .attr("y",((count-1)*0.08+0.01)*height)
                 .attr("width",width_smallfield*width)
                 .attr("height",height_smallfield*height)
                 .attr("fill","gray")
