@@ -11,6 +11,7 @@ Video = function () {
     this.time[0] = 0;
     this.time[1] = this.player.duration;
     this.pause = 0;
+    this.pos = [1,1];
 
     this.minEvent();
     this.repeatEvent();
@@ -70,18 +71,21 @@ Video.prototype.minEvent = function() {
     let div = $("#video_player");
     let temp = $('.panel_video_min');
     let video_body = $('#collapse_video');
+    let duration = 500, easing = "swing";
     temp.click(()=>{
         if(temp.hasClass("glyphicon-minus")) {
             temp.removeClass("glyphicon-minus");
             temp.addClass("glyphicon-plus");
             this.player.pause();
-            div.animate({"top":"81.5%", "left":"65%", "width":"20%"});
+            div.animate({"top":`81.5%`, "left":`${50+16.667*this.pos[1]}%`, "width":"20%"},duration,easing);
+            this.pos[0] = 1;
         }
         else {
             temp.removeClass("glyphicon-plus");
             temp.addClass("glyphicon-minus");
             this.player.play();
-            div.animate({"top":"10%", "left":"10%", "width":"80%"});
+            div.animate({"top":"10%", "left":"10%", "width":"80%"},duration,easing);
+            this.pos[0] = 0;
         }
 
         if(video_body.hasClass("in")) video_body.removeClass("in");
@@ -166,4 +170,19 @@ Video.prototype.dblclickEvent = function() {
             $(this).unbind("mousemove");
         });
     })
+};
+
+Video.prototype.moveLeft = function() {
+    this.pos[1] = 0;
+    if(this.pos[0] === 0) return;
+    let duration = 500, easing = "swing";
+    let div = $("#video_player");
+    div.animate({"top":"81.5%", "left":`${50+16.667*this.pos[1]}%`, "width":"20%"},duration,easing);
+};
+Video.prototype.moveRight = function() {
+    this.pos[1] = 1;
+    if(this.pos[0] === 0) return;
+    let duration = 500, easing = "swing";
+    let div = $("#video_player");
+    div.animate({"top":"81.5%", "left":`${50+16.667*this.pos[1]}%`, "width":"20%"},duration,easing);
 };

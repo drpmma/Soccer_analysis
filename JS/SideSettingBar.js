@@ -15,6 +15,7 @@ sideSettingBar = function() {
             if(sideSetting.soh === 1) {
                 stgbar.animate({left:'-16.667%'},duration,easing);
                 mnwid.animate({left:'0'},duration,easing);
+                videoPlayer.moveLeft();
                 mn.animate({width:'5px',height:'23px'},duration/2,easing,function(){
                     mn[0].src = 'img/menu_in.png';
                     mn.animate({width:'20px',height:'23px'},duration/2,easing);
@@ -23,6 +24,7 @@ sideSettingBar = function() {
             } else {
                 mnwid.animate({left: '16.667%'},duration,easing);
                 stgbar.animate({left:'0'},duration,easing);
+                videoPlayer.moveRight();
                 mn.animate({width:'5px',height:'23px'},duration/2,easing,function(){
                     mn[0].src = 'img/menu_out.png';
                     mn.animate({width:'20px',height:'23px'},duration/2,easing);
