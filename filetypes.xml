@@ -1,7 +1,8 @@
 <application>
   <component name="FileTypeManager" version="17">
     <extensionMap>
-      <mapping ext="md" type="PLAIN_TEXT" />
+      <mapping pattern=".mkd" type="Markdown" />
+      <mapping pattern=".markdown" type="Markdown" />
       <mapping ext="csv" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
