@@ -9,17 +9,24 @@
         <mark key="^" line="5" column="29" />
         <mark key="." line="5" column="29" />
       </file>
+      <file name="D:/WebstormProjects/peta/func3.js" timestamp="1514145406556" />
     </filemarks>
     <jumps />
     <registers>
+      <register name="0" type="2">
+        <text encoding="base64">ICAgICAgICBuZXcgQ2hhcnQoY3R4LCB7Cg==</text>
+      </register>
       <register name="1" type="2">
         <text encoding="base64">ICAgICAgICBjb25zb2xlLmxvZygiSGVsbG8hIikK</text>
       </register>
       <register name="&quot;" type="2">
-        <text encoding="base64">ICAgICAgICBjb25zb2xlLmxvZygiSGVsbG8hIikK</text>
+        <text encoding="base64">ICAgICAgICBuZXcgQ2hhcnQoY3R4LCB7Cg==</text>
       </register>
       <register name=":" type="4">
         <text>w</text>
+      </register>
+      <register name="-" type="4">
+        <text encoding="base64">dGhpcy5jaGFydCA9IA==</text>
       </register>
     </registers>
     <search>
@@ -34,6 +41,9 @@
     <shortcut-conflicts>
       <shortcut-conflict owner="vim">
         <text>ctrl pressed N</text>
+      </shortcut-conflict>
+      <shortcut-conflict owner="vim">
+        <text>ctrl pressed T</text>
       </shortcut-conflict>
     </shortcut-conflicts>
   </component>
