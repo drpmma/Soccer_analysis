@@ -1,8 +1,8 @@
 <application>
   <component name="FileTypeManager" version="17">
     <extensionMap>
-      <mapping pattern=".markdown" type="Markdown" />
       <mapping pattern=".mkd" type="Markdown" />
+      <mapping pattern=".markdown" type="Markdown" />
     </extensionMap>
   </component>
 </application>
