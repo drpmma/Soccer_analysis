@@ -1,0 +1,8 @@
+<keymap version="1" name="Default copy" parent="$default">
+  <action id="SplitHorizontally">
+    <mouse-shortcut keystroke="control button1 doubleClick" />
+  </action>
+  <action id="SplitVertically">
+    <mouse-shortcut keystroke="control button3 doubleClick" />
+  </action>
+</keymap>
